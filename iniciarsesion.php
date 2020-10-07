@@ -21,14 +21,33 @@
     <meta name="keywords" content="bartertechnology, barter tech, barter technology, soloweb cucuta, paginas web cucuta,  campañas de marketing cucuta, Diseño web, creación de páginas web, web impresionantes, elaboración de páginas web, web profesional, páginas web elegantes, páginas web sencillas y elegantes, páginas web bonitas, páginas web modernas, páginas web sencillas"/>
     <meta name="description" content="Dedicada a desarrollar las ideas de nuestros clientes y diversificar sus mercados para captar nuevos usuarios. Brindamos la oportunidad de crear métodos más eficientes y seguros para incrementar su productividad y competencia en el mercado con bases tecnológicas"/>
     <!-- boostrap -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="./js/bootstrap.min.js"></script>
     <!-- end boostrap -->
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
+    <!-- end ajax -->
+    <!-- translate -->
+    <script src="./js/i18n.js"></script>
+    <script type="text/javascript">
+      // i18n.defaultLocale = "ES";
+      // i18n.locale = "ES";
+      // i18n.currentLocale();
+      $.ajax("./assets/i18n/es.json").done(function(text){
+        //  Parse it
+        // console.log(text)
+        data = text//JSON.parse(text);
+        //  Set the data
+        i18n.translator.add(data);
+        //  Translate away
+        i18n("BUSINESS");          // -> はい
+        i18n.translator.translate("BUSINESS")
+      }) 
+      console.log(i18n.translator.translate("BUSINESS"));
+    </script>
+    <!-- end translate -->
     <title>Token</title>
     <style>
       
@@ -39,25 +58,35 @@
 </head>
 <body>
   <!-- area para modal -->
-  <div class="modal" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">New message</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <p>Modal body text goes here.</p>
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Recipient:</label>
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Send message</button>
         </div>
       </div>
     </div>
   </div>
+
 
     <div class="theme-switch-wrapper">
         <label class="theme-switch" for="checkbox">
@@ -121,7 +150,10 @@
   </div>
     
     </section>
+    <!-- librerias para cookies -->
     <script src="./js/js.cookie.js"></script>
+    <script src="../js/jquery.cookie.js"></script>
+    <!-- end librerias para cookies -->
     <script src="https://kit.fontawesome.com/f90b2e1438.js" crossorigin="anonymous"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script> -->
     <script src="./js/script.js"></script>
