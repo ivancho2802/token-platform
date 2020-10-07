@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Token</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    
+</head>
+<body>
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+    <section id="main">
+        <div id="navegacion">
+            <nav>
+                <div>
+                    <img src="./sources/webToken-11.png" alt="">
+                </div>
+                <div id="enlaces">
+                    <div><a href="index.html">Inicio</a></div>
+                    <div><a href="usuarios.html">Usuarios</a></div>
+                    <div><a href="negocios.html">Negocios</a></div>
+                    <div><a href="blog.html">Blog</a></div>
+                    <div><a href="contacto.html">Contacto</a></div>
+                    <div><a href="iniciarsesion.php">Inicia Sesión</a></div>
+                </div>
+            </nav>
+        </div>
+        <div id="usuarios_init">
+            <div>
+                <h1>Miles de cupones esperan por ti</h1>
+                <p>
+                    Con token puedes disfutar ahorrando, obtén los mejores 
+                    precios escaneando los QR de token en tu establecimiento 
+                    preferido y autorizado la sección pequeña</p>
+            </div>
+            <div>
+                <img id="usr_phone" src="./sources/ce2.png" alt="">
+            </div>
+        </div>
+    </section>
+    
+    <div id="video_container">
+        <video controls autoplay loop muted >
+            <source src="videos/video.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <section id="usr_tkn">
+        <div>
+            <h3>Tu marca favorita tiene un</h3>
+            <h1>TOKEN especial para ti</h1>
+            <p>
+                Tus amigos estarán más cerca, con el chat 
+                token podrás enviar cupones, invitar a 
+                tus amigos y en los momentos más amenos 
+                enviar el regalo indicado con las 
+                giftcards token</p>
+        </div>
+        <img src="./sources/1x/Recurso 1.png" alt="">
+    </section>
+   <section id="usr_marcas">
+    <h1>Marcas que están en TOKEN</h1>
+     <div class="slider-objetivos">
+       <!-- Swiper -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 5.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 3.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 4.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 5.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 3.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 4.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="./sources/1x/Recurso 5.png" alt="">
+            </div>
+            </div>
+          </div>
+          <!-- Add Pagination -->
+          <!-- <div class="swiper-pagination"></div> -->
+        </div>
+   </section>
+   <section id="usr_descarga" >
+ 
+    <div>
+        <h1>Descubre los TOKENS
+            disponibles en las principales
+            plataformas</h1>
+        <div>
+            <img src="./sources/webToken-16.svg" alt="">
+            <img src="./sources/webToken-18.svg" alt="">
+        </div>
+    </div>
+    <img src="./sources/cel2.png" alt="">
+</section>
+
+    <section id="footer">
+        <div>
+            <img src="./sources/webToken-11.png" alt="">
+            <p>Dorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm.</p>
+        </div>
+        <div>
+            <form action="">
+                <label for="">Recibe las ultimas 
+                    actualizaciones</label><br>
+                <input type="text" placeholder="Aquí tu correo">
+                <button><img src="./sources/webToken-13.svg" alt=""></button>
+            </form>
+        </div>
+    </section>
+    <section id="copy"> <p>Copyright ©2020 Todos los derechos reservados</p> </section>
+   
+    <script src="./js/script.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script>
+
+
+        if (screen.width < 1024){
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+            },
+            pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            },
+        });
+        }else if (screen.width < 1280) {
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 3,
+            spaceBetween: 5,
+            autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+            },
+            pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            },
+        });
+        }else{
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 4,
+            spaceBetween: 0,
+            autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+            },
+        });
+        }
+    </script>
+
+<script>
+    const colorSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+    function switchColor(e) {
+        if (e.target.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    }
+    colorSwitch.addEventListener('change', switchColor, false);
+
+</script>
+
+</body>
+</html> 
