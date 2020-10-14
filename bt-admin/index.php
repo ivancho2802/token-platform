@@ -63,26 +63,26 @@
                         }
                         ]
                     }
-                    window.onload = function() {
+                    // window.onload = function() {
 
-                       if (document.getElementById("canvas")) {
-                            var e = document.getElementById("canvas").getContext("2d");
-                            window.myBar = new r.a(e, {
-                                type: "bar",
-                                data: bodyStatics, 
-                                options: {
-                                    responsive: !0,
-                                    legend: {
-                                        position: "top"
-                                    },
-                                    title: {
-                                        display: !1,
-                                        text: "Chart.js Bar Chart"
-                                    }
-                                }
-                            })
-                        }
-                    }
+                    //    if (document.getElementById("canvas")) {
+                    //         var e = document.getElementById("canvas").getContext("2d");
+                    //         window.myBar = new r.a(e, {
+                    //             type: "bar",
+                    //             data: bodyStatics, 
+                    //             options: {
+                    //                 responsive: !0,
+                    //                 legend: {
+                    //                     position: "top"
+                    //                 },
+                    //                 title: {
+                    //                     display: !1,
+                    //                     text: "Chart.js Bar Chart"
+                    //                 }
+                    //             }
+                    //         })
+                    //     }
+                    // }
                 }, 
                 (err) =>{console.log("error solicitud.balancesmsemail "+err)});
 
