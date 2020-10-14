@@ -20,6 +20,9 @@ $("#singing").submit(function(event){
 	}).done(function(response){
 		console.log("response")
 		console.log(response)
+        console.log("------------------------------")
+
+		$.cookie('TOKEN', response.id );
 		$.cookie('userData',JSON.stringify(response.userData));
 		$.cookie('menuData',JSON.stringify(response.menuData));
 		$.cookie('business',JSON.stringify(response.business));
@@ -27,7 +30,7 @@ $("#singing").submit(function(event){
 		// setCookie("menuData",JSON.stringify(response.menuData),2)
     	// this.appComponent.suscribeSocket(resp.userData._id)
 		$("#server-results").html(response.msg);
-		location.href ="./bt-admin/index.php";
+		location.href ="./bt-admin/index.html";
 	})
 	.error(function(err){
 

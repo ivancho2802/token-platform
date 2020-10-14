@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +35,21 @@
       // i18n.defaultLocale = "ES";
       // i18n.locale = "ES";
       // i18n.currentLocale();
+
+      //  delete credenciales
+      $( document ).ready(function() {
+          $.cookie('TOKEN',null);
+          $.cookie('menuData',null);
+          $.cookie('userData',null);
+          $.cookie('businessData',null);
+          $.cookie('business',null);
+          $.cookie('id_user',null);
+          $.cookie('profile',null);
+          $.cookie('balance',null);
+
+          $.removeCookie('TOKEN')
+      })
+
       $.ajax("./assets/i18n/es.json").done(function(text){
         //  Parse it
         // console.log(text)
