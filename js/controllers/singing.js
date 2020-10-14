@@ -30,7 +30,7 @@ $("#singing").submit(function(event){
 		// setCookie("menuData",JSON.stringify(response.menuData),2)
     	// this.appComponent.suscribeSocket(resp.userData._id)
 		$("#server-results").html(response.msg);
-		location.href ="./bt-admin/index.php";
+		location.href ="./bt-admin/index.html";
 	})
 	.error(function(err){
 
