@@ -117,7 +117,7 @@
                     <img src="./sources/webToken-11.png" alt="">
                 </div>
                 <div id="enlaces">
-                    <div><a href="index.html">Inicio</a></div>
+                    <div><a href="index.php">Inicio</a></div>
                     <div><a href="usuarios.html">Usuarios</a></div>
                     <div><a href="negocios.html">Negocios</a></div>
                     <div><a href="blog.html">Blog</a></div>
@@ -127,39 +127,39 @@
             </nav>
         </div>
         <img class="wave" src="sources/wave.png">
-	<div class="container">
-		<div class="img">
-			<img src="sources/bg.svg">
-		</div>
-		<div class="login-content">
-			<form action="#" method="post" id="singing">
-				  <img src="sources/avatar.svg">
-				  <h2 class="title">Bienvenidos</h2>
+  <div class="container">
+    <div class="img">
+      <img src="sources/bg.svg">
+    </div>
+    <div class="login-content">
+      <form action="#" method="post" id="singing">
+          <img src="sources/avatar.svg">
+          <h2 class="title">Bienvenidos</h2>
 
           <div id="alert" class="alert alert-warning alert-dismissible  fade in" role="alert" data-dismiss="alert">
             <span id="server-errors"></span>
           </div>
-       		<div class="input-div one">
-       		   <div class="i">
-       		   		<i class="fas fa-user"></i>
-       		   </div>
-       		   <div class="div">
-       		   		<h5>Usuario</h5>
-       		   		<input type="text" name="username" class="input" autocomplete >
-       		   </div>
-       		</div>
-       		<div class="input-div pass">
-       		   <div class="i"> 
-       		    	<i class="fas fa-lock"></i>
-       		   </div>
-       		   <div class="div">
-       		    	<h5>Contraseña</h5>
-       		    	<input type="password" name="password" class="input" autocomplete="new-password">
-        	   </div>
-        	</div>
+          <div class="input-div one">
+             <div class="i">
+                <i class="fas fa-user"></i>
+             </div>
+             <div class="div">
+                <h5>Usuario</h5>
+                <input type="text" name="username" class="input" autocomplete >
+             </div>
+          </div>
+          <div class="input-div pass">
+             <div class="i"> 
+                <i class="fas fa-lock"></i>
+             </div>
+             <div class="div">
+                <h5>Contraseña</h5>
+                <input type="password" name="password" class="input" autocomplete="new-password">
+             </div>
+          </div>
           <div id="server-results"><!-- For server results --></div>
-        	<a href="#">Olvidé mi contraseña</a>
-        	<input type="submit" name="submit" class="btn" value="Login">
+          <a href="#">Olvidé mi contraseña</a>
+          <input type="submit" name="submit" class="btn" value="Login">
       </form>
     </div>
   </div>

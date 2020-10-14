@@ -8582,23 +8582,23 @@ function(e, t, n) {
             }]
         };
     window.onload = function() {
-        // if (document.getElementById("canvas")) {
-        //     var e = document.getElementById("canvas").getContext("2d");
-        //     window.myBar = new r.a(e, {
-        //         type: "bar",
-        //         data: l, 
-        //         options: {
-        //             responsive: !0,
-        //             legend: {
-        //                 position: "top"
-        //             },
-        //             title: {
-        //                 display: !1,
-        //                 text: "Chart.js Bar Chart"
-        //             }
-        //         }
-        //     })
-        // }
+        if (document.getElementById("canvas")) {
+            var e = document.getElementById("canvas").getContext("2d");
+            window.myBar = new r.a(e, {
+                type: "bar",
+                data: l, 
+                options: {
+                    responsive: !0,
+                    legend: {
+                        position: "top"
+                    },
+                    title: {
+                        display: !1,
+                        text: "Chart.js Bar Chart"
+                    }
+                }
+            })
+        }
         if (document.getElementById("chart-area")) {
             var t = document.getElementById("chart-area").getContext("2d");
             window.myPie = new r.a(t, s)

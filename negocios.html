@@ -22,7 +22,7 @@
                     <img src="./sources/webToken-11.png" alt="">
                 </div>
                 <div id="enlaces">
-                    <div><a href="index.html">Inicio</a></div>
+                    <div><a href="index.php">Inicio</a></div>
                     <div><a href="usuarios.html">Usuarios</a></div>
                     <div><a href="negocios.html">Negocios</a></div>
                     <div><a href="blog.html">Blog</a></div>
