@@ -41,41 +41,47 @@ function getTableUsers (followersData, cities){
 
   var userArray = followersData ? followersData.seguidores : []
 
-  var eltr = document.createElement("tr"), edad, currentdateyear = new Date().getFullYear(), genere = {male : "Hombre", female: "Mujer"};
+  var container="" , eltr , edad, currentdateyear = new Date().getFullYear(), genere = {male : "Hombre", female: "Mujer"}, genereaux, cityaux;
   if(!userArray.length || !cities.length)
-    return '<td><div class="text-muted opacity-6">No tiene Users</div></td>';
-
+    return '<div class="d-block text-center card-footer">No se encontraron Usuarios</div>';
   for (var i = 0; i < userArray.length; i++) {
     if(userArray[i].fk_cliente){
-      edad = currentdateyear - new Date(userArray[i].fk_cliente.fecha_nac).getFullYear()
-      eltr.innerHTML += `
-      <td class="text-center text-muted">${i}</td>
-      <td>
-          <div class="widget-content p-0">
-              <div class="widget-content-wrapper">
-                  <div class="widget-content-left mr-3">
-                      <div class="widget-content-left">
-                          <img width="40" class="rounded-circle" src="${userArray[i].fk_cliente.image}" alt="">
-                      </div>
-                  </div>
-                  <div class="widget-content-left flex2">
-                      <div class="widget-heading">${userArray[i].fk_cliente.name} ${userArray[i].fk_cliente.lastname}</div>
-                      <div class="widget-subheading opacity-7">${userArray[i].fk_cliente.email}</div>
+      edad = new Date(userArray[i].fk_cliente.fecha_nac).getFullYear() ? currentdateyear - new Date(userArray[i].fk_cliente.fecha_nac).getFullYear() : "No Data";
+      genereaux = genere[userArray[i].fk_cliente.genero] ? genere[userArray[i].fk_cliente.genero] : "No Data";
+      cityaux = userArray[i].fk_cliente.address && cities.findIndex(city => city._id === userArray[i].fk_cliente.address) !== -1 ? cities[cities.findIndex(city => city._id === userArray[i].fk_cliente.address)].city +" - "+ cities[cities.findIndex(city => city._id === userArray[i].fk_cliente.address)].country : "No Data";
+      eltr = '';
+      eltr = `
+      <tr>
+        <td class="text-center text-muted">${i}</td>
+        <td>
+          <div class="widget-content-wrapper">
+            <div class="widget-content p-0">
+              <div class="widget-content-left mr-3">
+                  <div class="widget-content-left">
+                      <img width="40" class="rounded-circle" src="${userArray[i].fk_cliente.image}" alt="">
                   </div>
               </div>
+              <div class="widget-content-left flex2">
+                  <div class="widget-heading">${userArray[i].fk_cliente.name} ${userArray[i].fk_cliente.lastname}</div>
+                  <div class="widget-subheading opacity-7">${userArray[i].fk_cliente.email}</div>
+              </div>
+            </div>
           </div>
-      </td>
-      <td class="text-center">${cities[userArray[i].fk_cliente.address]}</td>
-      <td class="text-center">${genere[userArray[i].fk_cliente.genero]}</td>
-      <td class="text-center">${edad}</td>
-      <td class="text-center">
-          <button type="button" id="PopoverCustomT-2" class="btn btn-primary btn-sm">Details</button>
-      </td>  
+        </td>
+        <td class="text-center">${cityaux}</td>
+        <td class="text-center">${genereaux}</td>
+        <td class="text-center">${edad}</td>
+        <td class="text-center">
+            <button type="button" id="PopoverCustomT-2" class="btn btn-primary btn-sm">Details</button>
+        </td>
+      </tr>
       `;
+      container += eltr
     }
   }
-  return eltr;
+  return container;
 }
+
 function getTableBranchs (branchsArray){
 
   var eltr = document.createElement("tr");
@@ -120,7 +126,42 @@ function groupByWeek(statics){
 
   }, {});
 
-  console.log(groups);
-  return groups
+  var formatgroups = [], key, value
+
+  for (var i = 0; i < Object.keys(groups).length; i++) {
+    key = Object.keys(groups)[i];
+    value = Object.values(groups)[i];
+    formatgroups.push({week: key, data: value})
+  }
+  // console.log(formatgroups);
+  return formatgroups.reverse()
 }
+
+var DECIMAL_SEPARATOR=".";
+var GROUP_SEPARATOR=",";
+  
+function  unFormat(val) {
+  console.log("unFormat")
+  console.log(val)
+    if (!val) {
+        return;
+    }
+    val = val.replace(/^0+/, '');
+
+    if (this.GROUP_SEPARATOR === ',') {
+        return val.replace(/,/g, '');
+    } else {
+        return val.replace(/\./g, '');
+    }
+};
+
+function format(valString) {
+  if (!valString) {
+      return '';
+  }
+  let val = valString.toString();
+  const parts = this.unFormat(val).split(this.DECIMAL_SEPARATOR);
+  return parts[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.GROUP_SEPARATOR) + (!parts[1] ? '' : this.DECIMAL_SEPARATOR + parts[1]);
+};
+
   

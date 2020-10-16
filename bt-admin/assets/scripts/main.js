@@ -8582,8 +8582,8 @@ function(e, t, n) {
             }]
         };
     window.onload = function() {
-        if (document.getElementById("canvas")) {
-            var e = document.getElementById("canvas").getContext("2d");
+        if (document.getElementById("canvasdemo")) {
+            var e = document.getElementById("canvasdemo").getContext("2d");
             window.myBar = new r.a(e, {
                 type: "bar",
                 data: l, 

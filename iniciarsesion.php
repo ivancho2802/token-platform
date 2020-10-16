@@ -167,7 +167,7 @@
     </section>
     <!-- librerias para cookies -->
     <script src="./js/js.cookie.js"></script>
-    <script src="../js/jquery.cookie.js"></script>
+    <script src="./js/jquery.cookie.js"></script>
     <!-- end librerias para cookies -->
     <script src="https://kit.fontawesome.com/f90b2e1438.js" crossorigin="anonymous"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script> -->
