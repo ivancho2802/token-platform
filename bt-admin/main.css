@@ -10081,7 +10081,7 @@ button.bg-alternate:focus {
 }
 
 .text-white {
-	color: #fff !important
+	color: rgb(255, 255, 255) !important
 }
 
 .text-primary {
@@ -10368,7 +10368,8 @@ button,
 .app-header.header-text-light .app-header-right>.header-btn-lg .widget-content-left .btn-group>.btn,
 .app-header.header-text-light .app-header-right>.header-btn-lg .widget-heading,
 .app-header.header-text-light .app-header-right>.header-btn-lg .widget-subheading {
-	color: rgba(255, 255, 255, 0.8)
+	color: rgba(0, 0, 0, 0.8)
+
 }
 
 .app-header.header-text-light .app-header-right>.header-btn-lg .header-user-info>.btn-shadow {
@@ -11800,7 +11801,7 @@ button,
 }
 
 .bg-arielle-smile {
-	background-image: radial-gradient(circle 248px at center, #16d9e3 0%, #30c7ec 47%, #46aef7 100%) !important
+	background-image: linear-gradient(to right, #434343 0%, black 100%) !important
 }
 
 .bg-plum-plate {
