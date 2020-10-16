@@ -85,7 +85,8 @@ e.exports=function(e){"use strict";function t(e,t,n){return t in e?Object.define
  * FullCalendar v3.10.0
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
- */var i;
+ */
+ var i;
 "undefined" != typeof self && self, i = function(e, t) {
     return function(e) {
         var t = {};
@@ -8343,6 +8344,7 @@ function(e, t, n) {
         })
     }).call(this, n(1))
 },
+//esta es
 function(e, t, n) {
     "use strict";
     n.r(t);
@@ -8580,8 +8582,8 @@ function(e, t, n) {
             }]
         };
     window.onload = function() {
-        if (document.getElementById("canvas")) {
-            var e = document.getElementById("canvas").getContext("2d");
+        if (document.getElementById("canvasdemo")) {
+            var e = document.getElementById("canvasdemo").getContext("2d");
             window.myBar = new r.a(e, {
                 type: "bar",
                 data: l, 
