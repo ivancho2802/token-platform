@@ -11,6 +11,19 @@
     <meta name="msapplication-tap-highlight" content="no"> 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <link href="./main.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/favicon/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="../images/favicon/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/favicon/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="../images/favicon/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="../images/favicon/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="../images/favicon/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/favicon/android-icon-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="../images/favicon/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon/favicon-16x16.png"/>
     <!-- librerias para cookies -->
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
@@ -27,130 +40,150 @@
             */
             if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
                 return;
-            var followersData, balancesmsemailData, citiesData
+            var followersData, balancesmsemailData, citiesData, usersData
             //fallowers
             companier.followers(JSON.parse($.cookie("userData"))._id)
             .then((response)=> {
+                // console.log(response)
                 followersData = response; 
                 document.getElementById("follower").innerHTML = followersData.numseguidores;
-
                 //cities
                 companier.cities()
                 .then((response)=> {
                     citiesData = response; 
-                    console.log(followersData)
                     document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
                 }, 
                 (err) =>{console.log("error solicitud.balancesmsemail "+err)});
             }, 
             (err) =>{console.log("error solicitud.followers "+err)});
+            //clientes 
+            companier.clients(JSON.parse($.cookie("userData"))._id)
+            .then((response)=> {
+                usersData = response; 
+                document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
+
+                //cities
+                companier.cities()
+                .then((citiesData2)=> {
+                    document.getElementById("userActivos").innerHTML = getTableUsersAct(usersData, citiesData2)
+                }, 
+                (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+            }, 
+            (err) =>{console.log("error solicitud.followers "+err)});
+
             //balance sms email
             companier.balancesmsemail(JSON.parse($.cookie("userData"))._id)
             .then((response)=> {
-                console.log(response)
                 balancesmsemailData = response; 
-                document.getElementById("numSms").innerHTML = balancesmsemailData.numSms;
-                document.getElementById("numEmail").innerHTML = balancesmsemailData.numEmail;
-                document.getElementById("saldoTotal").innerHTML = balancesmsemailData.saldoTotal;
+                document.getElementById("numSms").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numSms: 0;
+                document.getElementById("numEmail").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numEmail: 0;
+                document.getElementById("saldoTotal").innerHTML = acumElementOfArrayObject(balancesmsemailData.billpayed, 'saldopay', true);
             }, 
             (err) =>{console.log("error solicitud.balancesmsemail "+err)});
             
             //statics
             companier.staticsHome()
             .then((response)=> { 
-                    var cuponsClienteActivo=[], cuponsClienteScan=[], cuponsClienteVencido=[], labelsStatics=[], semanaMayor, dataCuponsClienteScan=[], dataCuponsClienteVencido=[], dataCuponsClienteActivo=[]
+                // console.log(response)
+                var cuponsClienteActivo=[], cuponsClienteScan=[], cuponsClienteVencido=[], labelsStatics=[], semanaMayor, dataCuponsClienteScan=[], dataCuponsClienteVencido=[], dataCuponsClienteActivo=[];
 
-                    if(response.acumCuponClientActivos.length) 
-                       cuponsClienteActivo = groupByWeek(response.acumCuponClientActivos)
-                    if(response.acumCuponClientActivosVencido.length) 
-                       cuponsClienteVencido = groupByWeek(response.acumCuponClientActivosVencido)
-                    if(response.acumCuponClientScan.length) 
-                       cuponsClienteScan = groupByWeek(response.acumCuponClientScan)
+                var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
 
-                    var auxScan = cuponsClienteScan.length ? cuponsClienteScan[cuponsClienteScan.length-1].week:'',
-                    auxVenc = cuponsClienteVencido.length ? cuponsClienteVencido[cuponsClienteVencido.length-1].week : '',
-                    auxAct = cuponsClienteActivo.length ? cuponsClienteActivo[cuponsClienteActivo.length-1].week:'', 
-                    dates = []
+                document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
 
-                    if(auxScan)dates.push( auxScan.split('-').pop()); 
-                    if(auxAct)dates.push( auxAct.split('-').pop()); 
-                    if(auxVenc)dates.push( auxVenc.split('-').pop());  
+                if(response.acumCuponClientActivos.length) 
+                   cuponsClienteActivo = groupByWeek(response.acumCuponClientActivos)
+                if(response.acumCuponClientActivosVencido.length) 
+                   cuponsClienteVencido = groupByWeek(response.acumCuponClientActivosVencido)
+                if(response.acumCuponClientScan.length) 
+                   cuponsClienteScan = groupByWeek(response.acumCuponClientScan)
 
-                    semanaMayor = Math.max.apply(null, dates);
-                    semanaMenor = Math.min.apply(null, dates);
+                var auxScan = cuponsClienteScan.length ? cuponsClienteScan[cuponsClienteScan.length-1].week:'',
+                auxVenc = cuponsClienteVencido.length ? cuponsClienteVencido[cuponsClienteVencido.length-1].week : '',
+                auxAct = cuponsClienteActivo.length ? cuponsClienteActivo[cuponsClienteActivo.length-1].week:'', 
+                dates = []
 
-                    // var formatsemanaMayor = '2020'
-                    var j = 0
-                    for (var i = semanaMenor; i < semanaMayor+1; i++) {
-                        // console.log("Semana "+i );
+                if(auxScan)dates.push( auxScan.split('-').pop()); 
+                if(auxAct)dates.push( auxAct.split('-').pop()); 
+                if(auxVenc)dates.push( auxVenc.split('-').pop());  
 
-                        labelsStatics.push("Semana "+i);
+                semanaMayor = Math.max.apply(null, dates);
+                semanaMenor = Math.min.apply(null, dates);
 
-                        if(cuponsClienteActivo.length)
-                        cuponsClienteActivo.forEach(element => {
-                            if(element.week.split('-').pop() == i)
-                                dataCuponsClienteActivo.push(element.data.length)
-                        });
-                        if(!dataCuponsClienteActivo[j])
-                            dataCuponsClienteActivo.push(0)
+                // var formatsemanaMayor = '2020'
+                var j = 0
+                for (var i = semanaMenor; i < semanaMayor+1; i++) {
+                    // console.log("Semana "+i );
 
-                        if(cuponsClienteScan.length)
-                        cuponsClienteScan.forEach(element => {
-                            if(element.week.split('-').pop() == i)
-                                dataCuponsClienteScan.push(element.data.length)
-                        });
-                        if(!dataCuponsClienteScan[j])
-                            dataCuponsClienteScan.push(0)
+                    labelsStatics.push("Semana "+i);
 
-                        if(cuponsClienteVencido.length)
-                        cuponsClienteVencido.forEach(element => {
-                            if(element.week.split('-').pop() == i)
-                                dataCuponsClienteVencido.push(element.data.length)
-                        });
-                        if(!dataCuponsClienteVencido[j])
-                            dataCuponsClienteVencido.push(0)
-                        j++;
-                    }
+                    if(cuponsClienteActivo.length)
+                    cuponsClienteActivo.forEach(element => {
+                        if(element.week.split('-').pop() == i)
+                            dataCuponsClienteActivo.push(element.data.length)
+                    });
+                    if(!dataCuponsClienteActivo[j])
+                        dataCuponsClienteActivo.push(0)
 
-                    var bodyStatics = {
-                        labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
-                        datasets: [{//staticsHomeData
-                            label: "Redimidos",
-                            backgroundColor: "green",//window.chartColors.red,
-                            data: dataCuponsClienteScan//[6, 0, 0]//
-                        }, {
-                            label: "Activos",
-                            backgroundColor: "blue",//window.chartColors.blue,
-                            data: dataCuponsClienteActivo//[4, 5, 3] // 
-                        } , {
-                            label: "Vencidos",
-                            backgroundColor: "red",//window.chartColors.blue,
-                            data: dataCuponsClienteVencido//[4, 5, 3]//
-                        } 
-                        ]
-                    }
-                    window.onload = function() {
+                    if(cuponsClienteScan.length)
+                    cuponsClienteScan.forEach(element => {
+                        if(element.week.split('-').pop() == i)
+                            dataCuponsClienteScan.push(element.data.length)
+                    });
+                    if(!dataCuponsClienteScan[j])
+                        dataCuponsClienteScan.push(0)
 
-                       if (document.getElementById("canvas")) {
-                            var e = document.getElementById("canvas").getContext("2d");
-                            window.myBar = new Chart(e, {
-                                type: "bar",
-                                data: bodyStatics, 
-                                options: {
-                                    responsive: !0,
-                                    legend: {
-                                        position: "top"
-                                    },
-                                    title: {
-                                        display: !1,
-                                        text: "Chart.js Bar Chart"
-                                    }
+                    if(cuponsClienteVencido.length)
+                    cuponsClienteVencido.forEach(element => {
+                        if(element.week.split('-').pop() == i)
+                            dataCuponsClienteVencido.push(element.data.length)
+                    });
+                    if(!dataCuponsClienteVencido[j])
+                        dataCuponsClienteVencido.push(0)
+                    j++;
+                }
+
+                var bodyStatics = {
+                    labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+                    datasets: [{//staticsHomeData
+                        label: "Redimidos",
+                        backgroundColor: "green",//window.chartColors.red,
+                        data: dataCuponsClienteScan//[6, 0, 0]//
+                    }, {
+                        label: "Activos",
+                        backgroundColor: "blue",//window.chartColors.blue,
+                        data: dataCuponsClienteActivo//[4, 5, 3] // 
+                    } , {
+                        label: "Vencidos",
+                        backgroundColor: "red",//window.chartColors.blue,
+                        data: dataCuponsClienteVencido//[4, 5, 3]//
+                    } 
+                    ]
+                }
+                window.onload = function() {
+
+                   if (document.getElementById("canvas")) {
+                        var e = document.getElementById("canvas").getContext("2d");
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Chart.js Bar Chart"
                                 }
-                            })
-                        }
+                            }
+                        })
                     }
-                }, 
-                (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+                }
+                //cupones vendidos o redimidos
+                document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
+            }, 
+            (err) =>{console.log("error solicitud.balancesmsemail "+err)});
 
             document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
             document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
@@ -194,7 +227,8 @@
                         </span>
                     </button>
                 </span>
-            </div>    <div class="app-header__content">
+            </div>    
+            <div class="app-header__content">
                 <div class="app-header-left">
                     <div class="search-wrapper">
                         <div class="input-holder">
@@ -744,7 +778,7 @@
                                 <div class="card mb-3 widget-content bg-arielle-smile">
                                     <div class="widget-content-wrapper text-white">
                                         <div class="widget-content-left">
-                                            <div class="widget-heading">Saldo total</div>
+                                            <div class="widget-heading">Saldo total para recargar</div>
                                         </div>
                                         <div class="widget-content-right">
                                             <div class="widget-numbers text-white">$<span id="saldoTotal">0</span></div>
@@ -753,31 +787,32 @@
                                 </div>
                             </div>
 
-                            <form>
-                                <script src='https://checkout.epayco.co/checkout.js'
-                                    data-epayco-key='a5f59b88a7f37d382efe3daa643f7136'
-                                    class='epayco-button'
-                                    data-epayco-amount='100000'
-                                    data-epayco-tax='0'
-                                    data-epayco-tax-base='100000'
-                                    data-epayco-name='Cuneta Token App'
-                                    data-epayco-description='Cuneta Token App'
-                                    data-epayco-currency='cop'    
-                                    data-epayco-country='CO'
-                                    data-epayco-test='true'
-                                    data-epayco-external='false'
-                                    data-epayco-response=''  
-                                    data-epayco-confirmation=''
-                                    data-epayco-button='https://369969691f476073508a-60bf0867add971908d4f26a64519c2aa.ssl.cf5.rackcdn.com/btns/btn6.png'>
-                                </script>
-                            </form>
+                            <div class="col-md-6 col-xl-4">
+                                <form>
+                                    <script src='https://checkout.epayco.co/checkout.js'
+                                        data-epayco-key='a5f59b88a7f37d382efe3daa643f7136'
+                                        class='epayco-button'
+                                        data-epayco-amount='100000'
+                                        data-epayco-tax='0'
+                                        data-epayco-tax-base='100000'
+                                        data-epayco-name='Cuneta Token App'
+                                        data-epayco-description='Cuneta Token App'
+                                        data-epayco-currency='cop'    
+                                        data-epayco-country='CO'
+                                        data-epayco-test='true'
+                                        data-epayco-external='false'
+                                        data-epayco-response=''  
+                                        data-epayco-confirmation=''
+                                        data-epayco-button='https://369969691f476073508a-60bf0867add971908d4f26a64519c2aa.ssl.cf5.rackcdn.com/btns/btn6.png'>
+                                    </script>
+                                </form>
+                            </div>
                             
-
                             <div class="d-xl-none d-lg-block col-md-6 col-xl-4">
                                 <div class="card mb-3 widget-content bg-premium-dark">
                                     <div class="widget-content-wrapper text-white">
                                         <div class="widget-content-left">
-                                            <div class="widget-heading">Products Sold</div>
+                                            <div class="widget-heading">Productos Vnedidos</div>
                                             <div class="widget-subheading">Revenue streams</div>
                                         </div>
                                         <div class="widget-content-right">
@@ -826,8 +861,9 @@
                                             <tr>
                                                 <th class="text-center">#</th>
                                                 <th>Nombre</th>
-                                                <th class="text-center">Ultima Sesion</th>
-                                                <th class="text-center">Facturado</th>
+                                                <th class="text-center">Ciudad</th>
+                                                <th class="text-center">Genero</th>
+                                                <th class="text-center">Edad</th>
                                             </tr>
                                             </thead>
                                             <tbody id="userActivos">
@@ -868,26 +904,27 @@
                                     <div class="widget-content-outer">
                                         <div class="widget-content-wrapper">
                                             <div class="widget-content-left">
-                                                <div class="widget-heading">Total Orders</div>
-                                                <div class="widget-subheading">Last year expenses</div>
+                                                <div class="widget-heading">Total Cupones Vistos</div>
+                                                <div class="widget-subheading">hasta la fecha</div>
                                             </div>
                                             <div class="widget-content-right">
-                                                <div class="widget-numbers text-success">1896</div>
+                                                <div class="widget-numbers text-success"><span id="cantCuponsSee">0</span></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-6 col-xl-4">
                                 <div class="card mb-3 widget-content">
                                     <div class="widget-content-outer">
                                         <div class="widget-content-wrapper">
                                             <div class="widget-content-left">
-                                                <div class="widget-heading">Products Sold</div>
-                                                <div class="widget-subheading">Revenue streams</div>
+                                                <div class="widget-heading">Cupones Redimidos</div>
+                                                <div class="widget-subheading">Monto Facturado</div>
                                             </div>
                                             <div class="widget-content-right">
-                                                <div class="widget-numbers text-warning">$3M</div>
+                                                <div class="widget-numbers text-warning">$<span id="productsSold">0</span></div>
                                             </div>
                                         </div>
                                     </div>
@@ -899,10 +936,10 @@
                                         <div class="widget-content-wrapper">
                                             <div class="widget-content-left">
                                                 <div class="widget-heading">Followers</div>
-                                                <div class="widget-subheading">People Interested</div>
+                                                <div class="widget-subheading">Personas Interesadas</div>
                                             </div>
                                             <div class="widget-content-right">
-                                                <div class="widget-numbers text-danger">45,9%</div>
+                                                <div class="widget-numbers text-danger"><span id="percentFollowers">0</span> %</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1004,6 +1041,7 @@
                 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
         </div>
     </div>
+    <script type="text/javascript" src="./assets/scripts/main.js"></script>
     <script type="text/javascript" src="../js/script.js"></script>
 </body>
 </html>

@@ -30,45 +30,46 @@
             var followersData, citiesData, clientsData, cuponeclienetscanData, branchsData
             //fallowers
             companier.followers(JSON.parse($.cookie("userData"))._id)
-            .then((response)=> { followersData = response }, 
-                (err) =>{console.log("error companier.followers "+err)}); 
+            .then((response)=> { 
+                followersData = response 
+                document.getElementById("follower").innerHTML = followersData ? followersData.numseguidores : 0;
+                document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
+            }, 
+            (err) =>{console.log("error companier.followers "+err)}); 
             //cities
             companier.cities()
             .then((response)=> { citiesData = response; }, 
                 (err) =>{console.log("error companier.cities "+err)});
             //cuponclinete redimidos mayot costo
             companier.cuponeclienetscan()
-            .then((response)=> { cuponeclienetscanData = response; }, 
-                (err) =>{console.log("error companier.cuponeclienetscan "+err)});
+            .then((response)=> { 
+                cuponeclienetscanData = response;
+                document.getElementById("numUserRedim").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.length ? (cuponeclienetscanData.userredimieron.length-1): 0: 0;
+                document.getElementById("numUserMayorCosto").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.usermayorgasto.length ? (cuponeclienetscanData.usermayorgasto.length-1): 0: 0;
+
+            }, 
+            (err) =>{console.log("error companier.cuponeclienetscan "+err)});
             // clientes
             companier.clients()
-            .then((response)=> { clientsData = response; }, 
-                (err) =>{console.log("error companier.clients "+err)});
+            .then((response)=> { 
+                clientsData = response; 
+                document.getElementById("numUserClients").innerHTML = clientsData ? clientsData.myCount.length ? (clientsData.myCount.length-1): 0: 0;
+            }, 
+            (err) =>{console.log("error companier.clients "+err)});
             // sucursales
             companier.branchs()
-            .then((response)=> { branchsData = response; }, 
-                (err) =>{console.log("error companier.branchs "+err)});
+            .then((response)=> { 
+                document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
+                branchsData = response; 
+            }, 
+            (err) =>{console.log("error companier.branchs "+err)});
 
             document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
             document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
             document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
-            /**
-            *   numeros de seguidores correo y demas
-            */
-            document.getElementById("follower").innerHTML = followersData ? followersData.numseguidores : 0;
             // document.getElementById("numSms").innerHTML = balancesmsemailData ? balancesmsemailData.numSms : 0;
             // document.getElementById("numEmail").innerHTML = balancesmsemailData ? balancesmsemailData.numEmail : 0;
             // document.getElementById("saldoTotal").innerHTML = balancesmsemailData ? balancesmsemailData.saldoTotal : 0;
-
-            var element = document.createElement("div");
-
-            document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
-            document.getElementById("numUserRedim").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.length ? (cuponeclienetscanData.userredimieron.length-1): 0: 0;
-            document.getElementById("numUserMayorCosto").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.usermayorgasto.length ? (cuponeclienetscanData.usermayorgasto.length-1): 0: 0;
-            document.getElementById("numUserClients").innerHTML = clientsData ? clientsData.myCount.length ? (clientsData.myCount.length-1): 0: 0;
-            document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
-
-             
         })
     </script>
     <link href="./main.css" rel="stylesheet">
@@ -557,7 +558,7 @@
                                     </div>
                                 </div>
                                 <div class="page-title-actions">
-                                    <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
+                                    <button type="button" data-toggle="tooltip" title="Sucursal por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
                                         <i class="fa fa-star text-white "></i>
                                     </button>
                                     <div class="d-inline-block dropdown">
