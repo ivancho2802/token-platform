@@ -238,15 +238,15 @@ function groupByWeekStatics(acumCuponClientActivos, acumCuponClientActivosVencid
       labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
       datasets: [{//staticsHomeData
           label: "Redimidos",
-          backgroundColor: "green",//window.chartColors.red,
+          backgroundColor: "#3ac47d",//window.chartColors.red, 
           data: dataCuponsClienteScan//[6, 0, 0]//
       }, {
           label: "Activos",
-          backgroundColor: "blue",//window.chartColors.blue,
+          backgroundColor: "#16aaff",//window.chartColors.blue,
           data: dataCuponsClienteActivo//[4, 5, 3] // 
       } , {
           label: "Vencidos",
-          backgroundColor: "red",//window.chartColors.blue,
+          backgroundColor: "#d92550",//window.chartColors.blue,
           data: dataCuponsClienteVencido//[4, 5, 3]//
       } 
       ]
@@ -369,15 +369,15 @@ function groupByAdressStatics(acumCuponClientActivos, acumCuponClientActivosVenc
       labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
       datasets: [{//staticsHomeData
           label: "Redimidos",
-          backgroundColor: "green",//window.chartColors.red,
+          backgroundColor: "#3ac47d",//window.chartColors.red,
           data: dataCuponsClienteScan//[6, 0, 0]//
       }, {
           label: "Activos",
-          backgroundColor: "blue",//window.chartColors.blue,
+          backgroundColor: "#16aaff",//window.chartColors.blue,
           data: dataCuponsClienteActivo//[4, 5, 3] // 
       } , {
           label: "Vencidos",
-          backgroundColor: "red",//window.chartColors.blue,
+          backgroundColor: "#d92550",//window.chartColors.blue,
           data: dataCuponsClienteVencido//[4, 5, 3]//
       } 
       ]
