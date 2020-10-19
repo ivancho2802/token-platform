@@ -6,21 +6,61 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Language" content="en">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Form Layouts - Build whatever layout you need with our Architect framework.</title>
+    <title>Dashboard Token</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Build whatever layout you need with our Architect framework.">
     <meta name="msapplication-tap-highlight" content="no">
-    <!--
-    =========================================================
-    * ArchitectUI HTML Theme Dashboard - v1.0.0
-    =========================================================
-    * Product Page: https://dashboardpack.com
-    * Copyright 2019 DashboardPack (https://dashboardpack.com)
-    * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
-    =========================================================
-    * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-    -->
-<link href="./main.css" rel="stylesheet"></head>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href="./main.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/favicon/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="../images/favicon/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/favicon/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="../images/favicon/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="../images/favicon/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="../images/favicon/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/favicon/android-icon-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="../images/favicon/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon/favicon-16x16.png"/>
+    <!-- librerias genericas -->
+    <script src="../js/js.cookie.js"></script>
+    <script src="../js/jquery.cookie.js"></script>
+    <script src="../js/controllers/bell.js"></script>
+
+    <script type="text/javascript" src="../js/moment.min.js"></script>
+    <script type="text/JavaScript">
+
+        $( document ).ready(function() {
+
+            if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
+                return;
+
+            var bellData=[]
+
+            document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
+            document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
+            document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
+
+            bellier.bell()//JSON.parse($.cookie("userData"))._id
+            .then((response)=> {
+                // console.log(response)
+                bellData = response; 
+                document.getElementById("bells").innerHTML = bellData.numseguidores;
+                //cities
+                // companier.cities()
+                // .then((response)=> {
+                //     citiesData = response; 
+                //     document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
+                // }, 
+                // (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+            }, 
+            (err) =>{console.log("error solicitud.followers "+err)});
+        })
+    </script>
+</head>
 <body>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
@@ -53,7 +93,8 @@
                         </span>
                     </button>
                 </span>
-            </div>    <div class="app-header__content">
+            </div>    
+            <div class="app-header__content">
                 <div class="app-header-left">
                     <div class="search-wrapper">
                         <div class="input-holder">
@@ -66,19 +107,19 @@
                         <li class="nav-item">
                             <a href="javascript:void(0);" class="nav-link">
                                 <i class="nav-link-icon fa fa-database"> </i>
-                                Statistics
+                                Estadísticas
                             </a>
                         </li>
                         <li class="btn-group nav-item">
                             <a href="javascript:void(0);" class="nav-link">
                                 <i class="nav-link-icon fa fa-edit"></i>
-                                Projects
+                                Campañas
                             </a>
                         </li>
                         <li class="dropdown nav-item">
                             <a href="javascript:void(0);" class="nav-link">
                                 <i class="nav-link-icon fa fa-cog"></i>
-                                Settings
+                                Configuraciones
                             </a>
                         </li>
                     </ul>        
@@ -90,25 +131,23 @@
                                 <div class="widget-content-left">
                                     <div class="btn-group">
                                         <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
-                                            <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                            <img width="42" class="rounded-circle" id="avatar" src="assets/images/avatars/1.jpg" alt="">
                                             <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                         </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <button type="button" tabindex="0" class="dropdown-item">User Account</button>
-                                            <button type="button" tabindex="0" class="dropdown-item">Settings</button>
-                                            <h6 tabindex="-1" class="dropdown-header">Header</h6>
-                                            <button type="button" tabindex="0" class="dropdown-item">Actions</button>
+                                            <button type="button" tabindex="0" class="dropdown-item">Perfil</button>
+                                            <button type="button" tabindex="0" class="dropdown-item">Configuración</button>
                                             <div tabindex="-1" class="dropdown-divider"></div>
-                                            <button type="button" tabindex="0" class="dropdown-item">Dividers</button>
+                                            <a href="../iniciarsesion.php" class="nav-link dropdown-item">Salir</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="widget-content-left  ml-3 header-user-info">
-                                    <div class="widget-heading">
-                                        Alina Mclourd
+                                    <div class="widget-heading" id="nameBussine">
+                                        <!-- Café Kaldi -->
                                     </div>
-                                    <div class="widget-subheading">
-                                        VP People Manager
+                                    <div class="widget-subheading" id="nameBussineRazon">
+                                        <!-- VP People Manager -->
                                     </div>
                                 </div>
                                 <div class="widget-content-right header-user-info ml-3">
@@ -572,7 +611,6 @@
                     </ul>
 
                     <div class="tab-content">
-
                         <div class="tab-pane tabs-animation fade" id="tab-content-1" role="tabpanel">
                             <div class="main-card mb-3 card">
                                 <div class="card-body"><h5 class="card-title">Crear Campaña</h5>
@@ -648,5 +686,6 @@
         </div>
     </div>
     <script type="text/javascript" src="./assets/scripts/main.js"></script>
+    <script type="text/javascript" src="../js/script.js"></script>
 </body>
 </html>

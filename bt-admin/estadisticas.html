@@ -66,12 +66,8 @@
         // cupones activos e inactivos
         function groupStatics(groupStaticsvalue){
             //statics
-            console.log("groupStaticsvalue")
-            console.log(groupStaticsvalue)
             companier.staticsbyAdress()
             .then((response)=> { 
-                console.log("staticsbyAdress")
-                console.log(response)
                 var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
 
                 // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
@@ -79,9 +75,14 @@
                 document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
                 if(groupStaticsvalue=='week'){
                     bodyStatics = groupByWeekStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    // window.onload = function() {
-                       if (document.getElementById("canvasstatics")) {
-                            var e = document.getElementById("canvasstatics").getContext("2d");
+                        document.getElementById("canvasstaticsaddress").style.display="none"; 
+                        document.getElementById("canvasstaticsfech_nac").style.display="none";
+                        document.getElementById("canvasstaticsamount").style.display="none";
+                        document.getElementById("canvasstaticsweek").style.display="block";
+                        var canvas = document.getElementById("canvasstaticsweek");
+                        if (canvas) {
+                            var e = canvas.getContext("2d");
+                            e.clearRect(0, 0, canvas.width, canvas.height);
                             window.myBar = new Chart(e, {
                                 type: "bar",
                                 data: bodyStatics, 
@@ -97,24 +98,21 @@
                                 }
                             })
                         }
-                    // }
                 }else if(groupStaticsvalue=='adress'){
                     //cities
                     companier.cities()
                     .then((responsecity)=> {
                         citiesData = responsecity;
 
-                        bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
-                        console.log("bodyStatics")
-                        console.log(bodyStatics)
-                            console.log("Chart")
-                            console.log(window.myBar)
-                        // window.onload = function() {
-                            // document.getElementById("canvasstatics").style="display:none";
-                            console.log("Chart")
-                            console.log(window.myBar)
-                            if (document.getElementById("canvasstatics")) {
-                                var e = document.getElementById("canvasstatics").getContext("2d");
+                        bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                        document.getElementById("canvasstaticsweek").style.display="none";
+                        document.getElementById("canvasstaticsfech_nac").style.display="none";
+                        document.getElementById("canvasstaticsamount").style.display="none";
+                        document.getElementById("canvasstaticsaddress").style.display="block";
+                            var canvas = document.getElementById("canvasstaticsaddress");
+                            if (canvas) {
+                                var e = canvas.getContext("2d");
+                                e.clearRect(0, 0, canvas.width, canvas.height);
                                 window.myBar = new Chart(e, {
                                     type: "bar",
                                     data: bodyStatics, 
@@ -130,11 +128,62 @@
                                     }
                                 })
                             }
-                        // }
                     }, 
                     (err) =>{console.log("error solicitud.balancesmsemail "+err)});
 
                         
+                }else if(groupStaticsvalue=="amount"){
+                    bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
+                        document.getElementById("canvasstaticsaddress").style.display="none";
+                        document.getElementById("canvasstaticsweek").style.display="none";
+                        document.getElementById("canvasstaticsfech_nac").style.display="none"; 
+                        document.getElementById("canvasstaticsamount").style.display="block";
+                    var canvas = document.getElementById("canvasstaticsamount");
+                    if (canvas) {
+                        var e = canvas.getContext("2d");
+                        e.clearRect(0, 0, canvas.width, canvas.height);
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Chart.js Bar Chart"
+                                }
+                            }
+                        })
+                    }
+                }else if(groupStaticsvalue=="edad"){
+
+                    bodyStatics = groupByEdadStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                        document.getElementById("canvasstaticsaddress").style.display="none";
+                        document.getElementById("canvasstaticsweek").style.display="none"; 
+                        document.getElementById("canvasstaticsamount").style.display="none";
+                        document.getElementById("canvasstaticsfech_nac").style.display="block";
+                    var canvas = document.getElementById("canvasstaticsfech_nac");
+                    if (canvas) {
+                        var e = canvas.getContext("2d");
+                        e.clearRect(0, 0, canvas.width, canvas.height);
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Chart.js Bar Chart"
+                                }
+                            }
+                        })
+                    }
+                    
                 }
                 // //cupones vendidos o redimidos
                 // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
@@ -737,6 +786,7 @@
                                     <ul class="nav tabsstatics">
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('week')" class="active nav-link">Semana</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('adress')" class=" nav-link">Ubicacion</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('edad')" class="nav-link second-tab-toggle">Edad.</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('amount')" class="nav-link second-tab-toggle">Monto Fact.</a></li>
                                     </ul>
                                 </div>
@@ -746,8 +796,10 @@
                                             <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
                                                 <div class="widget-chat-wrapper-outer">
                                                     <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
-                                                        <canvas id="canvasstatics"></canvas>
-                                                        <!-- <canvas id="canvasstaticsaddress"></canvas> -->
+                                                        <canvas id="canvasstaticsaddress"></canvas>
+                                                        <canvas id="canvasstaticsweek"></canvas>
+                                                        <canvas id="canvasstaticsfech_nac"></canvas>
+                                                        <canvas id="canvasstaticsamount"></canvas>
                                                         <!-- <canvas id="canvasdemo"></canvas> -->
                                                     </div>
                                                 </div>
