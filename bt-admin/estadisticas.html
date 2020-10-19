@@ -66,6 +66,8 @@
         // cupones activos e inactivos
         function groupStatics(groupStaticsvalue){
             //statics
+            console.log("groupStaticsvalue")
+            console.log(groupStaticsvalue)
             companier.staticsbyAdress()
             .then((response)=> { 
                 console.log("staticsbyAdress")
@@ -77,9 +79,7 @@
                 document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
                 if(groupStaticsvalue=='week'){
                     bodyStatics = groupByWeekStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    window.onload = function() {
-                        console.log("bodyStatics")
-                        console.log(bodyStatics)
+                    // window.onload = function() {
                        if (document.getElementById("canvasstatics")) {
                             var e = document.getElementById("canvasstatics").getContext("2d");
                             window.myBar = new Chart(e, {
@@ -97,7 +97,7 @@
                                 }
                             })
                         }
-                    }
+                    // }
                 }else if(groupStaticsvalue=='adress'){
                     //cities
                     companier.cities()
@@ -107,9 +107,13 @@
                         bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
                         console.log("bodyStatics")
                         console.log(bodyStatics)
-                        window.onload = function() {
-
-                           if (document.getElementById("canvasstatics")) {
+                            console.log("Chart")
+                            console.log(window.myBar)
+                        // window.onload = function() {
+                            // document.getElementById("canvasstatics").style="display:none";
+                            console.log("Chart")
+                            console.log(window.myBar)
+                            if (document.getElementById("canvasstatics")) {
                                 var e = document.getElementById("canvasstatics").getContext("2d");
                                 window.myBar = new Chart(e, {
                                     type: "bar",
@@ -126,7 +130,7 @@
                                     }
                                 })
                             }
-                        }
+                        // }
                     }, 
                     (err) =>{console.log("error solicitud.balancesmsemail "+err)});
 
@@ -743,6 +747,7 @@
                                                 <div class="widget-chat-wrapper-outer">
                                                     <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
                                                         <canvas id="canvasstatics"></canvas>
+                                                        <!-- <canvas id="canvasstaticsaddress"></canvas> -->
                                                         <!-- <canvas id="canvasdemo"></canvas> -->
                                                     </div>
                                                 </div>
