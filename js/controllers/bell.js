@@ -55,10 +55,18 @@
         data : JSON.stringify(body)
       })
     }; 
-    Bell.prototype.pubelldefault = function(idbell) {
+    Bell.prototype.putbelldefault = function(idbell) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/bell/'+idbell,
         type: 'PUT',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8"
+      })
+    }; 
+    Bell.prototype.testbell = function(idbell) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
+        type: 'GET',
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8"
       })
