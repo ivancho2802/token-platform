@@ -137,6 +137,7 @@
           <h2 class="title">Bienvenidos</h2>
 
           <div id="alert" class="alert alert-warning alert-dismissible  fade in" role="alert" data-dismiss="alert">
+            <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
             <span id="server-errors"></span>
           </div>
           <div class="input-div one">
