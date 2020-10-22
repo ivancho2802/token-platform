@@ -664,7 +664,7 @@
                     <div class="d-block text-right card-footer">
                       <div id="errorcampanabuton${i}" class="btn-shadow mr-3 btn">
                       </div>
-                      <button type="button" data-toggle="collapse" class="btn btn-primary" onclick="testCampana(${bellsData[i]._id})">Editar</button>
+                      <button type="button" data-toggle="collapse" class="btn btn-primary" onclick="testCampana(${bellsData[i]._id})">Testear Campaña</button>
                       ${defaultItem(bellsData[i].defaultvalue, bellsData[i]._id, i)}
                       <button type="button" data-toggle="collapse" href="#editar${i}" class="btn btn-warning" onclick="showEdit(${i})">Editar</button>
                     </div>  
