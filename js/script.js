@@ -287,12 +287,12 @@
                         Eliminar 
                       </button>
                       <button class="btn-pill btn-wide mr-1 ml-1  btn btn-outline-alternate btn-sm">
-                        <input type="checkbox" name="segmentlistnew2" data-toggle="toggle" data-onstyle="success" value="${usersSegmentData[i]._id}" >
+                        <input type="checkbox" name="segmentlistnew2${i}" data-toggle="toggle" data-onstyle="success" value="${usersSegmentData[i]._id}" >
                       </button>
                   </div>
               </div>  
           </div>
-          <div data-parent="#segmentsUserData2" id="collapseTwo${i}" aria-labelledby="heading${i}" class="collapse ${i==0?'show':''}">
+          <div data-parent=".segmentsUserData2" id="collapseTwo${i}" aria-labelledby="heading${i}" class="collapse ${i==0?'show':''}">
             <div class="table-responsive">
               <table class="align-middle mb-0 table table-borderless table-striped table-hover">
                   <thead>
@@ -365,22 +365,32 @@
     function sendNotify(bol){
       return bol ? 'Enviar notificaciones push a los equipos con Token App': '';
     } 
-    function defaultItem(bol){
+    function defaultItem(bol, idbell, index){
       return bol ? `
                     <button type="button" data-toggle="tooltip" title="Campaña por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
                         <i class="fa fa-star text-white "></i>
                     </button>
-                    `: '';
+                    `: `
+                    <button type="button" data-toggle="tooltip" title="Campaña por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-black" onclick="setBellDefault('${idbell}',  ${index})">
+                        <i class="fa fa-star"></i>
+                    </button>
+                    `;
     } 
 
     var container="" , 
 
     eltr;
-
+    var formatArray =""
     if(!bellsData.length )
       return '<div class="d-block text-center card-footer">No se encontraron Sucursales</div>';
     for (var i = 0; i < bellsData.length; i++) {
       if(bellsData[i]){
+        formatArray = "";
+        for (var j = 0; j < bellsData[i].fk_bell_user_list.length; j++) {
+          formatArray+= `
+            <input type="checkbox" name="segmentlistold2${i}" data-toggle="toggle" data-onstyle="success" value="${bellsData[i].fk_bell_user_list[j]}" style="display:none">
+          `;
+        } 
         eltr = '';
         eltr = `
         <div class="row">
@@ -432,8 +442,8 @@
                                           <label for="Nombre" class=" col-form-label">Enviar mensajes</label>
                                           <div class=" ">
                                               <div class="theme-switch-wrapper">
-                                                  <label class="theme-switch" for="sms">
-                                                      <input type="checkbox" id="sms${i}" name="sms${i}"  value="${bellsData[i].sms}"/>
+                                                  <label class="theme-switch" for="sms${i}">
+                                                      <input type="checkbox" id="sms${i}" name="sms${i}"  ${bellsData[i].sms ? 'checked="'+bellsData[i].sms+'"':'unchecked' }"/>
                                                       <div class="slider round"></div>
                                                   </label>
                                               </div>
@@ -443,8 +453,8 @@
                                           <label for="Nombre" class=" col-form-label">Enviar Email</label>
                                           <div class=" ">
                                               <div class="theme-switch-wrapper">
-                                                  <label class="theme-switch" for="email">
-                                                      <input type="checkbox" id="email${i}" name="email${i}" value="${bellsData[i].email}" />
+                                                  <label class="theme-switch" for="email${i}">
+                                                      <input type="checkbox" id="email${i}" name="email${i}"  ${bellsData[i].email ? 'checked="'+bellsData[i].email+'"':'unchecked' }" />
                                                       <div class="slider round"></div>
                                                   </label>
                                               </div>
@@ -457,8 +467,8 @@
                                           <label for="Nombre" class="col-form-label">Enviar Notificaciones</label>
                                           <div class=" ">
                                               <div class="theme-switch-wrapper">
-                                                  <label class="theme-switch" for="notipush">
-                                                      <input type="checkbox" id="notipush${i}" name="notipush${i}" value="${bellsData[i].notipush}" />
+                                                  <label class="theme-switch" for="notipush${i}">
+                                                      <input type="checkbox" id="notipush${i}" name="notipush${i}"  ${bellsData[i].notipush ? 'checked="'+bellsData[i].notipush+'"':'unchecked' }" />
                                                       <div class="slider round"></div>
                                                   </label>
                                               </div>
@@ -469,8 +479,8 @@
                                           <label for="Nombre" class="col-form-label">Campaña por defecto</label>
                                           <div class=" ">
                                               <div class="theme-switch-wrapper">
-                                                  <label class="theme-switch" for="default">
-                                                      <input type="checkbox" id="default${i}" name="default${i}" value="${bellsData[i].default}" />
+                                                  <label class="theme-switch" for="defaultvalue${i}">
+                                                      <input type="checkbox" id="defaultvalue${i}" name="defaultvalue${i}" value="defaultvalue${i}"  ${bellsData[i].defaultvalue ? 'checked="'+bellsData[i].defaultvalue+'"':'unchecked' }"/>
                                                       <div class="slider round"></div>
                                                   </label>
                                               </div>
@@ -499,7 +509,7 @@
 
                                   <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label"></label>
                                       <div class="col-sm-8">
-                                          <input name="fk_bell_user_list${i}" id="fk_bell_user_list${i}" value="${bellsData[i].fk_bell_user_list}"  placeholder="lista usuarios" class="form-control" required style="display:none">
+                                          ${formatArray}
                                           <div class="invalid-feedback" id="validlistuser${i}">
                                           </div>
                                       </div>
@@ -550,14 +560,14 @@
                                             <div class="col-md-12">
                                                 <div class="main-card mb-12 card">
                                                     <!-- lista de usuarios -->
-                                                    <div id="segmentsUserData2" class="accordion-wrapper mb-3">
+                                                    <div class="segmentsUserData2" class="accordion-wrapper mb-3">
                                                         <div class="card">
                                                             <div id="headingOne" class="card-header">
                                                                 <button type="button" data-toggle="collapse" data-target="#collapseTwo1" aria-expanded="true" aria-controls="collapseTwo" class="text-left m-0 p-0 btn btn-link btn-block">
                                                                     <h5 class="m-0 p-0">No tiene listas</h5>
                                                                 </button>
                                                             </div>
-                                                            <div data-parent="#segmentsUserData2" id="collapseTwo1" aria-labelledby="headingOne" class="collapse show">
+                                                            <div data-parent=".segmentsUserData2" id="collapseTwo1" aria-labelledby="headingOne" class="collapse show">
                                                                 <div class="card-body">---
                                                                 </div>
                                                             </div>
@@ -652,10 +662,13 @@
                     </div>
 
                     <div class="d-block text-right card-footer">
-                        <button type="button" data-toggle="collapse" href="#editar${i}" class="btn btn-warning" onclick="showEdit(${i}, ${bellsData[i].fk_bell_user_list})">Editar</button>
+                      <div id="errorcampanabuton${i}" class="btn-shadow mr-3 btn">
+
+                      </div>
+                      ${defaultItem(bellsData[i].defaultvalue, bellsData[i]._id, i)}
+                      <button type="button" data-toggle="collapse" href="#editar${i}" class="btn btn-warning" onclick="showEdit(${i})">Editar</button>
                     </div>  
                   </div> 
-                    ${defaultItem(bellsData[i].default)}
               </div>  
           </div> 
       </div> 
@@ -1148,7 +1161,10 @@
 
 
     document.getElementById("modalalert").innerHTML = `
-      <div class="alert alert-warning fade show" role="alert">${title}! ${msg}</div>
+      <div class="alert alert-warning fade show" role="alert">
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+        ${title}! ${msg}
+      </div>
     `;
     return;
 

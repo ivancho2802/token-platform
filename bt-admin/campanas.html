@@ -97,7 +97,7 @@
                     sms: document.getElementById("sms").value,
                     email: document.getElementById("email").value,
                     notipush: document.getElementById("notipush").checked,
-                    default: document.getElementById("default").checked,
+                    defaultvalue: document.getElementById("defaultvalue").checked,
                     terminos: document.getElementById("terminos").checked,
                     fk_bell_user_list: listasbell,
                     tokenPush: 'localStorage.getItem("tokenPush")',
@@ -114,6 +114,7 @@
                         document.getElementById("campanaslist").innerHTML = gerTableBells(response);
                         document.getElementById("errorcampana").innerHTML = `
                         <div class="alert alert-success fade show" role="alert">
+                            <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                             Excelente Campaña creada con exito! 
                         </div>`;
                     }
@@ -121,7 +122,10 @@
                 (err) =>{
                     console.log("error solicitud.followers "+err)
                     document.getElementById("errorcampana").innerHTML = `
-                    <div class="alert alert-warning fade show" role="alert">Error en la solicitud!! ${err.responseJSON.msg}</div>`;
+                    <div class="alert alert-warning fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        Error en la solicitud!! ${err.responseJSON.msg}
+                    </div>`;
                 });
             });
 
@@ -141,6 +145,13 @@
             }, 
             (err) =>{console.log("error solicitud.followers "+err)});
 
+            
+            getSegmentsUser();
+        })
+        /**
+        * obtener segmentos de usuarios  
+        */
+        function getSegmentsUser(){
             //consulta de segmentos de usuarios o lista de usuarios
             bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
             .then((response)=> {
@@ -149,7 +160,9 @@
                 //cities
                 companier.cities()
                 .then((citiesData2)=> {
-                    document.getElementById("segmentsUserData2").innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+                    for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
+                        document.getElementsByClassName("segmentsUserData2")[i].innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+                    }
                     document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
                 })
                 // console.log("bells")
@@ -159,9 +172,7 @@
                 // document.getElementById("campanaslist").innerHTML = gerTableBells(bellData);
             }, 
             (err) =>{console.log("error solicitud.followers "+err)});
-
-            
-        })
+        }
         /**
         *  envio de elementos ajax
         */
@@ -188,7 +199,10 @@
                         $('#myModal').modal('hide')
                         companier.cities()
                         .then((citiesData2)=> {
-                            document.getElementById("segmentsUserData2").innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+
+                            for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
+                                document.getElementsByClassName("segmentsUserData2")[i].innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+                            }
                             document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
                         })
                     }, 
@@ -223,7 +237,7 @@
                 var valid = false
 
                 var listasbell = [];
-                var els = document.getElementsByName('segmentlistnew2');
+                var els = document.getElementsByName('segmentlistnew2'+index);
                 for (var i=0;i<els.length;i++){
                   if ( els[i].checked ) {
                     listasbell.push(els[i].value);
@@ -237,7 +251,7 @@
 
                 if(!valid)
                     return
-                document.getElementById("fk_bell_user_list"+index).value=listasbell;
+                // document.getElementById("fk_bell_user_list"+index).value=listasbell;
 
                 var post_url = $(this).attr("action"); //get form action url
                 var request_method = $(this).attr("method"); //get form GET/POST method
@@ -247,10 +261,10 @@
                     idbell: document.getElementById("bellid"+index).value,
                     name: document.getElementById("name"+index).value,
                     date: document.getElementById("datetime_campana"+index).value,
-                    sms: document.getElementById("sms"+index).value,
-                    email: document.getElementById("email"+index).value,
+                    sms: document.getElementById("sms"+index).checked,
+                    email: document.getElementById("email"+index).checked,
                     notipush: document.getElementById("notipush"+index).checked,
-                    default: document.getElementById("default"+index).checked,
+                    defaultvalue: document.getElementById("defaultvalue"+index).checked,
                     terminos: document.getElementById("terminos"+index).checked,
                     fk_bell_user_list: listasbell,
                     tokenPush: 'localStorage.getItem("tokenPush")',
@@ -263,9 +277,11 @@
                 .then((response)=> {
                     console.log(response)
                     if(response.length){
+                        getSegmentsUser();
                         document.getElementById("campanaslist").innerHTML = gerTableBells(response);
                         document.getElementById("errorcampana"+index).innerHTML = `
                         <div class="alert alert-success fade show" role="alert">
+                            <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                             Excelente Campaña creada con exito! 
                         </div>`;
                     }
@@ -274,21 +290,62 @@
                     console.log(err)
                     console.log("error solicitud.followers "+err)
                     document.getElementById("errorcampana"+index).innerHTML = `
-                    <div class="alert alert-warning fade show" role="alert">Error en la solicitud!! ${err.responseJSON.msg}</div>`;
+                    <div class="alert alert-warning fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        Error en la solicitud!! ${err.responseJSON.msg}
+                    </div>`;
                 });
 
             })
         }
 
-        function showEdit(i,fk_bell_user_list ){
+        function showEdit(i ){
+            console.log(document.getElementById("defaultvalue0").checked)
+            console.log(document.getElementById("defaultvalue0").value)
+            console.log("clic")
             // userlistnew
-            var els = document.getElementsByName('segmentlistnew2');
-            for (var i=0;i<els.length;i++){
-              if(fk_bell_user_list && fk_bell_user_list.length)
-              if ( els[i].value == fk_bell_user_list[i]) {
-                els[i].checked;
+            var els = document.getElementsByName('segmentlistnew2'+i);
+            var els2 = document.getElementsByName("segmentlistold2"+i);
+            for (var i=0;i<els.length;i++){ 
+              if (els2[i] && els[i].value == els2[i].value) {
+                els[i].checked=true;
               }
             }
+        }
+
+        function setBellDefault(idbell, index){
+            bellier.pubelldefault(idbell)//JSON.parse($.cookie("userData"))._id
+            .then((response)=> {
+                console.log(response)
+                if(response.length){
+                    getSegmentsUser();
+                    document.getElementById("campanaslist").innerHTML = gerTableBells(response);
+                    document.getElementById("errorcampana").innerHTML = `
+                    <div class="alert alert-success fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        Excelente Campaña creada con exito! 
+                    </div>`;
+                    document.getElementById("errorcampanabuton"+index).innerHTML = `
+                    <div class="alert alert-success fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        Excelente Campaña creada con exito! 
+                    </div>`;
+                }
+            }, 
+            (err) =>{
+                console.log(err)
+                console.log("error solicitud.followers "+err)
+                document.getElementById("errorcampana").innerHTML = `
+                <div class="alert alert-warning fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Error en la solicitud!! ${err.responseJSON.msg}
+                </div>`;
+                document.getElementById("errorcampanabuton"+index).innerHTML = `
+                <div class="alert alert-warning fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Error en la solicitud!! ${err.responseJSON.msg}
+                </div>`;
+            });
         }
     </script> 
 </head>
@@ -718,7 +775,7 @@
                                 <a href="estadisticas.html">
                                     <i class="metismenu-icon pe-7s-diamond"></i>
                                     Estadísticas
-                                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    <!-- <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i> -->
                                 </a>
 
                                 
@@ -728,7 +785,7 @@
                                 <a href="campanas.html" class="mm-active">
                                     <i class="metismenu-icon pe-7s-car"></i>
                                     Campañas
-                                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    <!-- <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i> -->
                                 </a>
                                 </li>
 
@@ -874,8 +931,8 @@
                                                         <label for="Nombre" class="col-form-label">Campaña por defecto</label>
                                                         <div class=" ">
                                                             <div class="theme-switch-wrapper">
-                                                                <label class="theme-switch" for="default">
-                                                                    <input type="checkbox" id="default" name="default" />
+                                                                <label class="theme-switch" for="defaultvalue">
+                                                                    <input type="checkbox" id="defaultvalue" name="defaultvalue" />
                                                                     <div class="slider round"></div>
                                                                 </label>
                                                             </div>

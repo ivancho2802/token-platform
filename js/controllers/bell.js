@@ -55,6 +55,14 @@
         data : JSON.stringify(body)
       })
     }; 
+    Bell.prototype.pubelldefault = function(idbell) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/bell/'+idbell,
+        type: 'PUT',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8"
+      })
+    }; 
     Bell.prototype.solicitudHash = function(hash, context) {
       var k, v;
 
