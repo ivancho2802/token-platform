@@ -60,6 +60,8 @@
             companier.clients(JSON.parse($.cookie("userData"))._id)
             .then((response)=> {
                 usersData = response; 
+                console.log("usersData")
+                console.log(usersData)
                 document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
 
                 //cities

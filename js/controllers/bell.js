@@ -10,18 +10,50 @@
       };
       this.globalContext = {};
     }
+    Bell.prototype.setsegmentuser = function(body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/segmentuser',
+        type: 'POST',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8" ,
+        data : JSON.stringify(body)
+      })
+    }; 
+    Bell.prototype.getsegmentuser = function() {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/segmentuser',
+        type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        headers: {"Authorization":  $.cookie("TOKEN")}
+      })
+    }; 
+    Bell.prototype.bells = function() {
 
-    Bell.prototype.followers = function(idBell) {
-  		if(!idBell)
-  			return false
-
-  		return $.ajax({
-  			url : 'https://barter-token.herokuapp.com/api/seguidoresclients',
-  			type: 'GET',
-  			// data : JSON.stringify(body),
-  	   		contentType: "application/json; charset=utf-8",
-  	   		headers: {"Authorization":  $.cookie("TOKEN")}
-  		}) 
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/bell',
+        type: 'GET',
+        // data : JSON.stringify(body),
+         contentType: "application/json; charset=utf-8",
+         headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    }; 
+    Bell.prototype.setbell = function(body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/bell',
+        type: 'POST',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8" ,
+        data : JSON.stringify(body)
+      })
+    }; 
+    Bell.prototype.putbell = function(body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/bell',
+        type: 'PUT',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8" ,
+        data : JSON.stringify(body)
+      })
     }; 
     Bell.prototype.solicitudHash = function(hash, context) {
       var k, v;

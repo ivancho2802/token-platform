@@ -11,6 +11,7 @@
     <meta name="description" content="Build whatever layout you need with our Architect framework.">
     <meta name="msapplication-tap-highlight" content="no">
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- <link rel="stylesheet" href="./css/style.css"> -->
     <link href="./main.css" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
     <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
@@ -29,26 +30,32 @@
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
     <script src="../js/controllers/bell.js"></script>
+    <script src="../js/controllers/company.js"></script>
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
-    <script type="text/JavaScript">
-
+    <script type="text/JavaScript"> 
         $( document ).ready(function() {
 
             if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
                 return;
-
             var bellData=[]
 
             document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
             document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
             document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
+            document.getElementById("datetime_campana").value = new Date();
+            document.getElementById("fk_business").value = JSON.parse($.cookie("userData"))._id;
 
-            bellier.bell()//JSON.parse($.cookie("userData"))._id
+            // fk_plantilla
+
+            bellier.bells()//JSON.parse($.cookie("userData"))._id
             .then((response)=> {
-                // console.log(response)
+                console.log("bells")
+                console.log(response)
                 bellData = response; 
-                document.getElementById("bells").innerHTML = bellData.numseguidores;
+                if(bellData.length)
+                document.getElementById("campanaslist").innerHTML = gerTableBells(bellData);
+
                 //cities
                 // companier.cities()
                 // .then((response)=> {
@@ -58,10 +65,236 @@
                 // (err) =>{console.log("error solicitud.balancesmsemail "+err)});
             }, 
             (err) =>{console.log("error solicitud.followers "+err)});
+
+            document.getElementById("formbell").addEventListener('submit', function (event) { 
+                var valid = false
+
+                var listasbell = [];
+                var els = document.getElementsByName('segmentlistnew');
+                for (var i=0;i<els.length;i++){
+                  if ( els[i].checked ) {
+                    listasbell.push(els[i].value);
+                  }
+                }
+
+                if(listasbell.length<1){
+                    document.getElementById("validlistuser").innerHTML = "Debes definir una lista de usuarios."
+                }
+
+                valid = document.getElementById("name").value && document.getElementById("datetime_campana").value  && document.getElementById("terminos").value && listasbell.length;
+
+                if(!valid)
+                    return
+                document.getElementById("fk_bell_user_list").value=listasbell;
+
+                var post_url = $(this).attr("action"); //get form action url
+                var request_method = $(this).attr("method"); //get form GET/POST method
+                var form_data = $(this).serializeArray(); //Encode form elements for submission
+                event.preventDefault(); //prevent default action 
+                var body = {
+                    name: document.getElementById("name").value,
+                    date: document.getElementById("datetime_campana").value,
+                    sms: document.getElementById("sms").value,
+                    email: document.getElementById("email").value,
+                    notipush: document.getElementById("notipush").checked,
+                    default: document.getElementById("default").checked,
+                    terminos: document.getElementById("terminos").checked,
+                    fk_bell_user_list: listasbell,
+                    tokenPush: 'localStorage.getItem("tokenPush")',
+                    platform: 'web',
+                    role: 8
+                }
+                console.log("body")
+                console.log(body)
+
+                bellier.setbell(body)//JSON.parse($.cookie("userData"))._id
+                .then((response)=> {
+                    console.log(response)
+                    if(response.length){
+                        document.getElementById("campanaslist").innerHTML = gerTableBells(response);
+                        document.getElementById("errorcampana").innerHTML = `
+                        <div class="alert alert-success fade show" role="alert">
+                            Excelente Campaña creada con exito! 
+                        </div>`;
+                    }
+                }, 
+                (err) =>{
+                    console.log("error solicitud.followers "+err)
+                    document.getElementById("errorcampana").innerHTML = `
+                    <div class="alert alert-warning fade show" role="alert">Error en la solicitud!! ${err.responseJSON.msg}</div>`;
+                });
+            });
+
+            //clientes 
+            companier.clients(JSON.parse($.cookie("userData"))._id)
+            .then((response)=> {
+                usersData = response; 
+                // document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
+
+                //cities
+                companier.cities()
+                .then((citiesData2)=> {
+                    document.getElementById("userActivos").innerHTML = getTableUsersActSelect(usersData, citiesData2)
+                    document.getElementById("userActivos2").innerHTML = getTableUsersActSelect(usersData, citiesData2)
+                }, 
+                (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+            }, 
+            (err) =>{console.log("error solicitud.followers "+err)});
+
+            //consulta de segmentos de usuarios o lista de usuarios
+            bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
+            .then((response)=> {
+                console.log("segments")
+                console.log(response)
+                //cities
+                companier.cities()
+                .then((citiesData2)=> {
+                    document.getElementById("segmentsUserData2").innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+                    document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
+                })
+                // console.log("bells")
+                // console.log(response)
+                // bellData = response; 
+                // if(bellData.length)
+                // document.getElementById("campanaslist").innerHTML = gerTableBells(bellData);
+            }, 
+            (err) =>{console.log("error solicitud.followers "+err)});
+
+            
         })
-    </script>
+        /**
+        *  envio de elementos ajax
+        */
+        function saveListUser(){
+            var choices = [];
+            var els = document.getElementsByName('userlistnew');
+            for (var i=0;i<els.length;i++){
+              if ( els[i].checked ) {
+                choices.push(els[i].value);
+              }
+            }
+
+            if(choices.length){
+              // alert()
+              modalDialogConfirm('savelistuser') 
+
+              document.getElementById("saveFromModal").addEventListener("click", function(resss){
+                var name = document.getElementById("modalNameList").value;
+                console.log(resss.isTrusted)
+                if(resss.isTrusted){
+                    bellier.setsegmentuser({ name, fk_user: choices})//JSON.parse($.cookie("userData"))._id
+                    .then((response)=> {
+                        document.getElementById("errorsavelista").innerHTML = 'Lista Guardada!'+ ` ${err.responseJSON.msg}`;
+                        $('#myModal').modal('hide')
+                        companier.cities()
+                        .then((citiesData2)=> {
+                            document.getElementById("segmentsUserData2").innerHTML = getTableUsersActSegmentSelect2(response, citiesData2)
+                            document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
+                        })
+                    }, 
+                    (err) =>{
+                        console.log("error solicitud.followers "+err)
+                        document.getElementById("errorsavelista").innerHTML = 'Error en la solicitud!'+ ` ${err.responseJSON.msg}`;
+                        toastInfo('Error en la solicitud!', ` ${err.responseJSON.msg}`);
+                    });
+                }
+              });
+            }
+        } 
+
+        function editBell (index){
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            if(document.getElementById("formbelleditar"+index))
+            document.getElementById("formbelleditar"+index).addEventListener('submit', function (event) { 
+                // console.log("event")
+                // console.log(event)
+
+                var valid = false
+
+                var listasbell = [];
+                var els = document.getElementsByName('segmentlistnew2');
+                for (var i=0;i<els.length;i++){
+                  if ( els[i].checked ) {
+                    listasbell.push(els[i].value);
+                  }
+                }
+                if(listasbell.length<1){
+                    document.getElementById("validlistuser"+index).innerHTML = "Debes definir una lista de usuarios."
+                }
+
+                valid = document.getElementById("bellid"+index).value && document.getElementById("name"+index).value && document.getElementById("datetime_campana"+index).value  && document.getElementById("terminos"+index).value && listasbell.length;
+
+                if(!valid)
+                    return
+                document.getElementById("fk_bell_user_list"+index).value=listasbell;
+
+                var post_url = $(this).attr("action"); //get form action url
+                var request_method = $(this).attr("method"); //get form GET/POST method
+                var form_data = $(this).serializeArray(); //Encode form elements for submission
+                event.preventDefault(); //prevent default action 
+                var body = {
+                    idbell: document.getElementById("bellid"+index).value,
+                    name: document.getElementById("name"+index).value,
+                    date: document.getElementById("datetime_campana"+index).value,
+                    sms: document.getElementById("sms"+index).value,
+                    email: document.getElementById("email"+index).value,
+                    notipush: document.getElementById("notipush"+index).checked,
+                    default: document.getElementById("default"+index).checked,
+                    terminos: document.getElementById("terminos"+index).checked,
+                    fk_bell_user_list: listasbell,
+                    tokenPush: 'localStorage.getItem("tokenPush")',
+                    platform: 'web',
+                    role: 8
+                }
+                console.log("body")
+                console.log(body)
+                bellier.putbell(body)//JSON.parse($.cookie("userData"))._id
+                .then((response)=> {
+                    console.log(response)
+                    if(response.length){
+                        document.getElementById("campanaslist").innerHTML = gerTableBells(response);
+                        document.getElementById("errorcampana"+index).innerHTML = `
+                        <div class="alert alert-success fade show" role="alert">
+                            Excelente Campaña creada con exito! 
+                        </div>`;
+                    }
+                }, 
+                (err) =>{
+                    console.log(err)
+                    console.log("error solicitud.followers "+err)
+                    document.getElementById("errorcampana"+index).innerHTML = `
+                    <div class="alert alert-warning fade show" role="alert">Error en la solicitud!! ${err.responseJSON.msg}</div>`;
+                });
+
+            })
+        }
+
+        function showEdit(i,fk_bell_user_list ){
+            // userlistnew
+            var els = document.getElementsByName('segmentlistnew2');
+            for (var i=0;i<els.length;i++){
+              if(fk_bell_user_list && fk_bell_user_list.length)
+              if ( els[i].value == fk_bell_user_list[i]) {
+                els[i].checked;
+              }
+            }
+        }
+    </script> 
 </head>
 <body>
+    <div id="toasts"></div>
+    <div id="modals"></div>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
@@ -546,146 +779,314 @@
                                     <div class="page-title-subheading">Crea tu campaña publicitaria, para que puedas aumentar tus ventas.
                                     </div>
                                 </div>
-                            </div>
-                            <div class="page-title-actions">
-                                <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom" class="btn-shadow mr-3 btn btn-dark">
-                                    <i class="fa fa-star"></i>
-                                </button>
-                                <div class="d-inline-block dropdown">
-                                    <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
-                                        <span class="btn-icon-wrapper pr-2 opacity-7">
-                                            <i class="fa fa-business-time fa-w-20"></i>
-                                        </span>
-                                        Buttons
-                                    </button>
-                                    <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-inbox"></i>
-                                                    <span>
-                                                        Inbox
-                                                    </span>
-                                                    <div class="ml-auto badge badge-pill badge-secondary">86</div>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-book"></i>
-                                                    <span>
-                                                        Book
-                                                    </span>
-                                                    <div class="ml-auto badge badge-pill badge-danger">5</div>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-picture"></i>
-                                                    <span>
-                                                        Picture
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a disabled href="javascript:void(0);" class="nav-link disabled">
-                                                    <i class="nav-link-icon lnr-file-empty"></i>
-                                                    <span>
-                                                        File Disabled
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>    
+                            </div>   
                         </div>
                     </div>            
                     
                     <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
                     
                         <li class="nav-item">
-                            <a role="tab" class="nav-link" id="tab-1" data-toggle="tab" href="#tab-content-1">
-                                <span>Crear Campaña</span>
+                            <a role="tab" class="nav-link active" id="tab-1" data-toggle="tab" href="#campanaslist">
+                                <span>Lista de Campañas</span>
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link " id="tab-1" data-toggle="tab" href="#tab-content-1">
+                                <span>Crear Campaña</span>
+                            </a> 
                         </li>
                     </ul>
 
                     <div class="tab-content">
-                        <div class="tab-pane tabs-animation fade" id="tab-content-1" role="tabpanel">
-                            <div class="main-card mb-3 card">
-                                <div class="card-body"><h5 class="card-title">Crear Campaña</h5>
-                                    <form class="">
-                                        <div class="position-relative row form-group"><label for="exampleEmail" class="col-sm-2 col-form-label">Nombre</label>
-                                            <div class="col-sm-10"><input name="email" id="exampleEmail" placeholder="with a placeholder" type="email" class="form-control"></div>
+                        <!-- campañas lista --> 
+                        <div class="tab-pane tabs-animation fade show active" id="campanaslist" role="tabpanel">
+                            No tiene Campañas
+                        </div>
+                        <!-- campañas crear --> 
+                        <div class="tab-pane tabs-animation fade show " id="tab-content-1" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="main-card mb-3 card">
+                                        <div class="card-body"><h5 class="card-title">Crear Campaña</h5>
+                                            <form  class="needs-validation" novalidate  action="#" method="post"  id="formbell">
+                                                <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label">Nombre</label>
+                                                    <div class="col-sm-8">
+                                                        <input name="name" id="name" placeholder="Nombre de la campaña" type="text" class="form-control" required>
+                                                        <div class="valid-feedback">
+                                                            Bien!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            Por favor ponga un nombre.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="position-relative row form-group"><label for="examplePassword" class="col-sm-4 col-form-label">Fecha</label>
+                                                    <div class="col-sm-8">
+                                                        <input name="datetime_campana" id="datetime_campana"  placeholder="datetime-campana" type="datetime-local" value="" class="form-control" required>
+                                                        <div class="valid-feedback">
+                                                            Bien!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            Por favor ponga una fecha.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="position-relative row ">
+                                                    <div class="col-sm-6 col-md-6 form-group">
+                                                        <label for="Nombre" class=" col-form-label">Enviar mensajes</label>
+                                                        <div class=" ">
+                                                            <div class="theme-switch-wrapper">
+                                                                <label class="theme-switch" for="sms">
+                                                                    <input type="checkbox" id="sms" name="sms" />
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-6 form-group">
+                                                        <label for="Nombre" class=" col-form-label">Enviar Email</label>
+                                                        <div class=" ">
+                                                            <div class="theme-switch-wrapper">
+                                                                <label class="theme-switch" for="email">
+                                                                    <input type="checkbox" id="email" name="email" />
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                <div class="position-relative row ">
+
+                                                    <div class=" form-group col-sm-6 col-md-6  ">
+                                                        <label for="Nombre" class="col-form-label">Enviar Notificaciones</label>
+                                                        <div class=" ">
+                                                            <div class="theme-switch-wrapper">
+                                                                <label class="theme-switch" for="notipush">
+                                                                    <input type="checkbox" id="notipush" name="notipush" />
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-6 col-md-6  form-group">
+                                                        <label for="Nombre" class="col-form-label">Campaña por defecto</label>
+                                                        <div class=" ">
+                                                            <div class="theme-switch-wrapper">
+                                                                <label class="theme-switch" for="default">
+                                                                    <input type="checkbox" id="default" name="default" />
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- <div class="position-relative row form-group"><label for="exampleSelectMulti" class="col-sm-2 col-form-label">Select Multiple</label>
+                                                    <div class="col-sm-10"><select multiple="" name="selectMulti" id="exampleSelectMulti" class="form-control"></select></div>
+                                                </div> -->
+                                                <!-- <div class="position-relative row form-group"><label for="exampleText" class="col-sm-2 col-form-label">Text Area</label>
+                                                    <div class="col-sm-10"><textarea name="text" id="exampleText" class="form-control"></textarea></div>
+                                                </div> -->
+                                                <label>
+                                                    <div class="position-relative row form-group"><label for="exampleFile" class="col-sm-4 col-form-label">Terminos y Condiciones</label>
+                                                        <div class="col-sm-8">
+                                                            <div class="position-relative form-check">
+                                                                <label class="form-check-label">
+                                                                    <input name="terminos" id="terminos" type="checkbox" class="form-check-input" required> 
+                                                                    <label class="form-check-label" for="invalidCheck">
+                                                                        Acepto los terminos y condiciones
+                                                                    </label>
+                                                                    <div class="invalid-feedback">
+                                                                        Aun no has aceptado los terminos y condiciones.
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                            <small class="form-text text-muted">Al aceptar, aceptas que los datos suministrados se usaran para realizar campañas publicitarias y marketing digital mediante el envio de mensajes de texto, email y notificaciones push a los dispositivos asociados con la app Token App, y el uso de los mismos para estudio.</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+
+                                                <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <input name="fk_bell_user_list" id="fk_bell_user_list" placeholder="lista usuarios" class="form-control" required style="display:none">
+                                                        <div class="invalid-feedback" id="validlistuser">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                    <input type="text" name="fk_business" id="fk_business" style="display:none">
+                                                        <div class="invalid-feedback">
+                                                            Error en ID.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="errorcampana">
+                                                </div>
+
+                                                <div class="position-relative row form-check">
+                                                    <div class="col-sm-10 offset-sm-2">
+                                                        <button class="btn btn-primary" type="submit" id="savecampanas">Guardar Campañas</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <script>
+                                                (function() {
+                                                    'use strict';
+                                                    window.addEventListener('load', function() {
+                                                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                                        var forms = document.getElementsByClassName('needs-validation');
+                                                        // Loop over them and prevent submission
+                                                        var validation = Array.prototype.filter.call(forms, function(form) {
+                                                            form.addEventListener('submit', function(event) {
+                                                                if (form.checkValidity() === false) {
+                                                                    event.preventDefault();
+                                                                    event.stopPropagation();
+                                                                }
+                                                                form.classList.add('was-validated');
+                                                            }, false);
+                                                        });
+                                                    }, false);
+                                                })();
+                                            </script>
+
                                         </div>
-                                        <div class="position-relative row form-group"><label for="examplePassword" class="col-sm-2 col-form-label">Fecha</label>
-                                            <div class="col-sm-10"><input name="password" id="examplePassword" placeholder="password placeholder" type="password" class="form-control"></div>
-                                        </div>
-                     
-                                        <div class="position-relative row form-group"><label for="exampleSelectMulti" class="col-sm-2 col-form-label">Select Multiple</label>
-                                            <div class="col-sm-10"><select multiple="" name="selectMulti" id="exampleSelectMulti" class="form-control"></select></div>
-                                        </div>
-                                        <div class="position-relative row form-group"><label for="exampleText" class="col-sm-2 col-form-label">Text Area</label>
-                                            <div class="col-sm-10"><textarea name="text" id="exampleText" class="form-control"></textarea></div>
-                                        </div>
-                                        <div class="position-relative row form-group"><label for="exampleFile" class="col-sm-2 col-form-label">File</label>
-                                            <div class="col-sm-10"><input name="file" id="exampleFile" type="file" class="form-control-file">
-                                                <small class="form-text text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="main-card mb-3 card"> 
+
+                                        <div class="card-header">
+                                            <i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>Usuario para la Campaña
+                                            <div class="btn-actions-pane-right">
+                                                <div role="group" class="btn-group-sm nav btn-group">
+                                                    <a data-toggle="tab" href="#userlist" class="btn-shadow active btn btn-primary">Listas</a>
+                                                    <a data-toggle="tab" href="#createuserlist" class="btn-shadow   btn btn-primary">Crear Lista</a>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="position-relative row form-check">
-                                            <div class="col-sm-10 offset-sm-2">
-                                                <button class="btn btn-secondary">Submit</button>
+                                        <div class="tab-content">
+                                            <!-- user lista --> 
+                                            <div class="tab-pane tabs-animation fade show active" id="userlist" role="userlist">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="main-card mb-12 card">
+                                                            <!-- lista de usuarios -->
+                                                            <div id="segmentsUserData" class="accordion-wrapper mb-3">
+                                                                <div class="card">
+                                                                    <div id="headingOne" class="card-header">
+                                                                        <button type="button" data-toggle="collapse" data-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne" class="text-left m-0 p-0 btn btn-link btn-block">
+                                                                            <h5 class="m-0 p-0">No tiene listas</h5>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div data-parent="#segmentsUserData" id="collapseOne1" aria-labelledby="headingOne" class="collapse show">
+                                                                        <div class="card-body">---
+                                                                        </div>
+                                                                    </div>
+                                                                </div> 
+                                                            </div>
+                                                        </div>  
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                            <!-- crear user lets -->
+                                            <div class="tab-pane tabs-animation fade show " id="createuserlist" role="createuserlist">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="main-card mb-12 card">
+                                                            <div class="card-body">
+                                                                <!-- <h5 class="card-title">Crear Lista de Usuarios</h5> -->
+                                                                <div class="col-md-12 mb-12">
+                                                                    <!-- <label for="search">Username</label> -->
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" id="validationTooltipUsernamePrepend">
+                                                                                <i class="fa fa-search icon-gradient bg-sunny-morning"> </i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <input type="text" class="form-control" id="searchinputuseractive" placeholder="Buscar usuario activo por nombre, email ..." aria-describedby="validationTooltipUsernamePrepend" required>
+                                                                        <div class="invalid-tooltip">
+                                                                            Please choose a unique and valid username.
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="main-card mb-12 card">
+                                                                
+                                                                    <!-- Active Users --> 
+                                                                    <div class="table-responsive">
+                                                                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th>Nombre</th>
+                                                                                <th class="text-center">Ciudad</th>
+                                                                                <th class="text-center">Genero</th>
+                                                                                <th class="text-center">Edad</th>
+                                                                                <th class="text-center">Action</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody id="userActivos">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="widget-content p-0">
+                                                                                        <div class="widget-content-wrapper">
+                                                                                            <div class="widget-content-left mr-3">
+                                                                                                <div class="widget-content-left">
+                                                                                                    <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="widget-content-left flex2">
+                                                                                                <div class="widget-heading">---- ----</div>
+                                                                                                <div class="widget-subheading opacity-7">--- ---</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class="text-center">---</td>
+                                                                                <td class="text-center">---</td>
+                                                                                <td class="text-center">---</td>
+                                                                                <td class="text-center text-muted">
+                                                                                    <div class="switch-animate switch-off">
+                                                                                        <input type="checkbox" data-toggle="toggle" data-onstyle="success">
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr> 
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+
+                                                                    <div id="errorsavelista"> 
+                                                                    </div> 
+
+                                                                    <div class="d-block text-center card-footer">
+                                                                        <!-- <button class="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i class="pe-7s-trash btn-icon-wrapper"> </i></button> -->
+                                                                        <button class="btn-wide btn btn-success" onclick="saveListUser()">Guardar lista</button>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="app-wrapper-footer">
-                    <div class="app-footer">
-                        <div class="app-footer__inner">
-                            <div class="app-footer-left">
-                                <ul class="nav">
-                                    <li class="nav-item">
-                                        <a href="javascript:void(0);" class="nav-link">
-                                            Footer Link 1
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="javascript:void(0);" class="nav-link">
-                                            Footer Link 2
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="app-footer-right">
-                                <ul class="nav">
-                                    <li class="nav-item">
-                                        <a href="javascript:void(0);" class="nav-link">
-                                            Footer Link 3
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="javascript:void(0);" class="nav-link">
-                                            <div class="badge badge-success mr-1 ml-0">
-                                                <small>NEW</small>
-                                            </div>
-                                            Footer Link 4
-                                        </a>
-                                    </li>
-                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>    
             </div>
         </div>
-    </div>
-    <script type="text/javascript" src="./assets/scripts/main.js"></script>
+    </div>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" src="./assets/scripts/main.js"></script> -->
     <script type="text/javascript" src="../js/script.js"></script>
 </body>
 </html>
