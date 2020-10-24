@@ -93,7 +93,7 @@
                                     },
                                     title: {
                                         display: !1,
-                                        text: "Chart.js Bar Chart"
+                                        text: "Estadisticas Token"
                                     }
                                 }
                             })
@@ -123,7 +123,7 @@
                                         },
                                         title: {
                                             display: !1,
-                                            text: "Chart.js Bar Chart"
+                                            text: "Estadisticas Token"
                                         }
                                     }
                                 })
@@ -152,7 +152,7 @@
                                 },
                                 title: {
                                     display: !1,
-                                    text: "Chart.js Bar Chart"
+                                    text: "Estadisticas Token"
                                 }
                             }
                         })
@@ -178,7 +178,7 @@
                                 },
                                 title: {
                                     display: !1,
-                                    text: "Chart.js Bar Chart"
+                                    text: "Estadisticas Token"
                                 }
                             }
                         })
@@ -191,9 +191,173 @@
             (err) =>{console.log("error solicitud.balancesmsemail "+err)});
         }
         groupStatics('week');
+        /**
+        *   ver estadisticas por activos - ver cupones activos
+        */
+        function listCuponesAct(){
+            console.log("staticsactivos")
+
+            companier.tokens()
+            .then((response)=> { 
+                modalTokens(true, response)
+            }, 
+            (err) =>{console.log("error companier.branchs "+err)});
+        }
+        function goTokenEstadistics(idcupon, groupStaticsvalue, nametoken){
+
+            $.cookie('idcupon',idcupon);
+            $.cookie('nametoken',nametoken);
+            
+            var x = document.getElementsByClassName('ByCupon');
+            for (var i = 0; i < x.length; i++) {
+              x[i].classList.add('show');
+            } 
+
+            var y = document.getElementsByClassName('nametoken');
+            for (var i = 0; i < y.length; i++) {
+              y[i].innerHTML=nametoken;
+            }
+
+            companier.staticsByToken(idcupon)
+            .then((response)=> { 
+                var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
+
+                // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
+                document.getElementById("cantCuponsActivosByCupon").innerHTML = response.acumCuponClientActivos.length;
+                document.getElementById("cantCuponsinActivosByCupon").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
+                if(groupStaticsvalue=='week'){
+                    bodyStatics = groupByWeekStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                        document.getElementById("canvasstaticsaddressByCupon").style.display="none"; 
+                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
+                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
+                        document.getElementById("canvasstaticsweekByCupon").style.display="block";
+                        var canvas = document.getElementById("canvasstaticsweekByCupon");
+                        if (canvas) {
+                            var e = canvas.getContext("2d");
+                            e.clearRect(0, 0, canvas.width, canvas.height);
+                            window.myBar = new Chart(e, {
+                                type: "bar",
+                                data: bodyStatics, 
+                                options: {
+                                    responsive: !0,
+                                    legend: {
+                                        position: "top"
+                                    },
+                                    title: {
+                                        display: !1,
+                                        text: "Estadisticas Token"
+                                    }
+                                }
+                            })
+                        }
+                }else if(groupStaticsvalue=='adress'){
+                    //cities
+                    companier.cities()
+                    .then((responsecity)=> {
+                        citiesData = responsecity;
+
+                        bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                        document.getElementById("canvasstaticsweekByCupon").style.display="none";
+                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
+                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
+                        document.getElementById("canvasstaticsaddressByCupon").style.display="block";
+                            var canvas = document.getElementById("canvasstaticsaddressByCupon");
+                            if (canvas) {
+                                var e = canvas.getContext("2d");
+                                e.clearRect(0, 0, canvas.width, canvas.height);
+                                window.myBar = new Chart(e, {
+                                    type: "bar",
+                                    data: bodyStatics, 
+                                    options: {
+                                        responsive: !0,
+                                        legend: {
+                                            position: "top"
+                                        },
+                                        title: {
+                                            display: !1,
+                                            text: "Estadisticas Token"
+                                        }
+                                    }
+                                })
+                            }
+                    }, 
+                    (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+
+                        
+                }else if(groupStaticsvalue=="amount"){
+                    bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
+                        document.getElementById("canvasstaticsaddressByCupon").style.display="none";
+                        document.getElementById("canvasstaticsweekByCupon").style.display="none";
+                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none"; 
+                        document.getElementById("canvasstaticsamountByCupon").style.display="block";
+                    var canvas = document.getElementById("canvasstaticsamountByCupon");
+                    if (canvas) {
+                        var e = canvas.getContext("2d");
+                        e.clearRect(0, 0, canvas.width, canvas.height);
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Estadisticas Token"
+                                }
+                            }
+                        })
+                    }
+                }else if(groupStaticsvalue=="edad"){
+
+                    bodyStatics = groupByEdadStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                        document.getElementById("canvasstaticsaddressByCupon").style.display="none";
+                        document.getElementById("canvasstaticsweekByCupon").style.display="none"; 
+                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
+                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="block";
+                    var canvas = document.getElementById("canvasstaticsfech_nacByCupon");
+                    if (canvas) {
+                        var e = canvas.getContext("2d");
+                        e.clearRect(0, 0, canvas.width, canvas.height);
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Estadisticas Token"
+                                }
+                            }
+                        })
+                    }
+                    
+                }
+                // //cupones vendidos o redimidos
+                // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
+            }, 
+            (err) =>{console.log("error companier.branchs "+err)});
+        }
+        /**
+        *   ver estadisticas por  e inactivos
+        */
+        function listCuponesinAct(){
+            console.log("staticsinactivos")
+            companier.tokens()
+            .then((response)=> { 
+                console.log(response)
+                modalTokens(false, response)
+            }, 
+            (err) =>{console.log("error companier.branchs "+err)});
+        } 
     </script>
 </head>
 <body>
+    <div id="modals"></div>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
@@ -732,8 +896,8 @@
                         </div>
                     </div>            
                     <div class="row">
-                        <div class="col-md-6 col-xl-4">
-                            <div class="card mb-3 widget-content bg-midnight-bloom">
+                        <div class="col-md-6 col-xl-6">
+                            <div class="card mb-3 widget-content bg-midnight-bloom" id="staticsactivos" onclick="listCuponesAct()">
                                 <div class="widget-content-wrapper text-white">
                                     <div class="widget-content-left">
                                         <div class="widget-heading">Activos</div>
@@ -745,8 +909,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-xl-4">
-                            <div class="card mb-3 widget-content bg-arielle-smile">
+                        <div class="col-md-6 col-xl-6">
+                            <div class="card mb-3 widget-content bg-arielle-smile" id="staticsinactivos" onclick="listCuponesinAct()" >
                                 <div class="widget-content-wrapper text-white">
                                     <div class="widget-content-left">
                                         <div class="widget-heading">Inactivos</div>
@@ -759,17 +923,29 @@
                             </div>
                         </div>
 
-                        
-
-                        <div class="d-xl-none d-lg-block col-md-6 col-xl-4">
+                        <div class="col-md-6 col-xl-6 ByCupon fade">
                             <div class="card mb-3 widget-content bg-premium-dark">
                                 <div class="widget-content-wrapper text-white">
                                     <div class="widget-content-left">
-                                        <div class="widget-heading">Products Sold</div>
-                                        <div class="widget-subheading">Revenue streams</div>
+                                        <div class="widget-heading">Token: <span class="nametoken"></span></div>
+                                        <div class="widget-subheading">Tokenes activos por cupon</div>
                                     </div>
                                     <div class="widget-content-right">
-                                        <div class="widget-numbers text-warning"><span>$14M</span></div>
+                                        <div class="widget-numbers text-white"><span id="cantCuponsActivosByCupon">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-6 ByCupon fade">
+                            <div class="card mb-3 widget-content bg-premium-dark">
+                                <div class="widget-content-wrapper text-white">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Token: <span class="nametoken"></span></div>
+                                        <div class="widget-subheading">Tokenes inactivos por cupon</div>
+                                    </div>
+                                    <div class="widget-content-right">
+                                        <div class="widget-numbers text-white"><span id="cantCuponsinActivosByCupon">0</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -800,6 +976,40 @@
                                                         <canvas id="canvasstaticsweek"></canvas>
                                                         <canvas id="canvasstaticsfech_nac"></canvas>
                                                         <canvas id="canvasstaticsamount"></canvas>
+                                                        <!-- <canvas id="canvasdemo"></canvas> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-lg-6 ByCupon fade">
+                            <div class="mb-3 card">
+                                <div class="card-header-tab card-header-tab-animation card-header">
+                                    <div class="card-header-title">
+                                        <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                                        Rendimiento por Token 
+                                    </div>
+                                    <ul class="nav tabsstatics">
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'week', $.cookie('nametoken'))" class="active nav-link">Semana</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'adress', $.cookie('nametoken'))" class=" nav-link">Ubicacion</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'edad', $.cookie('nametoken'))" class="nav-link second-tab-toggle">Edad.</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'amount', $.cookie('nametoken'))" class="nav-link second-tab-toggle">Monto Fact.</a></li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="tabs-eg-77">
+                                            <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
+                                                <div class="widget-chat-wrapper-outer">
+                                                    <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
+                                                        <canvas id="canvasstaticsaddressByCupon"></canvas>
+                                                        <canvas id="canvasstaticsweekByCupon"></canvas>
+                                                        <canvas id="canvasstaticsfech_nacByCupon"></canvas>
+                                                        <canvas id="canvasstaticsamountByCupon"></canvas>
                                                         <!-- <canvas id="canvasdemo"></canvas> -->
                                                     </div>
                                                 </div>
@@ -903,5 +1113,9 @@
 
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
     <script type="text/javascript" src="./assets/scripts/main.js"></script> 
+    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

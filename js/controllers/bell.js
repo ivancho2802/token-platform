@@ -28,7 +28,6 @@
       })
     }; 
     Bell.prototype.bells = function() {
-
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/bell',
         type: 'GET',
@@ -66,7 +65,7 @@
     Bell.prototype.testbell = function(idbell) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
-        type: 'GET',
+        type: 'POST',
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8"
       })

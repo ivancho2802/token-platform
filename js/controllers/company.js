@@ -99,6 +99,24 @@
            headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
     }; 
+    // ver cupones
+    Company.prototype.tokens = function() {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/cuponesA',
+        type: 'GET',
+         contentType: "application/json; charset=utf-8",
+         headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    }; 
+    Company.prototype.staticsByToken = function(idtoken) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/staticsbytoken/'+idtoken,
+        type: 'GET',
+        // data : JSON.stringify(body),
+           contentType: "application/json; charset=utf-8",
+           headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    };  
     Company.prototype.solicitudHash = function(hash, context) {
       var k, v;
 

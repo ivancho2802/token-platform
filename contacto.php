@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
                     <div><a href="index.php">Inicio</a></div>
                     <div><a href="usuarios.html">Usuarios</a></div>
                     <div><a href="negocios.html">Negocios</a></div>
-                    <div><a href="blog.html">Blog</a></div>
+                    <div><a href="/blog">Blog</a></div>
                     <div><a href="contacto.php">Contacto</a></div>
                     <div><a href="iniciarsesion.php">Inicia Sesión</a></div>
                 </div>
@@ -46,94 +46,105 @@
         </div>
         <div id="usuarios_init">
             <div>
-                <h1>¡Crea una comunidad
-                    con TOKEN!</h1>
-                <p>
-                    Aumenta las visitas de 
-                    tu sitio físico, creando 
-                    increíbles descuentos,
-                    fidelizando a tus clientes
-                    por medio de tokens y 
-                    creando campañas de publicidad 
-                    para tu empresa, por medio 
-                    de la plataforma token.
-                </p>
+            <?php
+                if(isset($_POST['submit'])){
+                  // Aqui coloca los campos que quieres enviar por correo
+                  $email = $_POST['email'];    // 'email' es el name del input
+                  $nombre =  $_POST['nombre'];
+                  $apellido =  $_POST['apellido'];
+                  $mensaje =  $_POST['mensaje'];
+
+                  if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+
+                        $asunto = ''.$nombre.'quiere ponerse en contacto';
+                        $contenido = '
+                                <html>
+                                <head>
+                                <title></title>
+                                </head>
+                                <body>
+                                <hr>
+                                <h1> Citas - Clínica Sandiego Cúcuta</h1>
+                                <h6> www.clinicasandiegocucuta.com </h6>
+                                <hr>
+                                <p>'.$nombre.', esta interesado la aplicacion. <br>
+                                <br>
+                                Información de contacto:
+                                <br>
+                                    Identificación: '.$apellido.' <br>
+                                    Teléfono:  '.$email.' <br>
+                                    E-mail: '.$mensaje.' <br>
+                                </p>
+                                <hr>
+                                </body>
+                                </html>
+                            ';
+                        $headers = 'MIME-Version: 1.0' . "\r\n";
+                        $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+
+                        $send = mail('desarrollobarter@gmail.com',$asunto,$contenido,$headers);
+                        if($send){
+                            $miresultado = '<h4 class="ok_send">¡Tu solicitud ha sido enviada!</h4>';
+                        }else{
+                            $miresultado = '<h5>No se envío tu solicitud, intenta más tarde.</h5>';
+                        }
+                        }else{
+                        $miresultado = '<h5>Oops, el email no es valido.</h5>';
+                        }
+                    }
+
+
+                ?>
+                <h1>Conctacto</h1>
+                <form action="<?php $_SERVER['PHP_SELF']?>" method="POST" >
+                    <div>
+                        <div>
+                            <label for="">Nombre</label>
+                            <input name="nombre"  class="form-contact" type="text">
+                        </div>
+                        <div>
+                            <label name="apellido" for="">Apellidos</label>
+                            <input name="nombre"  class="form-contact" type="text">
+                        </div>
+                    </div>
+                    <div>
+                        <label  name="email" for="">Email</label>
+                        <input name="nombre"  class="form-contact" type="email">
+                    </div>
+                    <div>
+                        <label name="" for="">Escribe tu mensaje</label>
+                        <textarea  name="mensaje"  class="form-contact-text" rows="4" cols="10" type="text"> </textarea>
+                    </div>  
+                    <button type="submit" class="btn-contact">Enviar</button>
+                </form>
             </div>
             <div>
-                <img id="usr_phone" src="./sources/ce1.png" alt="">
+                <img id="usr_phone" src="./sources/ce2.png" alt="">
             </div>
         </div>
     </section>
-    <div id="video_container">
-        <video id="backvideo" autoplay loop >
-            <source src="./sources/video/chroma_phone.mp4" type="video/mp4">
-        </video>
-    </div>
-    <section id="usr_tkn">
-        <div>
-            <h3>¡Aumenta tus VENTAS</h3>
-            <h1>con TOKEN!</h1>
-            <p>
-                No te limites, haz parte de la innovación de TOKEN,
-                creando cupones y gift cards para atraer y fidelizar
-                a tus clientes. 
-            </p>
-        </div>
-        <img src="./sources/1x/Recurso 1.png" alt="">
-    </section>
-   <section id="usr_marcas">
-    <h1>Marcas que están en TOKEN</h1>
-     <div class="slider-objetivos">
-       <!-- Swiper -->
-        <div class="swiper-container">
-          <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 5.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 3.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 4.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 5.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 3.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 4.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="./sources/1x/Recurso 5.png" alt="">
-            </div>
-            </div>
-          </div>
-          <!-- Add Pagination -->
-          <!-- <div class="swiper-pagination"></div> -->
-        </div>
-     </div>
-   </section>
+    
+ 
+  
+    
    <section id="usr_descarga" >
  
     <div>
         <h1>Descubre los TOKENS
-            disponibles en la principales
+            disponibles en las principales
             plataformas</h1>
         <div>
             <img src="./sources/webToken-16.svg" alt="">
             <img src="./sources/webToken-18.svg" alt="">
         </div>
     </div>
-    <img src="./sources/cel1.png" alt="">
+    <img src="./sources/cel2.png" alt="">
 </section>
 
     <section id="footer">
         <div>
             <img src="./sources/webToken-11.png" alt="">
-            <p>Dorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm.</p>
+            <p>¡Disfruta de todos los servicios que token tiene para ti!</p>
         </div>
         <div>
             <form action="">
@@ -149,46 +160,7 @@
     <script src="./js/script.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
-    <script>
-
-
-        if (screen.width < 1024){
-        var swiper = new Swiper('.swiper-container', {
-            slidesPerView: 1,
-            spaceBetween: 10,
-            autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-            },
-            pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            },
-        });
-        }else if (screen.width < 1280) {
-        var swiper = new Swiper('.swiper-container', {
-            slidesPerView: 3,
-            spaceBetween: 5,
-            autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-            },
-            pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            },
-        });
-        }else{
-        var swiper = new Swiper('.swiper-container', {
-            slidesPerView: 4,
-            spaceBetween: 0,
-            autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-            },
-        });
-        }
-    </script>
+   
 
 <script>
     const colorSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
