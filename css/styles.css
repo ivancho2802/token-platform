@@ -1,22 +1,63 @@
-@font-face {
-  font-family: 'icomoon';
-  src: url("../fonts/icomoon/icomoon.eot?srf3rx");
-  src: url("../fonts/icomoon/icomoon.eot?srf3rx#iefix") format("embedded-opentype"), url("../fonts/icomoon/icomoon.ttf?srf3rx") format("truetype"), url("../fonts/icomoon/icomoon.woff?srf3rx") format("woff"), url("../fonts/icomoon/icomoon.svg?srf3rx#icomoon") format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;500&display=swap');
+
 /* =======================================================
 *
 * 	Template Style 
 *
 * ======================================================= */
-body {
-  font-family: "Oxygen", sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 1.7;
-  color: gray;
-  background: #e8e8e8;
+*{
+  margin: 0px;
+  padding: 0px;
+}
+:root {
+  --primary-color: #000000;
+  --bg-color: #ffffff;
+}
+
+[data-theme="dark"] {
+  --primary-color: #ffffff;
+  --bg-color: #000000;
+  --secondary-color: #EDCF64;
+}
+
+body{
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+}
+
+section{
+  font-family: 'Poppins', sans-serif;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+}
+
+#main{
+  flex-direction: column;
+}
+
+#navegacion > nav{
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+}
+#navegacion > nav > div > img{
+  width: 180px;
+}
+#enlaces{
+  display: flex;
+  color: var(--main-text);
+  margin-top: 25px;
+}
+#enlaces > div{
+  margin-right: 55px;
+}
+
+#enlaces > div > a{
+  color: var(--main-text);
+  text-decoration: none;    
 }
 
 #page {
@@ -104,34 +145,7 @@ h1, h2, h3, h4, h5, h6, figure {
     margin: 0;
   }
 }
-.fh5co-nav .top-menu {
-  padding: 34px 30px;
-}
-@media screen and (max-width: 768px) {
-  .fh5co-nav .top-menu {
-    padding: 28px 1em;
-  }
-}
-.fh5co-nav #fh5co-logo {
-  font-size: 24px;
-  margin: 0;
-  padding: 0;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-family: "Source Sans Pro", sans-serif;
-}
-.fh5co-nav #fh5co-logo a span {
-  color: #66D37E;
-}
-.fh5co-nav a {
-  padding: 5px 10px;
-  color: #000;
-}
-@media screen and (max-width: 768px) {
-  .fh5co-nav .menu-1 {
-    display: none;
-  }
-}
+
 .fh5co-nav ul {
   padding: 0;
   margin: 5px 0 0 0;

@@ -11,7 +11,6 @@
   //eventoi de escucha de tooglke
   $( document ).ready(function() {
   	const toggle = document.getElementById('toggle');
-
   	if(toggle)
   	toggle.addEventListener('change', changeTheme);
   });

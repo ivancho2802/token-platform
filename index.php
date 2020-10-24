@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
                     <div><a href="index.php">Inicio</a></div>
                     <div><a href="usuarios.html">Usuarios</a></div>
                     <div><a href="negocios.html">Negocios</a></div>
-                    <div><a href="blog.html">Blog</a></div>
+                    <div><a href="/blog/">Blog</a></div>
                     <div><a href="contacto.php">Contacto</a></div>
                     <div><a href="iniciarsesion.php">Inicia Sesión</a></div>
                 </div>
@@ -48,14 +48,22 @@
             <div>
                 <h1>Token</h1>
                 <p>
-                    Lorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm tempor incididunt ulabore et dolore magna aliqua.
+                    Es una aplicación móvil que te permitirá: 
+                    <br> <br>
+                    - Sí eres negocio, podrás compartir cupones 
+                    creando campañas publicitarias, mientras aumentas 
+                    tus ventas.
+                    <br> <br>
+                    - Sí eres usuario, podrás redimir cupones, comprar
+                    Gif Cards enviarlas por la aplicación o redimir tu
+                    regalo cuando desees.
                 </p>
                 <button>
                     Descargar
                 </button>
             </div>
             <div>
-                <img id="phone" src="./sources/webToken-19-02.png" alt="">
+                <img id="phone" src="./sources/ce2.png" alt="">
                 <img id="code" src="./sources/webToken-02.svg" alt="">
             </div>
         </div>
@@ -74,36 +82,33 @@
             <div>
                 <img src="./sources/webToken-14.svg" alt="">
                 <div>
-                    <h4>Seguridad extrema</h4>
-                    <p>Dorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm.</p>
+                    <h4>Seguridad</h4>
+                    <p>Con token tus datos personales y empresariales estarán protegidos, mientras disfrutas de la aplicación</p>
                 </div>
             </div>
             <div>
                 <img src="./sources/webToken-15.svg" alt="">
                 <div>
                     <h4>Soporte al cliente</h4>
-                    <p>Dorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm.</p>
+                    <p>Siempre que necesites resolver alguna duda, estaremos disponibles para ayudarte</p>
                 </div>
             </div>
         </div> 
     </section>
     <section id="beneficios">
-        <h2>¿Cómo podemos ayudarle?</h2>
+        <h2>Algunos de los beneficios que ofrecemos</h2>
         <div id="cards_beneficios">
             <div>
                 <img src="./sources/webToken-09.svg" alt="">
-                <p>Administración 
-                    simple</p>
+                <p>Aumentar tus ventas</p>
             </div>
             <div>
                 <img src="./sources/webToken-08.svg" alt="">
-                <p>Obtener pagos 
-                    fácilmente</p>
+                <p>Obtener cupones </p>
             </div>
             <div>
                 <img src="./sources/webToken-10.svg" alt="">
-                <p>Siempre
-                    disponible<z/p>
+                <p>Crear campañas<z/p>
             </div>
         </div>
         <div id="seek">
@@ -122,12 +127,12 @@
                 <img src="./sources/webToken-18.svg" alt="">
             </div>
         </div>
-        <img src="./sources/webToken-19-02.png" alt="">
+        <img src="./sources/cel2.png" alt="">
     </section>
     <section id="footer">
         <div>
             <img src="./sources/webToken-11.png" alt="">
-            <p>Dorem ipsum dolor sitamet, consectetur adipiscing elit, sed do eiusm.</p>
+            <p>¡Disfruta de todos los servicios que token tiene para ti!</p>
         </div>
         <div>
             <form action="">

@@ -38,7 +38,7 @@
                     <div><a href="index.php">Inicio</a></div>
                     <div><a href="usuarios.html">Usuarios</a></div>
                     <div><a href="negocios.html">Negocios</a></div>
-                    <div><a href="/blog">Blog</a></div>
+                    <div><a href="/blog/">Blog</a></div>
                     <div><a href="contacto.php">Contacto</a></div>
                     <div><a href="iniciarsesion.php">Inicia Sesión</a></div>
                 </div>
