@@ -46,26 +46,10 @@
             document.getElementById("datetime_campana").value = new Date();
             document.getElementById("fk_business").value = JSON.parse($.cookie("userData"))._id;
 
-            // fk_plantilla
+            // fk_plantilla 
+            getBells() 
 
-            bellier.bells()//JSON.parse($.cookie("userData"))._id
-            .then((response)=> {
-                console.log("bells")
-                console.log(response)
-                bellData = response; 
-                if(bellData.length)
-                document.getElementById("campanaslist").innerHTML = gerTableBells(bellData);
-
-                //cities
-                // companier.cities()
-                // .then((response)=> {
-                //     citiesData = response; 
-                //     document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
-                // }, 
-                // (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-            }, 
-            (err) =>{console.log("error solicitud.followers "+err)});
-
+            // crear bell
             document.getElementById("formbell").addEventListener('submit', function (event) { 
                 var valid = false
 
@@ -129,7 +113,7 @@
                 });
             });
 
-            //clientes 
+            //obtener clientes 
             companier.clients(JSON.parse($.cookie("userData"))._id)
             .then((response)=> {
                 usersData = response; 
@@ -145,9 +129,42 @@
             }, 
             (err) =>{console.log("error solicitud.followers "+err)});
 
-            
+            // obtener lista de usuarios
             getSegmentsUser();
         })
+
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                console.log(form)
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+
+                console.log(form)
+
+            }, false);
+        });
+        $(document).on("submit",".needs-validation",function(e){
+              e.preventDefault();
+              console.log("you can catch the event!");
+              //and do whatever you want.
+        }); 
+        // obtener campañas
+        function getBells(){
+            bellier.bells()//JSON.parse($.cookie("userData"))._id
+            .then((response)=> {
+                console.log("bells")
+                console.log(response)
+                bellData = response; 
+                if(bellData.length)
+                document.getElementById("campanaslist").innerHTML = gerTableBells(bellData);
+            }, 
+            (err) =>{console.log("error solicitud.followers "+err)});
+        }
         /**
         * obtener segmentos de usuarios  
         */
@@ -217,22 +234,8 @@
         } 
 
         function editBell (index){
-            var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-
             if(document.getElementById("formbelleditar"+index))
             document.getElementById("formbelleditar"+index).addEventListener('submit', function (event) { 
-                // console.log("event")
-                // console.log(event)
 
                 var valid = false
 
@@ -243,11 +246,11 @@
                     listasbell.push(els[i].value);
                   }
                 }
-                if(listasbell.length<1){
+                if(listasbell.length<=0){
                     document.getElementById("validlistuser"+index).innerHTML = "Debes definir una lista de usuarios."
                 }
 
-                valid = document.getElementById("bellid"+index).value && document.getElementById("name"+index).value && document.getElementById("datetime_campana"+index).value  && document.getElementById("terminos"+index).value && listasbell.length;
+                valid = document.getElementById("bellid"+index).value && document.getElementById("name"+index).value && document.getElementById("datetime_campana"+index).value  && document.getElementById("terminos"+index).checked && listasbell.length;
 
                 if(!valid)
                     return
@@ -275,7 +278,6 @@
                 console.log(body)
                 bellier.putbell(body)//JSON.parse($.cookie("userData"))._id
                 .then((response)=> {
-                    console.log(response)
                     if(response.length){
                         getSegmentsUser();
                         document.getElementById("campanaslist").innerHTML = gerTableBells(response);
@@ -298,11 +300,8 @@
 
             })
         }
-
+        // preparar lista de edicion de bells
         function showEdit(i ){
-            console.log(document.getElementById("defaultvalue0").checked)
-            console.log(document.getElementById("defaultvalue0").value)
-            console.log("clic")
             // userlistnew
             var els = document.getElementsByName('segmentlistnew2'+i);
             var els2 = document.getElementsByName("segmentlistold2"+i);
@@ -312,19 +311,14 @@
               }
             }
         }
-
+        // enviar bell por defecto
         function setBellDefault(idbell, index){
             bellier.putbelldefault(idbell)//JSON.parse($.cookie("userData"))._id
             .then((response)=> {
                 console.log(response)
                 if(response.length){
                     getSegmentsUser();
-                    document.getElementById("campanaslist").innerHTML = gerTableBells(response);
-                    document.getElementById("errorcampana").innerHTML = `
-                    <div class="alert alert-success fade show" role="alert">
-                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        Excelente Campaña creada con exito! 
-                    </div>`;
+                    document.getElementById("campanaslist").innerHTML = gerTableBells(response); 
                     document.getElementById("errorcampanabuton"+index).innerHTML = `
                     <div class="alert alert-success fade show" role="alert">
                         <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -335,40 +329,36 @@
             (err) =>{
                 console.log(err)
                 console.log("error solicitud.followers "+err)
-                document.getElementById("errorcampana").innerHTML = `
-                <div class="alert alert-warning fade show" role="alert">
-                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    Error en la solicitud!! ${err.responseJSON.msg}
-                </div>`;
                 document.getElementById("errorcampanabuton"+index).innerHTML = `
                 <div class="alert alert-warning fade show" role="alert">
                     <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                     Error en la solicitud!! ${err.responseJSON.msg}
-                </div>`;
+                </div>`; 
             });
         }
-
+        // probar campaña
         function testCampana(idbell){
+            console.log(idbell)
             bellier.testbell(idbell)//JSON.parse($.cookie("userData"))._id
             .then((response)=> {
                 console.log(response)
-                if(response.length){
-                    getSegmentsUser();
-                    document.getElementById("campanaslist").innerHTML = gerTableBells(response);
-                    document.getElementById("errorcampana"+index).innerHTML = `
+                    getBells()
+                    getSegmentsUser(); 
+
+                    document.getElementById("errorcampanabuton"+index).innerHTML = `
                     <div class="alert alert-success fade show" role="alert">
                         <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                         Campaña testeada con exito! 
                     </div>`;
-                }
             }, 
             (err) =>{
+                var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
                 console.log(err)
-                console.log("error solicitud.followers "+err)
-                document.getElementById("errorcampana"+index).innerHTML = `
+                console.log("error test  bell "+err)
+                document.getElementById("errorcampanabuton"+index).innerHTML = `
                 <div class="alert alert-warning fade show" role="alert">
                     <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    Error en la solicitud!! ${err.responseJSON.msg}
+                    Error en la solicitud!! ${errResult}
                 </div>`;
             });
         }
@@ -1042,7 +1032,8 @@
                                     <div class="main-card mb-3 card"> 
 
                                         <div class="card-header">
-                                            <i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>Usuario para la Campaña
+                                            <i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>
+                                            Usuario para la Campaña
                                             <div class="btn-actions-pane-right">
                                                 <div role="group" class="btn-group-sm nav btn-group">
                                                     <a data-toggle="tab" href="#userlist" class="btn-shadow active btn btn-primary">Listas</a>
@@ -1159,6 +1150,30 @@
                                         </div> 
                                     </div>
                                 </div>
+
+
+                                <div class="col-md-7">
+                                    <div class="main-card mb-3 card"> 
+
+                                        <div class="card-header">
+                                            <i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>
+                                            Contenido de las Campañas
+                                            <div class="btn-actions-pane-right">
+                                                <div role="group" class="btn-group-sm nav btn-group">
+                                                    <a data-toggle="tab" href="#smscreate" class="btn-shadow active btn btn-primary">Mensaje</a>
+                                                    <a data-toggle="tab" href="#emailcreate" class="btn-shadow   btn btn-primary">Email</a>
+                                                    <a data-toggle="tab" href="#noticreate" class="btn-shadow   btn btn-primary">Notificacion</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-content">
+                                            
+                                        </div>
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

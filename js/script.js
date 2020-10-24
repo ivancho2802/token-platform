@@ -375,6 +375,14 @@
                     </button>
                     `;
     } 
+    function configButtonBell(idbell, tested, index){
+      console.log(tested)
+      return !tested ? `
+                    <button type="button" data-toggle="collapse" class="btn btn-primary" disabled>Testear Campaña</button>
+                    `: `
+                    <button type="button" data-toggle="collapse" class="btn btn-primary" onclick="testCampana('${idbell}',  ${index})">Testear Campaña</button>
+                    `;
+    }
 
     var container="" , 
 
@@ -412,7 +420,7 @@
                             <div class="card-body">
                               <h5 class="card-title">Editar Campaña</h5>
 
-                              <form  class="needs-validation" novalidate  action="#" method="post"  id="formbelleditar${i}">
+                              <form  class="needs-validation" novalidate  action="#formbelleditar${i}" method="post"  id="formbelleditar${i}">
                                   <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label">Nombre</label>
                                       <div class="col-sm-8">
                                           <input name="name${i}" id="name${i}" placeholder="Nombre de la campaña" type="text" class="form-control" value="${bellsData[i].name}" required>
@@ -492,7 +500,7 @@
                                           <div class="col-sm-8">
                                               <div class="position-relative form-check">
                                                   <label class="form-check-label">
-                                                      <input name="terminos${i}" id="terminos${i}" type="checkbox" class="form-check-input" value="${bellsData[i].terminos}" required> 
+                                                      <input name="terminos${i}" id="terminos${i}" type="checkbox" class="form-check-input" value="terminos${i}" required> 
                                                       <label class="form-check-label" for="invalidCheck">
                                                           Acepto los terminos y condiciones
                                                       </label>
@@ -509,7 +517,7 @@
                                   <div class="position-relative row form-group"><label for="Nombre" class="col-sm-4 col-form-label"></label>
                                       <div class="col-sm-8">
                                           ${formatArray}
-                                          <div class="invalid-feedback" id="validlistuser${i}">
+                                          <div id="validlistuser${i}" style="color:red">
                                           </div>
                                       </div>
                                   </div>
@@ -521,9 +529,7 @@
                                           </div>
                                       </div>
                                   </div>
-
-                                  <div id="errorcampana">
-                                  </div>
+ 
 
                                   <div id="errorcampana${i}">
                                   </div>
@@ -663,7 +669,7 @@
                     <div class="d-block text-right card-footer">
                       <div id="errorcampanabuton${i}" class="btn-shadow mr-3 btn">
                       </div>
-                      <button type="button" data-toggle="collapse" class="btn btn-primary" onclick="testCampana(${bellsData[i]._id})">Testear Campaña</button>
+                      ${configButtonBell(bellsData[i]._id, bellsData[i].tested, i)}
                       ${defaultItem(bellsData[i].defaultvalue, bellsData[i]._id, i)}
                       <button type="button" data-toggle="collapse" href="#editar${i}" class="btn btn-warning" onclick="showEdit(${i})">Editar</button>
                     </div>  
