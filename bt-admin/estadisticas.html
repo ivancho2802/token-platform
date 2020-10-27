@@ -11,6 +11,8 @@
     <meta name="description" content="This is an example dashboard created using build-in elements and components.">
     <meta name="msapplication-tap-highlight" content="no"> 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link href="./main.css" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
     <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
@@ -73,13 +75,13 @@
                 // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
                 document.getElementById("cantCuponsActivos").innerHTML = response.acumCuponClientActivos.length;
                 document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-                if(groupStaticsvalue=='week'){
+                if(groupStaticsvalue=='genero'){
                     bodyStatics = groupByWeekStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                         document.getElementById("canvasstaticsaddress").style.display="none"; 
                         document.getElementById("canvasstaticsfech_nac").style.display="none";
                         document.getElementById("canvasstaticsamount").style.display="none";
-                        document.getElementById("canvasstaticsweek").style.display="block";
-                        var canvas = document.getElementById("canvasstaticsweek");
+                        document.getElementById("canvasstaticsgenero").style.display="block";
+                        var canvas = document.getElementById("canvasstaticsgenero");
                         if (canvas) {
                             var e = canvas.getContext("2d");
                             e.clearRect(0, 0, canvas.width, canvas.height);
@@ -104,8 +106,16 @@
                     .then((responsecity)=> {
                         citiesData = responsecity;
 
-                        bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        document.getElementById("canvasstaticsweek").style.display="none";
+                        var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+                        paramtime = paramTime.id.replace("tall", "")
+
+                        if(paramtime=="week")
+                        bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                        else if(paramtime=="day")
+                        bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                        else if(paramtime=="month")
+                        bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                        document.getElementById("canvasstaticsgenero").style.display="none";
                         document.getElementById("canvasstaticsfech_nac").style.display="none";
                         document.getElementById("canvasstaticsamount").style.display="none";
                         document.getElementById("canvasstaticsaddress").style.display="block";
@@ -130,12 +140,18 @@
                             }
                     }, 
                     (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-
-                        
                 }else if(groupStaticsvalue=="amount"){
-                    bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
+                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+                    paramtime = paramTime.id.replace("tall", "")
+
+                    if(paramtime=="week")
+                        bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                    else if(paramtime=="day")
+                        bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                    else if(paramtime=="month")
+                        bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                         document.getElementById("canvasstaticsaddress").style.display="none";
-                        document.getElementById("canvasstaticsweek").style.display="none";
+                        document.getElementById("canvasstaticsgenero").style.display="none";
                         document.getElementById("canvasstaticsfech_nac").style.display="none"; 
                         document.getElementById("canvasstaticsamount").style.display="block";
                     var canvas = document.getElementById("canvasstaticsamount");
@@ -159,9 +175,17 @@
                     }
                 }else if(groupStaticsvalue=="edad"){
 
-                    bodyStatics = groupByEdadStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+                    paramtime = paramTime.id.replace("tall", "")
+
+                    if(paramtime=="week")
+                    bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                    else if(paramtime=="day")
+                    bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                    else if(paramtime=="month")
+                    bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                         document.getElementById("canvasstaticsaddress").style.display="none";
-                        document.getElementById("canvasstaticsweek").style.display="none"; 
+                        document.getElementById("canvasstaticsgenero").style.display="none"; 
                         document.getElementById("canvasstaticsamount").style.display="none";
                         document.getElementById("canvasstaticsfech_nac").style.display="block";
                     var canvas = document.getElementById("canvasstaticsfech_nac");
@@ -190,7 +214,7 @@
             }, 
             (err) =>{console.log("error solicitud.balancesmsemail "+err)});
         }
-        groupStatics('week');
+        groupStatics('adress');
         /**
         *   ver estadisticas por activos - ver cupones activos
         */
@@ -230,8 +254,8 @@
                         document.getElementById("canvasstaticsaddressByCupon").style.display="none"; 
                         document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
                         document.getElementById("canvasstaticsamountByCupon").style.display="none";
-                        document.getElementById("canvasstaticsweekByCupon").style.display="block";
-                        var canvas = document.getElementById("canvasstaticsweekByCupon");
+                        document.getElementById("canvasstaticsgeneroByCupon").style.display="block";
+                        var canvas = document.getElementById("canvasstaticsgeneroByCupon");
                         if (canvas) {
                             var e = canvas.getContext("2d");
                             e.clearRect(0, 0, canvas.width, canvas.height);
@@ -257,7 +281,7 @@
                         citiesData = responsecity;
 
                         bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        document.getElementById("canvasstaticsweekByCupon").style.display="none";
+                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none";
                         document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
                         document.getElementById("canvasstaticsamountByCupon").style.display="none";
                         document.getElementById("canvasstaticsaddressByCupon").style.display="block";
@@ -282,12 +306,10 @@
                             }
                     }, 
                     (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-
-                        
                 }else if(groupStaticsvalue=="amount"){
                     bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
                         document.getElementById("canvasstaticsaddressByCupon").style.display="none";
-                        document.getElementById("canvasstaticsweekByCupon").style.display="none";
+                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none";
                         document.getElementById("canvasstaticsfech_nacByCupon").style.display="none"; 
                         document.getElementById("canvasstaticsamountByCupon").style.display="block";
                     var canvas = document.getElementById("canvasstaticsamountByCupon");
@@ -313,7 +335,7 @@
 
                     bodyStatics = groupByEdadStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                         document.getElementById("canvasstaticsaddressByCupon").style.display="none";
-                        document.getElementById("canvasstaticsweekByCupon").style.display="none"; 
+                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none"; 
                         document.getElementById("canvasstaticsamountByCupon").style.display="none";
                         document.getElementById("canvasstaticsfech_nacByCupon").style.display="block";
                     var canvas = document.getElementById("canvasstaticsfech_nacByCupon");
@@ -952,16 +974,23 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 col-lg-6">
-                            <div class="mb-3 card">
+                        <div class="col-md-10 col-lg-10">
+                            <div class="mb-10 card">
                                 <div class="card-header-tab card-header-tab-animation card-header">
                                     <div class="card-header-title">
                                         <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
-                                        Rendimiento de ventas 
+                                        Rendimiento de todos los tokens 
                                     </div>
+                                </div>
+                                <div class="card-header-tab card-header-tab-animation card-header">
+                                    <ul class="nav tabsstatics" id="timeAllToken" style="margin: 0;">
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('month')" class=" nav-link" id="tallmonth">Mensual</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('day')" class="nav-link second-tab-toggle" id="tallday">Diario.</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('week')" class="active nav-link" id="tallweek">Semanal</a></li>
+                                    </ul>
                                     <ul class="nav tabsstatics">
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('week')" class="active nav-link">Semana</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('adress')" class=" nav-link">Ubicacion</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('genero')" class="active nav-link" id="tallweek">Genero</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('adress')" class="active nav-link">Ubicacion</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('edad')" class="nav-link second-tab-toggle">Edad.</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('amount')" class="nav-link second-tab-toggle">Monto Fact.</a></li>
                                     </ul>
@@ -973,7 +1002,7 @@
                                                 <div class="widget-chat-wrapper-outer">
                                                     <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
                                                         <canvas id="canvasstaticsaddress"></canvas>
-                                                        <canvas id="canvasstaticsweek"></canvas>
+                                                        <canvas id="canvasstaticsgenero"></canvas>
                                                         <canvas id="canvasstaticsfech_nac"></canvas>
                                                         <canvas id="canvasstaticsamount"></canvas>
                                                         <!-- <canvas id="canvasdemo"></canvas> -->
@@ -994,7 +1023,7 @@
                                         Rendimiento por Token 
                                     </div>
                                     <ul class="nav tabsstatics">
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'week', $.cookie('nametoken'))" class="active nav-link">Semana</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'genero', $.cookie('nametoken'))" class="active nav-link">Semanal</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'adress', $.cookie('nametoken'))" class=" nav-link">Ubicacion</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'edad', $.cookie('nametoken'))" class="nav-link second-tab-toggle">Edad.</a></li>
                                         <li class="nav-item"><a href="javascript:void(0);" onclick="goTokenEstadistics($.cookie('idcupon'), 'amount', $.cookie('nametoken'))" class="nav-link second-tab-toggle">Monto Fact.</a></li>
@@ -1007,7 +1036,7 @@
                                                 <div class="widget-chat-wrapper-outer">
                                                     <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
                                                         <canvas id="canvasstaticsaddressByCupon"></canvas>
-                                                        <canvas id="canvasstaticsweekByCupon"></canvas>
+                                                        <canvas id="canvasstaticsgeneroByCupon"></canvas>
                                                         <canvas id="canvasstaticsfech_nacByCupon"></canvas>
                                                         <canvas id="canvasstaticsamountByCupon"></canvas>
                                                         <!-- <canvas id="canvasdemo"></canvas> -->
@@ -1112,10 +1141,7 @@
     </div>
 
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script type="text/javascript" src="./assets/scripts/main.js"></script> 
     <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

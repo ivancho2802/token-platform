@@ -106,11 +106,13 @@ function modalTokens(origin, tokens){
       </div>
     `;
     // console.log(document.getElementById("modals"))
+    $( document ).ready(function() {
 
-    $('#modalTokens').on('shown.bs.modal', function () {
-      // $('#myInput').trigger('focus')
+      $('#modalTokens').on('shown.bs.modal', function () {
+        // $('#myInput').trigger('focus')
+      })
+      $('#modalTokens').modal('show')
     })
-    $('#modalTokens').modal('show')
 }
 
 function comparedates(product){
