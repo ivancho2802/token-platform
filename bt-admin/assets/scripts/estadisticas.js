@@ -43,9 +43,42 @@ function modalTokens(origin, tokens){
                         <tbody id="tokenstable">
   	`;
 	for (var i = 0; i < tokens.length; i++) {
+        if(origin){
+          if(tokens[i].status == origin && comparedates(tokens[i].fecha_final)){
+            body+=`
+                          <tr class="${(i % 2 == 0) ? 'colorbarter' : 'colorbarter2'}">
+                              <td class="text-center text-muted">${i}</td>
+                              <td>
+                                  <div class="widget-content p-0">
+                                      <div class="widget-content-wrapper">
+                                          <div class="widget-content-left mr-3">
+                                              <div class="widget-content-left">
+                                                ${imgItem(tokens[i].urimagen, i)}
+                                              </div>
+                                          </div> 
+                                      </div>
+                                  </div>
+                              </td>
 
-      	if(tokens[i].status == origin && comparedates(tokens[i].fecha_final)){
-      		body+=`
+                              <td class="text-center"><h5><b>${tokens[i].nombre}</b></h5></td>
+                              <td class="text-center"><h5 class="ion-no-margin ion-no-padding"><b>${format(tokens[i].amount)}</b></h5>
+                              </td>
+                              <td class="text-center">
+                                  <label class="text-mini">
+                                V: ${tokens[i].fecha_final}
+                              </label>
+                              </td>
+                              <td class="text-center">
+                                  <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</button>
+                              </td>
+                          </tr>  
+   
+            `;
+          }
+        }
+        else
+        if(!tokens[i].status || !comparedates(tokens[i].fecha_final)){
+          body+=`
                         <tr class="${(i % 2 == 0) ? 'colorbarter' : 'colorbarter2'}">
                             <td class="text-center text-muted">${i}</td>
                             <td>
@@ -53,7 +86,7 @@ function modalTokens(origin, tokens){
                                     <div class="widget-content-wrapper">
                                         <div class="widget-content-left mr-3">
                                             <div class="widget-content-left">
-                                            	${imgItem(tokens[i].urimagen, i)}
+                                              ${imgItem(tokens[i].urimagen, i)}
                                             </div>
                                         </div> 
                                     </div>
@@ -65,16 +98,16 @@ function modalTokens(origin, tokens){
                             </td>
                             <td class="text-center">
                                 <label class="text-mini">
-	                        		V: ${tokens[i].fecha_final}
-                        		</label>
+                              V: ${tokens[i].fecha_final}
+                            </label>
                             </td>
                             <td class="text-center">
                                 <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</button>
                             </td>
                         </tr>  
  
-      		`;
-      	}
+          `;
+        }
 	}
 
 	body+=`

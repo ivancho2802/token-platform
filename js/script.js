@@ -794,6 +794,116 @@
       // console.log(formatgroups);
       return formatgroups.reverse()
     }
+    var arrayDayWeek = ["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]
+    function compareDateWeek(dateanalice){
+
+      var curr = new Date; // get current date
+      var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+      var last = first + 6; // last day is the first day + 6
+      var dateloop
+
+      var firstday = new Date(curr.setDate(first));
+      var lastday = new Date(curr.setDate(last));
+      let dayInMillis=24*3600000;
+      var aux="", n=0, init=0
+
+      n=0;
+      init=0;
+      n = last+1;
+      init= first+1;
+      dateanalice = new Date(dateanalice)
+      dateloop = firstday
+      firstday = new Date(curr.setDate(first+1));
+      for (var i = init; i < n; i++) {
+        dateloop = new Date(dateloop.setDate(dateloop.getDate() + 1));
+        // console.log("-------------------->>")
+        // console.log(dateanalice > firstday )
+        // console.log(Math.floor(dateanalice.getTime()/dayInMillis) == Math.floor(dateloop.getTime()/dayInMillis))
+        // console.log("-------------------->>")
+        // console.log(dateanalice)
+        // console.log(dateloop)
+        // console.log("--------------------<")
+        // console.log(Math.floor(dateanalice.getTime()/dayInMillis)+" - "+Math.floor(dateloop.getTime()/dayInMillis))
+        if(dateanalice > firstday && (Math.floor(dateanalice.getTime()/dayInMillis) == Math.floor(dateloop.getTime()/dayInMillis)))
+          return dateanalice
+      }
+    }
+    function groupByDayWeek(statics){
+      // firstday
+      // "Sun, 06 Mar 2011 12:25:40 GMT"
+      // lastday
+      // "Sat, 12 Mar 2011 12:25:40 GMT"
+
+      const groups = statics.reduce((acc, data) => {
+        // create a composed key: 'year-week' 
+        // console.log(compareDateWeek(data.update_date))
+        if(compareDateWeek(data.update_date))
+        var dayweek = arrayDayWeek[compareDateWeek(data.update_date).getDay()-1];
+        else
+        var dayweek = "Date Old";
+        
+        // add this key as a property to the result object
+        if (!acc[dayweek]) {
+          acc[dayweek] = [];
+        }
+        
+        // push the current date that belongs to the year-week calculated befor
+        acc[dayweek].push(data);
+
+        return acc;
+
+      }, {});
+
+      var formatgroups = [], key=[], value=[]
+
+      for (var i = 0; i < Object.keys(groups).length; i++) {
+        key = Object.keys(groups)[i];
+        value = Object.values(groups)[i];
+        formatgroups.push({dayweek: key, data: value})
+      }
+      // console.log(formatgroups);
+      return formatgroups.reverse()
+    }
+    var arrayMonthAll = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Dicembre"]
+    var curr = new Date; // get current date
+    var arrayMonth=[]
+    var mes = moment(curr).month();
+    for (var j = mes-3; j < mes; j++){
+      arrayMonth.push({value: j, label: arrayMonthAll[j+1]});
+    } 
+    function groupByMonth(statics){
+      var curr = new Date; // get current date
+      var mesend = curr.getMonth(); // First day is the day of the month - the day of the week
+      var mesinit = mesend-3; // First day is the day of the month - the day of the week
+
+      const groups = statics.reduce((acc, data) => {
+        const mesloop = moment(data.update_date).month()
+        // create a composed key: 'year-week' 
+        // console.log(mesloop +" > "+mesinit+" "+mesloop +" <= "+mesend)
+        const Month = (mesloop > mesinit && mesloop <= mesend)? `${moment(data.update_date).year()}-${moment(data.update_date).month()}`:'Data Long';
+        
+        // add this key as a property to the result object
+        if (!acc[Month]) {
+          acc[Month] = [];
+        }
+        
+        // push the current date that belongs to the year-week calculated befor
+        acc[Month].push(data);
+
+        return acc;
+
+      }, {});
+
+      var formatgroups = [], key=[], value=[]
+
+      for (var i = 0; i < Object.keys(groups).length; i++) {
+        key = Object.keys(groups)[i];
+        value = Object.values(groups)[i];
+        formatgroups.push({month: key, data: value})
+      }
+      // console.log(formatgroups);
+      return formatgroups.reverse()
+    }
     function groupByWeekStatics(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan){
 
       var auxScan,  auxVenc,  auxAct , 
@@ -872,6 +982,7 @@
 
       return bodyStatics
     }
+    // group por address 
     function groupByAdress(statics, cities){
       const groups = statics.reduce((acc, data) => {
 
@@ -899,7 +1010,6 @@
       return formatgroups.reverse()
     } 
     function groupByAdressStaticsWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan, citiesData){
-
 
       var auxScan,  auxVenc,  auxAct , 
       dates = [], 
@@ -944,6 +1054,10 @@
                 dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
               } 
             }
+            // else if(!labelsStatics.find(element => element.includes("Semana "+i)) ){
+            //     labelsStatics.push("Semana "+i);
+            //     dataCuponsClienteActivo.push(0)
+            // }
           });
 
           if(cuponsClienteScan.length)
@@ -959,11 +1073,15 @@
                 dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
               }
             }
+            // else if(!labelsStatics.find(element => element.includes("Semana "+i)) ){
+            //     labelsStatics.push("Semana "+i);
+            //     dataCuponsClienteScan.push(0)
+            // }
           });
 
           if(cuponsClienteVencido.length)
           cuponsClienteVencido.forEach(semana => {
-            if(element.week.split('-').pop() == i){
+            if(semana.week.split('-').pop() == i){
               // labelsStatics.push("Semana "+i);
               var cuponclienteedad = []
               cuponclienteedad = groupByAdress(semana.data) ? groupByAdress(semana.data) :[]
@@ -974,10 +1092,222 @@
                 dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
               }
             }
+            // else if(!labelsStatics.find(element => element.includes("Semana "+i)) ){
+            //     labelsStatics.push("Semana "+i);
+            //     dataCuponsClienteVencido.push(0)
+            // }
           });
+          if(!labelsStatics.find(e => e.includes("Semana "+i))  ){
+            labelsStatics.push("Semana "+i);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
       } 
       //init de semana en cero
-      // labelsStatics.push("Semana "+(i)+ " - Edad: "+ 0);
+      labelsStatics.push("Semana "+i);
+      dataCuponsClienteVencido.push(0)
+      dataCuponsClienteScan.push(0)
+      dataCuponsClienteActivo.push(0)
+      // labelsStatics.push("Semana "+(i)+ " - Edad: "+ 0); 
+
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByAdressStaticsDayWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan, citiesData){
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+                var cuponclienteedad = []
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByDayWeek(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByDayWeek(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByDayWeek(acumCuponClientScan)
+      }
+      console.log(cuponsClienteActivo)
+      console.log(cuponsClienteVencido)
+      console.log(cuponsClienteScan) 
+
+      for (var i = 0; i < arrayDayWeek.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(element => {
+            // console.log(arrayDayWeek[i]+" - "+element.dayweek)
+            if(element.dayweek == arrayDayWeek[i]){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+ 
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(element.dayweek+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+              }
+            }
+            // else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+            //     labelsStatics.push(arrayDayWeek[i]);
+            //     dataCuponsClienteActivo.push(0)
+            // }
+          }); 
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(element.dayweek+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+              } 
+            }  
+            // else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+            //     labelsStatics.push(arrayDayWeek[i]);
+            //     dataCuponsClienteScan.push(0)
+            // }
+          });
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(element.dayweek+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+              }  
+            }  
+            // else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+            //     labelsStatics.push(arrayDayWeek[i]);
+            //     dataCuponsClienteVencido.push(0)
+            // }
+          });
+
+          if(!labelsStatics.find(e => e.includes(arrayDayWeek[i]))  ){
+            labelsStatics.push(arrayDayWeek[i]);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
+      }  
+      //init de semana en cero 
+      // dataCuponsClienteVencido.push(0)
+      // dataCuponsClienteScan.push(0)
+      // dataCuponsClienteActivo.push(0)
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByAdressStaticsMonth(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan, citiesData){
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+                var cuponclienteedad = []
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByMonth(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByMonth(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByMonth(acumCuponClientScan)
+      }
+
+      for (var i = 0; i < arrayMonth.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+ 
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+              }
+            } 
+          }); 
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+              } 
+            } 
+          });
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByAdress(element.data) ? groupByAdress(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Ubicacion: "+ cuponclienteedad[j].address);
+                dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+              }  
+            }   
+          });
+          if(!labelsStatics.find(e => e.includes(arrayMonth[i].label))  ){
+            labelsStatics.push(arrayMonth[i].label);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
+      }  
+      console.log(arrayMonth[i-1].value+1)
+      //init de semana en cero
+      labelsStatics.push(arrayMonthAll[(arrayMonth[i-1].value+1)]);
       dataCuponsClienteActivo.push(0)
       dataCuponsClienteScan.push(0)
       dataCuponsClienteVencido.push(0)
@@ -1002,6 +1332,7 @@
 
       return bodyStatics
     }
+    // group por edad 
     function groupByEdad(statics){
       const groups = statics.reduce((acc, data) => {
         var fecha_nac = data.fk_cliente ? data.fk_cliente.fecha_nac ? getEdad(data.fk_cliente.fecha_nac): "No Data": "No Data";
@@ -1057,8 +1388,6 @@
 
       semanaMayor = Math.max.apply(null, dates);
       semanaMenor = Math.min.apply(null, dates);
-      // var formatsemanaMayor = '2020'
-
 
       for (var i = semanaMenor; i < semanaMayor+1; i++) {
 
@@ -1093,7 +1422,7 @@
 
           if(cuponsClienteVencido.length)
           cuponsClienteVencido.forEach(semana => {
-            if(element.week.split('-').pop() == i){
+            if(semana.week.split('-').pop() == i){
               // labelsStatics.push("Semana "+i);
               var cuponclienteedad = []
               cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
@@ -1105,9 +1434,227 @@
               }
             }
           });
+
+          if(!labelsStatics.find(e => e.includes("Semana "+i))  ){
+            labelsStatics.push("Semana "+i);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
+      } 
+      //init de semana en cero
+      labelsStatics.push("Semana "+(i));
+      dataCuponsClienteVencido.push(0)
+      dataCuponsClienteScan.push(0)
+      dataCuponsClienteActivo.push(0) 
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByEdadStaticsDayWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan){
+
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+                var cuponclienteedad = []
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByDayWeek(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByDayWeek(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByDayWeek(acumCuponClientScan)
+      }
+      // var formatsemanaMayor = '2020'
+
+      for (var i = 0; i < arrayDayWeek.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(semana => {
+            if(semana.dayweek == arrayDayWeek[i]){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+              } 
+            } else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+                labelsStatics.push(arrayDayWeek[i]);
+                dataCuponsClienteActivo.push(0)
+            }
+          });
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(semana => {
+            if(semana.dayweek == arrayDayWeek[i]){ 
+              var cuponclienteedad = []
+              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+              }
+            } else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+                labelsStatics.push(arrayDayWeek[i]);
+                dataCuponsClienteScan.push(0)
+            }
+          });
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(semana => {
+            if(semana.dayweek == arrayDayWeek[i]){ 
+              // labelsStatics.push("Semana "+i);
+              var cuponclienteedad = []
+              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+              
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+              }
+            } else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+                labelsStatics.push(arrayDayWeek[i]);
+                dataCuponsClienteVencido.push(0)
+            }
+          });
+
+          if(!labelsStatics.find(e => e.includes(arrayDayWeek[i]))  ){
+            labelsStatics.push(arrayDayWeek[i]);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
       } 
       //init de semana en cero
       // labelsStatics.push("Semana "+(i)+ " - Edad: "+ 0);
+      // dataCuponsClienteActivo.push(0)
+      // dataCuponsClienteScan.push(0)
+      // dataCuponsClienteVencido.push(0)
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByEdadStaticsMonth(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan){
+
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+                var cuponclienteedad = []
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByMonth(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByMonth(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByMonth(acumCuponClientScan)
+      }
+      // var formatsemanaMayor = '2020'
+
+      for (var i = 0; i < arrayMonth.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(semana => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+              } 
+            }
+          });
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(semana => {
+            if(semana.dayweek == arrayDayWeek[i]){ 
+              var cuponclienteedad = []
+              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+              }
+            } 
+          });
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(semana => {
+            if(semana.dayweek == arrayDayWeek[i]){ 
+              // labelsStatics.push("Semana "+i);
+              var cuponclienteedad = []
+              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+              
+              if(cuponclienteedad.length)
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+              }
+            } else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
+                labelsStatics.push(arrayDayWeek[i]);
+                dataCuponsClienteActivo.push(0)
+            }
+          });
+
+          if(!labelsStatics.find(e => e.includes(arrayMonth[i].label))  ){
+            labelsStatics.push(arrayMonth[i].label);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
+      } 
+      // console.log(arrayMonth[i-1].value+1)
+      //init de semana en cero
+      labelsStatics.push(arrayMonthAll[(arrayMonth[i-1].value+1)]);
       dataCuponsClienteActivo.push(0)
       dataCuponsClienteScan.push(0)
       dataCuponsClienteVencido.push(0)
@@ -1131,7 +1678,7 @@
       }
 
       return bodyStatics
-    }
+    } 
     // group por mounto 
     function groupByAmountStaticsWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan, paramtime){
       function acumAmount(cuponcliente){
@@ -1177,8 +1724,7 @@
 
           if(cuponsClienteActivo.length)
           cuponsClienteActivo.forEach(element => {
-              if(element.week.split('-').pop() == i){
-                console.log(format(acumAmount(element.data)).toString())
+              if(element.week.split('-').pop() == i){ 
                 dataCuponsClienteActivo.push((acumAmount(element.data)))
               }
           });
@@ -1202,8 +1748,89 @@
           });
           if(!dataCuponsClienteVencido[j])
               dataCuponsClienteVencido.push(0)
-          j++;
+          j++; 
       }
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    } 
+    function groupByAmountStaticsDayWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan, paramtime){
+      function acumAmount(cuponcliente){
+        var amount=0
+        if(cuponcliente.length)
+          for (var i = 0; i < cuponcliente.length; i++) {
+            amount+=cuponcliente[i].fk_cupones.amount
+          }
+          return (amount)
+      }
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[];
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByDayWeek(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByDayWeek(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByDayWeek(acumCuponClientScan)
+      } 
+
+      var j = 0
+      for (var i = 0; i < arrayDayWeek.length; i++) {
+
+          labelsStatics.push(arrayDayWeek[i]);
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+              dataCuponsClienteActivo.push((acumAmount(element.data)))
+            }
+          });
+          if(!dataCuponsClienteActivo[j])
+              dataCuponsClienteActivo.push(0)
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+              dataCuponsClienteScan.push(acumAmount(element.data))
+            }
+          });
+          if(!dataCuponsClienteScan[j])
+              dataCuponsClienteScan.push(0)
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+              dataCuponsClienteVencido.push(acumAmount(element.data))
+            }
+          });
+          if(!dataCuponsClienteScan[j])
+              dataCuponsClienteScan.push(0)
+        j++;
+      } 
+      //init de semana en cero
 
       bodyStatics = {
           labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
@@ -1277,56 +1904,247 @@
       semanaMayor = Math.max.apply(null, dates);
       semanaMenor = Math.min.apply(null, dates);
       // var formatsemanaMayor = '2020'
-
-
       for (var i = semanaMenor; i < semanaMayor+1; i++) {
 
-          if(cuponsClienteActivo.length)
-          cuponsClienteActivo.forEach(semana => {
-            if(semana.week.split('-').pop() == i){
-              cuponclienteedad = []
-              cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+        if(cuponsClienteActivo.length)
+        cuponsClienteActivo.forEach(semana => {
+          if(semana.week.split('-').pop() == i){
+            cuponclienteedad = []
+            cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
 
-              if(cuponclienteedad.length)
+            if(cuponclienteedad.length)
+            for (var j = 0; j < cuponclienteedad.length; j++) {
+              labelsStatics.push("Semana "+i+ " - Genero: "+ cuponclienteedad[j].genero);
+              dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+            } 
+          }
+        });
+
+        if(cuponsClienteScan.length)
+        cuponsClienteScan.forEach(semana => {
+          if(semana.week.split('-').pop() == i){
+            // labelsStatics.push("Semana "+i);
+            var cuponclienteedad = []
+            cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+
+            if(cuponclienteedad.length)
+            for (var j = 0; j < cuponclienteedad.length; j++) {
+              labelsStatics.push("Semana "+i+ " - Genero: "+ cuponclienteedad[j].genero);
+              dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+            }
+          }
+        });
+
+        if(cuponsClienteVencido.length)
+        cuponsClienteVencido.forEach(semana => {
+          if(semana.week.split('-').pop() == i){
+            // labelsStatics.push("Semana "+i);
+            var cuponclienteedad = []
+            cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+            
+            if(cuponclienteedad.length)
+            for (var j = 0; j < cuponclienteedad.length; j++) {
+              labelsStatics.push("Semana "+i+ " - Genero: "+ cuponclienteedad[j].genero);
+              dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+            }
+          }
+        });
+
+        if(!labelsStatics.find(e => e.includes("Semana "+i))  ){
+          labelsStatics.push("Semana "+i);
+          dataCuponsClienteVencido.push(0)
+          dataCuponsClienteScan.push(0)
+          dataCuponsClienteActivo.push(0)
+        }
+      } 
+      //init de semana en cero
+      labelsStatics.push("Semana "+(i+1)+ " - Edad: "+ 0);
+      dataCuponsClienteActivo.push(0)
+      dataCuponsClienteScan.push(0)
+      dataCuponsClienteVencido.push(0)
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByGeneroStaticsDayWeek(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan){
+
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+      var cuponclienteedad = []
+
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByDayWeek(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByDayWeek(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByDayWeek(acumCuponClientScan)
+      } 
+
+      for (var i = 0; i < arrayDayWeek.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
+
               for (var j = 0; j < cuponclienteedad.length; j++) {
-                labelsStatics.push("Semana "+i+ " - Edad: "+ cuponclienteedad[j].genero);
+                labelsStatics.push(element.dayweek+ " - Genero: "+ cuponclienteedad[j].genero);
                 dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
               } 
-            }
-          });
+            } 
+          }); 
 
           if(cuponsClienteScan.length)
-          cuponsClienteScan.forEach(semana => {
-            if(semana.week.split('-').pop() == i){
-              // labelsStatics.push("Semana "+i);
-              var cuponclienteedad = []
-              cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+          cuponsClienteScan.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
 
-              if(cuponclienteedad.length)
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
               for (var j = 0; j < cuponclienteedad.length; j++) {
-                labelsStatics.push("Semana "+i+ " - Edad: "+ cuponclienteedad[j].genero);
+                labelsStatics.push(element.dayweek+ " - Genero: "+ cuponclienteedad[j].genero);
                 dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
-              }
-            }
+              } 
+            } 
           });
 
           if(cuponsClienteVencido.length)
-          cuponsClienteVencido.forEach(semana => {
-            if(element.week.split('-').pop() == i){
-              // labelsStatics.push("Semana "+i);
-              var cuponclienteedad = []
-              cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
-              
-              if(cuponclienteedad.length)
+          cuponsClienteVencido.forEach(element => {
+            if(element.dayweek == arrayDayWeek[i]){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
               for (var j = 0; j < cuponclienteedad.length; j++) {
-                labelsStatics.push("Semana "+i+ " - Edad: "+ cuponclienteedad[j].genero);
+                labelsStatics.push(element.dayweek+ " - Genero: "+ cuponclienteedad[j].genero);
                 dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
-              }
-            }
+              } 
+            }  
           });
+
+          if(!labelsStatics.find(e => e.includes(arrayDayWeek[i]))  ){
+            labelsStatics.push(arrayDayWeek[i]);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
+      }  
+
+      bodyStatics = {
+          labels: labelsStatics,//["Semana: 40", "Semana: 41", "Semana: 42"],//
+          datasets: [{//staticsHomeData
+              label: "Redimidos",
+              backgroundColor: "#3ac47d",//window.chartColors.red,
+              data: dataCuponsClienteScan//[6, 0, 0]//
+          }, {
+              label: "Activos",
+              backgroundColor: "#16aaff",//window.chartColors.blue,
+              data: dataCuponsClienteActivo//[4, 5, 3] // 
+          } , {
+              label: "Vencidos",
+              backgroundColor: "#d92550",//window.chartColors.blue,
+              data: dataCuponsClienteVencido//[4, 5, 3]//
+          } 
+          ]
+      }
+
+      return bodyStatics
+    }
+    function groupByGeneroStaticsMonth(acumCuponClientActivos, acumCuponClientActivosVencido, acumCuponClientScan){
+
+      var auxScan,  auxVenc,  auxAct , 
+      dates = [], 
+      semanaMayor,  semanaMenor, 
+      labelsStatics =[], 
+      dataCuponsClienteScan=[],   dataCuponsClienteVencido=[],   dataCuponsClienteActivo=[],
+      cuponsClienteActivo=[],   cuponsClienteScan=[],   cuponsClienteVencido=[]; 
+      var cuponclienteedad = []
+      console.log(acumCuponClientScan)
+      if(acumCuponClientActivos.length){
+        cuponsClienteActivo = groupByMonth(acumCuponClientActivos)
+      }
+      if(acumCuponClientActivosVencido.length){
+        cuponsClienteVencido = groupByMonth(acumCuponClientActivosVencido)
+      }
+      if(acumCuponClientScan.length){
+        cuponsClienteScan = groupByMonth(acumCuponClientScan)
+      } 
+      console.log(arrayMonth)
+      for (var i = 0; i < arrayMonth.length; i++) {
+
+          if(cuponsClienteActivo.length)
+          cuponsClienteActivo.forEach(element => {
+            console.log((!labelsStatics.find(ele => ele.includes(arrayMonth[i].label)) ))
+
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
+
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Genero: "+ cuponclienteedad[j].genero);
+                dataCuponsClienteActivo.push(cuponclienteedad[j].data.length)
+              }
+            }  
+          });  
+
+          if(cuponsClienteScan.length)
+          cuponsClienteScan.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Genero: "+ cuponclienteedad[j].genero);
+                dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
+              } 
+            }  
+          }); 
+
+          if(cuponsClienteVencido.length)
+          cuponsClienteVencido.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
+              cuponclienteedad = []
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
+              for (var j = 0; j < cuponclienteedad.length; j++) {
+                labelsStatics.push(arrayMonth[i].label+ " - Genero: "+ cuponclienteedad[j].genero);
+                dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
+              } 
+            } 
+          });
+          if(!labelsStatics.find(e => e.includes(arrayMonth[i].label))  ){
+            labelsStatics.push(arrayMonth[i].label);
+            dataCuponsClienteVencido.push(0)
+            dataCuponsClienteScan.push(0)
+            dataCuponsClienteActivo.push(0)
+          }
       } 
       //init de semana en cero
-      // labelsStatics.push("Semana "+(i)+ " - Edad: "+ 0);
+      console.log(arrayMonth[i-1].value+1)
+      //init de semana en cero
+      labelsStatics.push(arrayMonthAll[(arrayMonth[i-1].value+1)]);
       dataCuponsClienteActivo.push(0)
       dataCuponsClienteScan.push(0)
       dataCuponsClienteVencido.push(0)
