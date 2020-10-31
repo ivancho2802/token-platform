@@ -11,8 +11,8 @@
     <meta name="description" content="This is an example dashboard created using build-in elements and components.">
     <meta name="msapplication-tap-highlight" content="no"> 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
     <link href="./main.css" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
     <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
@@ -413,10 +413,17 @@
             }, 
             (err) =>{console.log("error companier.branchs "+err)});
         }
+        $('#modalTokens').on('shown.bs.modal', function () {
+                console.log("veo el modal")
+
+        });
+
         /**
         *   ver estadisticas por  e inactivos
         */
-        function listCuponesinAct(){
+        function listCuponesinAct(){ 
+
+
             console.log("staticsinactivos")
             companier.tokens()
             .then((response)=> { 
@@ -427,8 +434,12 @@
         } 
     </script>
 </head>
-<body>
-    <div id="modals"></div>
+<body> 
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalTokens">
+        <div class="modal-dialog modal-lg" role="document" id="modalTokensContent">
+            
+        </div>
+    </div>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
@@ -901,7 +912,7 @@
             <div class="app-main__outer">
                 <div class="app-main__inner">
                     <div class="app-page-title">
-                        <div class="page-title-wrapper">
+                        <div class="page-title-wrapper"> 
                             <div class="page-title-heading">
                                 <div class="page-title-icon">
                                     <i class="pe-7s-car icon-gradient bg-mean-fruit">
@@ -910,7 +921,7 @@
                                 <div> Estadísticas
                                     <div class="page-title-subheading">Sigue el rendimientos y los resultados de las campañas que realizas.
                                     </div>
-                                </div>
+                                </div>  
                             </div>
                             <div class="page-title-actions">
                                     <button type="button" data-toggle="tooltip" title="Sucursal por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
@@ -968,7 +979,7 @@
                     </div>            
                     <div class="row">
                         <div class="col-md-6 col-xl-6">
-                            <div class="card mb-3 widget-content bg-midnight-bloom" id="staticsactivos" onclick="listCuponesAct()">
+                            <div class="card mb-3 widget-content bg-midnight-bloom" id="staticsactivos" data-toggle="modal" data-target="#modalTokens" onclick="listCuponesAct()">
                                 <div class="widget-content-wrapper text-white">
                                     <div class="widget-content-left">
                                         <div class="widget-heading">Activos</div>
@@ -981,7 +992,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 col-xl-6">
-                            <div class="card mb-3 widget-content bg-arielle-smile" id="staticsinactivos" onclick="listCuponesinAct()" >
+                            <div class="card mb-3 widget-content bg-arielle-smile" id="staticsinactivos" data-toggle="modal" data-target="#modalTokens"  onclick="listCuponesinAct()">
                                 <div class="widget-content-wrapper text-white">
                                     <div class="widget-content-left">
                                         <div class="widget-heading">Inactivos</div>
@@ -1189,11 +1200,11 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="../js/script.js"></script>
+    <script type="text/javascript" src="./assets/scripts/main.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
     <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
 
-    <script type="text/javascript" src="./assets/scripts/main.js"></script>
-    <script type="text/javascript" src="../js/script.js"></script>
 
 </body>
 </html>

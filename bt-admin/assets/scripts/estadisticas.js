@@ -25,6 +25,8 @@ function modalTokens(origin, tokens){
                 </div>
   			`;
   	}
+
+
   	body+=`
 
 
@@ -117,9 +119,7 @@ function modalTokens(origin, tokens){
         </div>
     `;
 
-    document.getElementById("modals").innerHTML = `
-      <div class="modal fade" tabindex="-1" role="dialog" id="modalTokens">
-        <div class="modal-dialog modal-lg" role="document">
+    document.getElementById("modalTokensContent").innerHTML = `
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">${header}</h5>
@@ -135,17 +135,16 @@ function modalTokens(origin, tokens){
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
           </div>
-        </div>
-      </div>
     `;
     // console.log(document.getElementById("modals"))
-    $( document ).ready(function() {
+    // $( document ).ready(function() {
 
-      $('#modalTokens').on('shown.bs.modal', function () {
-        // $('#myInput').trigger('focus')
-      })
-      $('#modalTokens').modal('show')
-    })
+    //   $('#modalTokens').on('shown.bs.modal', function () {
+    //     // $('#myInput').trigger('focus')
+    //     alert()
+    //   })
+    //   // $('#modalTokens').modal('show')
+    // });
 }
 
 function comparedates(product){

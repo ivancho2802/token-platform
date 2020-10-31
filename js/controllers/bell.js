@@ -10,6 +10,7 @@
       };
       this.globalContext = {};
     }
+
     Bell.prototype.setsegmentuser = function(body) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/segmentuser',
@@ -17,6 +18,14 @@
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8" ,
         data : JSON.stringify(body)
+      })
+    }; 
+    Bell.prototype.deletesegmentuser = function(idsegemnt) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/segmentuser/'+idsegemnt,
+        type: 'DELETE',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8" 
       })
     }; 
     Bell.prototype.getsegmentuser = function() {
@@ -62,12 +71,22 @@
         contentType: "application/json; charset=utf-8"
       })
     }; 
-    Bell.prototype.testbell = function(idbell) {
+    Bell.prototype.seReloadBell = function(body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/reloadBell',
+        type: 'POST',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(body)
+      })
+    }; 
+    Bell.prototype.testbell = function(idbell, body) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
         type: 'POST',
         headers: {"Authorization":  $.cookie("TOKEN")},
-        contentType: "application/json; charset=utf-8"
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(body)
       })
     }; 
     Bell.prototype.solicitudHash = function(hash, context) {
