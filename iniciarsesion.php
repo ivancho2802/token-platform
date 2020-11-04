@@ -167,6 +167,7 @@
     
     </section>
     <!-- librerias para cookies -->
+    <script type="text/javascript" src="./js/moment.min.js"></script>
     <script src="./js/js.cookie.js"></script>
     <script src="./js/jquery.cookie.js"></script>
     <!-- end librerias para cookies -->

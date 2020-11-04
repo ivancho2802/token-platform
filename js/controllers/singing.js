@@ -11,6 +11,7 @@ $("#singing").submit(function(event){
 		platform: 'web',
 		role: 8
 	}
+	console.log(body)
 	
 	$.ajax({
 		url : 'https://barter-token.herokuapp.com/api/sigin',
@@ -33,7 +34,7 @@ $("#singing").submit(function(event){
 		location.href ="./bt-admin/index.html";
 	})
 	.error(function(err){
-
+		console.log(err)
 		$('#alert').addClass('show')
 		if(err.responseText && JSON.parse(err.responseText))
 			$("#server-errors").html(i18n(JSON.parse(err.responseText).msg));
@@ -41,9 +42,9 @@ $("#singing").submit(function(event){
 			$("#server-errors").html('Error, especifica usuario y contraseña');
 
 		
-		console.log($('#myModal'))
-		console.log(document.getElementById("myModal"))
+		//console.log($('#myModal'))
+		//console.log(document.getElementById("myModal"))
 
-		$('#myModal').modal('show')
+		//$('#myModal').modal('show')
 	});
 });

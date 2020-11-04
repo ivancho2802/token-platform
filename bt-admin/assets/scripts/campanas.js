@@ -70,8 +70,8 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
             fk_notification_content_text = JSON.parse(bellsData[i].fk_notification_content).text ? JSON.parse(bellsData[i].fk_notification_content).text : "";//message-noty-data-edit${i}
             fk_notification_content_icon = JSON.parse(bellsData[i].fk_notification_content).icon ? JSON.parse(bellsData[i].fk_notification_content).icon : "";//message-noty-data-edit${i}
           
-            console.log("JSON.parse(bellsData[i].fk_notification_content).data")
-            console.log(JSON.parse(bellsData[i].fk_notification_content).data.toString())
+            //console.log("JSON.parse(bellsData[i].fk_notification_content).data")
+            //console.log(JSON.parse(bellsData[i].fk_notification_content).data.toString())
           }
         // ALCANCE
 
