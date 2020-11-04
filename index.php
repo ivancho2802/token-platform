@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/style.css">
+    <link  rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png"/>
     <link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png"/>
     <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png"/>
@@ -45,7 +46,7 @@
             </nav>
         </div>
         <div id="presentacion">
-            <div>
+            <div class="animate__animated animate__slideInLeft">
                 <h1>Token</h1>
                 <p>
                     Es una aplicación móvil que te permitirá: 
@@ -58,12 +59,20 @@
                     Gif Cards enviarlas por la aplicación o redimir tu
                     regalo cuando desees.
                 </p>
-                <button>
-                    Descargar
-                </button>
+                <div class="login-content" >
+               <a href="#descargas">
+                <img src="./sources/buttondescgar-25.svg" alt="">
+               </a>
+               </div>
+
+            
+        
+               
+                
+               
             </div>
             <div>
-                <img id="phone" src="./sources/ce2.png" alt="">
+                <img class="animate__animated animate__slideInRight"  id="phone" src="./sources/ce2.png" alt="">
                 <img id="code" src="./sources/webToken-02.svg" alt="">
             </div>
         </div>
@@ -71,8 +80,8 @@
     <section>
         <div id="caracteristicas">
             <img src="./sources/webToken-04.svg" alt="">
-            <img src="./sources/webToken-05.svg" alt="">
-            <img src="./sources/webToken-06.svg" alt="">
+            <img src="./sources/interfazPrincipal.png" alt="">
+            <img src="./sources/interfazKaldi.svg" alt="">
         </div>
         <div id="caracteristicas_esp">
             <h2>Algunas de las mejores 
@@ -118,13 +127,24 @@
    
     <section id="descarga">
  
-        <div>
+        <div id="descargas">
             <h1>Nuestra aplicación disponible
                 para cualquier dispositivo
                 Descargar ahora</h1>
             <div>
-                <img src="./sources/webToken-16.svg" alt="">
-                <img src="./sources/webToken-18.svg" alt="">
+            
+               <div class="login-content" >
+               <a href="https://apps.apple.com/au/app/token.services/id1490643961">
+                <img src="./sources/appsotre.svg" alt="">
+               </a>
+               </div>
+
+               <div class="login-content" >
+               <a href="https://play.google.com/store/apps/details?id=com.token.services&hl=es_419">
+                <img src="./sources/playsotre.svg" alt="">
+               </a>
+               </div>
+              
             </div>
         </div>
         <img src="./sources/cel2.png" alt="">

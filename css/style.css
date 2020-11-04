@@ -33,6 +33,13 @@ button {
     background-color: var(--acent-color);
     border-radius: 50px;
 }
+
+#ref-Style{
+        background-color: var(--acent-color);
+        border-radius: 50px;
+    
+}
+
 section{
     font-family: 'Poppins', sans-serif;
     width: 90%;

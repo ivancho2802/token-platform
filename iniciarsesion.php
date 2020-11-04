@@ -129,7 +129,7 @@
         <img class="wave" src="sources/wave.png">
   <div class="container">
     <div class="img">
-      <img src="sources/bg.svg">
+      <img src="sources/bg-02.svg">
     </div>
     <div class="login-content">
       <form action="#" method="post" id="singing">
