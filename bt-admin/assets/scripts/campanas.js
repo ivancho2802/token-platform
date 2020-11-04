@@ -528,7 +528,7 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
                                                 </div>
                                               </div>  
 
-                                              <div class="col-md-6 mb-6">
+                                              <div class="col-md-4 mb-4">
                                                   <label for="examplePassword">Fecha</label>
                                                   <input name="datetime_campana${i}" id="datetime_campana${i}"  placeholder="datetime-campana" type="datetime-local" value="${bellsData[i].date.slice(0, -1)}" class="form-control" required>
                                                   <div class="valid-feedback">
@@ -538,6 +538,19 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
                                                       Por favor ponga una fecha.
                                                   </div>
                                               </div>
+
+                                              <div class="col-md-2 mb-2 form-group">
+                                                <label for="checklaunch">Lanzar al guardar</label>
+                                                <div class=" ">
+                                                    <div class="theme-switch-wrapper">
+                                                        <label class="theme-switch" for="launch${i}">
+                                                            <input type="checkbox" id="launch${i}" name="launch${i}" value="launch${i}" onchange="validchecked(${i})"/>
+                                                            <input type="text" id="datetime_campana_backup${i}">
+                                                            <div class="slider round"></div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             </div>
 
                                             <div class="form-row">

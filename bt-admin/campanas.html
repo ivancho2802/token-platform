@@ -543,7 +543,7 @@
                     </div>`;
                 }, 
                 (err) =>{
-                    var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
+                    var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': JSON.stringify(err)
                     console.log(err)
                     console.log("error test  bell "+err)
                     document.getElementById("smstest"+index).innerHTML += `
@@ -606,6 +606,40 @@
                     </span>`;
                 }); 
             });
+        }
+
+        function validchecked(index){
+            if(index!==null){
+                console.log(index)
+                var els = document.getElementsByName('launch'+(index));
+                console.log(els)
+                var datecurrent = new Date();
+                console.log(datecurrent.toISOString().replace("Z", ""));
+                for (var i=0;i<els.length;i++){
+                  if ( els[i].checked && els[i].value == 'launch'+index) {
+                    document.getElementById("datetime_campana"+(index)).readOnly =true
+                    document.getElementById("datetime_campana_backup"+(index)).value=document.getElementById("datetime_campana"+(index)).value
+
+                    document.getElementById("datetime_campana"+(index)).value=datecurrent.toISOString().replace("Z", "")
+                  }else{
+                    document.getElementById("datetime_campana"+(index)).readOnly =false
+                    document.getElementById("datetime_campana"+(index)).value = document.getElementById("datetime_campana_backup"+(index)).value
+                  }
+                }
+            }else{
+                var els = document.getElementsByName('launch');
+                console.log(els)
+                var datecurrent = new Date();
+                console.log(datecurrent.toISOString().replace("Z", ""));
+                for (var i=0;i<els.length;i++){
+                  if ( els[i].checked && els[i].value == 'launch') {
+                    document.getElementById("datetime_campana").readOnly =true
+                    document.getElementById("datetime_campana").value=datecurrent.toISOString().replace("Z", "")
+                  }else{
+                    document.getElementById("datetime_campana").readOnly =false
+                  }
+                }
+            }
         }
     </script> 
 </head>
@@ -1538,14 +1572,25 @@
                                                                         Por favor ponga un nombre.
                                                                     </div>
                                                                 </div> 
-                                                                <div class="col-md-6 mb-6">
-                                                                    <label for="examplePassword">Fecha</label>
+                                                                <div class="col-md-4 mb-4">
+                                                                    <label for="examplePassword">Fecha de lanzamiento</label>
                                                                     <input name="datetime_campana" id="datetime_campana"  placeholder="datetime-campana" type="datetime-local" value="" class="form-control" required>
                                                                     <div class="valid-feedback">
                                                                         Bien!
                                                                     </div>
                                                                     <div class="invalid-feedback">
                                                                         Por favor ponga una fecha.
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2 mb-2 form-group">
+                                                                    <label for="checklaunch">Lanzar al guardar</label>
+                                                                    <div class=" ">
+                                                                        <div class="theme-switch-wrapper">
+                                                                            <label class="theme-switch" for="launch">
+                                                                                <input type="checkbox" id="launch" name="launch" value="launch" onchange="validchecked(null)"/>
+                                                                                <div class="slider round"></div>
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
