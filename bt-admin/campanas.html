@@ -33,6 +33,9 @@
     <script src="../js/controllers/company.js"></script>
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
+
+    <!-- unlayereditor -->
+    <script src="https://editor.unlayer.com/embed.js"></script>
     <script type="text/JavaScript"> 
         $( document ).ready(function() {
 
@@ -61,7 +64,7 @@
             document.getElementById("message-noty-text-create").value = 'Token test de campañas';
             document.getElementById("message-noty-icon-create").value = './assets/imgs/logo_token.svg';
 
-            // crear bell
+            // crear bell createbell
             (function() {
                 'use strict';
                 window.addEventListener('load', function() {
@@ -106,10 +109,32 @@
                 var form_data = $(this).serializeArray(); //Encode form elements for submission
                 event.preventDefault(); //prevent default action 
 
+                // document.getElementById("fk_bell_user_list"+index).value=listasbell;
+
+                var htmlCustom = '';
+                //#editorunlayer design-web editor-desktop
+                if( document.getElementById('message-email-html-unlayer').checked ){
+                     
+                    unlayer.exportHtml(function(data) {
+                        var json = data.design; // design json
+                        var html = data.html; // design html
+                        console.log(json)
+                        console.log(html)
+                        // Save the json, or html here
+                        htmlCustom = html
+                    });
+                    unlayer.saveDesign(function(design) {
+                        console.log('design', design);
+                    });
+                }else{
+                    htmlCustom = document.getElementById("message-email-html-create").value
+                }
+                console.log(htmlCustom)
+
                 var bodyEmail = {
                     subject:   document.getElementById("message-email-subject-create").value ,
                     text:   document.getElementById("message-email-text-create").value ,
-                    html:document.getElementById("message-email-html-create").value
+                    html:   htmlCustom
                 }   
 
                 var bodyNotify = {
@@ -272,8 +297,20 @@
                 //cities
                 companier.cities()
                 .then((citiesData2)=> {
+                    
+                    companier.sendgrinddesigns()
+                        .then((designs)=> {
+                            console.log("designs")
+                            console.log(designs)
+                        }, 
+                        (err) =>{
+                            console.log(err)
+                            console.log("error solicitud.sendgrind ")
+                    })
+
                     for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
                         document.getElementsByClassName("segmentsUserData2")[i].innerHTML = getTableUsersActSegmentSelect2(response, citiesData2, i)
+                        //sendgrind/designs
                     }
                     document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
                 })
@@ -355,12 +392,16 @@
 
                 if(!valid)
                     return
+
+
                 // document.getElementById("fk_bell_user_list"+index).value=listasbell;
+
+                //htmlCustom = //#editorunlayer design-web editor-desktop
 
                 var bodyEmail = {
                     subject:   document.getElementById("message-email-subject-edit"+index).value ,
                     text:   document.getElementById("message-email-text-edit"+index).value ,
-                    html:document.getElementById("message-email-html-edit"+index).value
+                    html: document.getElementById("message-email-html-edit"+index).value
                 }   
 
                 var bodyNotify = {
@@ -607,7 +648,9 @@
                 }); 
             });
         }
-
+        /**
+        * funcion para validar el checkeo de lanzar la campaña o programar fecha 
+        **/
         function validchecked(index){
             if(index!==null){
                 console.log(index)
@@ -638,6 +681,49 @@
                   }else{
                     document.getElementById("datetime_campana").readOnly =false
                   }
+                }
+            }
+        }
+        /**
+        * funcion para validar el checkeo de lanzar la campaña o programar fecha 
+        **/
+        function validcheckedunlayer(index){
+            if(index!==null){
+                console.log(index)
+                var els = document.getElementsByName('launch'+(index));
+                console.log(els)
+                var datecurrent = new Date();
+                console.log(datecurrent.toISOString().replace("Z", ""));
+                for (var i=0;i<els.length;i++){
+                  if ( els[i].checked && els[i].value == 'launch'+index) {
+                    document.getElementById("datetime_campana"+(index)).readOnly =true
+                    document.getElementById("datetime_campana_backup"+(index)).value=document.getElementById("datetime_campana"+(index)).value
+
+                    document.getElementById("datetime_campana"+(index)).value=datecurrent.toISOString().replace("Z", "")
+                  }else{
+                    document.getElementById("datetime_campana"+(index)).readOnly =false
+                    document.getElementById("datetime_campana"+(index)).value = document.getElementById("datetime_campana_backup"+(index)).value
+                  }
+                }
+            }else{ 
+                
+                var contentEmailCustom = document.getElementById('message-email-html-create-content');
+                var contentEmailUnlayer = document.getElementById('editorunlayer');
+                
+                var els = document.getElementById('message-email-html-unlayer');
+                
+                if ( els.checked  ) {
+                    contentEmailCustom.classList.remove('fade');
+                    contentEmailCustom.classList.add('show');
+
+                    contentEmailUnlayer.classList.remove('show');
+                    contentEmailUnlayer.classList.add('fade');
+                }else{
+                    contentEmailCustom.classList.remove('show');
+                    contentEmailCustom.classList.add('fade');
+
+                    contentEmailUnlayer.classList.remove('fade');
+                    contentEmailUnlayer.classList.add('show');
                 }
             }
         }
@@ -1379,14 +1465,43 @@
                                                                                     <label for="message-text-create" class="col-form-label">Texto:</label>
                                                                                     <textarea class="form-control" id="message-email-text-create" ></textarea>
                                                                                 </div>
-                                                                            </div> 
-                                                                            <div class="col-md-12 mb-12">
+                                                                            </div>
+                                                                            
+                                                                            <div class="col-md-12 mb-12 form-group">
+                                                                                <h4>Contenido del Email:</h4>
+                                                                            </div>
+
+                                                                            <div class="col-md-2 mb-2 form-group">
+                                                                                <label for="checkmessage-email-html-unlayer">Usar Codigo personalizado</label>
+                                                                                <div class=" ">
+                                                                                    <div class="theme-switch-wrapper">
+                                                                                        <label class="theme-switch" for="message-email-html-unlayer">
+                                                                                            <input type="checkbox" id="message-email-html-unlayer" name="message-email-html-unlayer" value="message-email-html-unlayer" onchange="validcheckedunlayer(null)"/>
+                                                                                            <div class="slider round"></div>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-10 mb-10 fade" id="message-email-html-create-content">
                                                                                 <div class="form-group">
                                                                                     <label for="message-text-create" class="col-form-label">Texto Html:</label>
                                                                                     <textarea class="form-control" id="message-email-html-create" ></textarea>
                                                                                 </div>
                                                                             </div>  
-                                                                        </div> 
+                                                                        </div>
+
+                                                                        <div class="form-row">
+                                                                            <!-- <script src="https://editor.unlayer.com/embed.js"></script> -->
+                                                                            <div id="editorunlayer" style="height: 1024px;"></div>
+                                                                            <script>
+                                                                            unlayer.init({
+                                                                                id: 'editorunlayer',
+                                                                                projectId: 7213,
+                                                                                templateId: "19506"
+                                                                            })
+                                                                            </script>
+                                                                        </div>
                                                                         <button class="btn btn-primary" type="button" onclick="nextItemContenido(1)">Guardar Email</button>
                                                                     </div> 
                                                                 </div>

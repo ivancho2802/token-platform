@@ -117,6 +117,15 @@
            headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
     };  
+    Company.prototype.sendgrinddesigns = function() {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/sendgrind/designs',
+        type: 'GET',
+        // data : JSON.stringify(body),
+           contentType: "application/json; charset=utf-8",
+           headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    };  
     Company.prototype.solicitudHash = function(hash, context) {
       var k, v;
 
