@@ -71,8 +71,9 @@
                         if(response1[index].name && response1[index].name.search(name)!==-1){
                             console.log("este boton no debe existir")
                             return "este boton no debe existir"
-                        }else{
-                            var arraymaygasto = []
+                        } 
+                    }
+                    var arraymaygasto = []
 
                             arraymaygasto = generateArrayMayGasto(cuponeclienetscanData, name)
 
@@ -93,7 +94,8 @@
                             const bodyseg = { name: 'Clientes '+name, fk_user: formararray};
                             console.log(bodyseg)
                             bellier.setsegmentuser(bodyseg)
-                            .then((response2)=> { 
+                            .then((response2)=> {
+                                
                                 document.getElementById("responseCreationSegemnet").innerHtml = `
                                 <div class="alert alert-success fade show" role="alert">Segmento creado con exito!</div>
                                 `;
@@ -110,15 +112,14 @@
                                     document.getElementById("botonUserRentables").disabled = true
                                     document.getElementById("botonUserRentables").textContent  = "Segmento Rentables"
                                 }
+                                return 
                             }, 
                             (errorsegment) =>{
                                 document.getElementById("responseCreationSegemnet").innerHtml = `
                                 <div class="alert alert-danger fade show" role="alert">Error al crear segmento!</div>
                                 `;
+                                return 
                             })
-
-                        }
-                    }
                 })
             })
         }
