@@ -39,49 +39,7 @@
     }
     return "";
   }
-/**
-*  funciones para agrupar tablas por inner
-*/
-  function getTableUsers (followersData, cities){
-
-    var userArray = followersData ? followersData.seguidores : []
-
-    var container="" , eltr , edad, currentdateyear = new Date().getFullYear(), genere = {male : "Hombre", female: "Mujer"}, genereaux, cityaux;
-    if(!userArray.length || !cities.length)
-      return '<div class="d-block text-center card-footer">No se encontraron Usuarios</div>';
-    for (var i = 0; i < userArray.length; i++) {
-      if(userArray[i].fk_cliente){
-        edad = new Date(userArray[i].fk_cliente.fecha_nac).getFullYear() ? currentdateyear - new Date(userArray[i].fk_cliente.fecha_nac).getFullYear() : "No Data";
-        genereaux = genere[userArray[i].fk_cliente.genero] ? genere[userArray[i].fk_cliente.genero] : "No Data";
-        cityaux = userArray[i].fk_cliente.address && cities.findIndex(city => city._id === userArray[i].fk_cliente.address) !== -1 ? cities[cities.findIndex(city => city._id === userArray[i].fk_cliente.address)].city +" - "+ cities[cities.findIndex(city => city._id === userArray[i].fk_cliente.address)].country : "No Data";
-        eltr = '';
-        eltr = `
-        <tr>
-          <td class="text-center text-muted">${i}</td>
-          <td>
-            <div class="widget-content-wrapper">
-              <div class="widget-content p-0">
-                <div class="widget-content-left mr-3">
-                    <div class="widget-content-left">
-                        <img width="40" class="rounded-circle" src="${userArray[i].fk_cliente.image}" alt="">
-                    </div>
-                </div>
-                <div class="widget-content-left flex2">
-                    <div class="widget-heading">${userArray[i].fk_cliente.name} ${userArray[i].fk_cliente.lastname}</div>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="text-center">${cityaux}</td>
-          <td class="text-center">${genereaux}</td>
-          <td class="text-center">${edad}</td>
-        </tr>
-        `;
-        container += eltr
-      }
-    }
-    return container;
-  }
+  
   function getTableUsersAct (usersData, cities){
 
     var userArray = usersData ? usersData.fk_user_asocd : []
@@ -1650,4 +1608,7 @@
     // })
     $('#mytoast').toast('show')
       
+  }
+  function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }

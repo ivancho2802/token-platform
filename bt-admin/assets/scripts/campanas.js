@@ -322,14 +322,40 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
                                                                           <label for="message-text-edit${i}" class="col-form-label">Texto:</label>
                                                                           <textarea class="form-control" id="message-email-text-edit${i}">${fk_email_plantilla_text}</textarea>
                                                                       </div>
-                                                                  </div> 
-                                                                  <div class="col-md-12 mb-12">
+                                                                  </div>
+
+                                                                  <div class="col-md-12 mb-12 form-group">
+                                                                      <h5>Contenido del Email:</h5>
+                                                                  </div>
+
+                                                                  <div class="col-md-2 mb-2 form-group">
+                                                                      <label for="checkmessage-email-html-unlayer${i}">User Unlayer Editor</label>
+                                                                      <div class=" ">
+                                                                          <div class="theme-switch-wrapper">
+                                                                              <label class="theme-switch" for="message-email-html-unlayer${i}">
+                                                                                  <input type="checkbox" id="message-email-html-unlayer${i}" name="message-email-html-unlayer${i}" value="message-email-html-unlayer" onchange="validcheckedunlayer(${i}, '${fk_email_plantilla_html}')"/>
+                                                                                  <div class="slider round"></div>
+                                                                              </label>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+
+                                                                  <div class="col-md-10 mb-10" id="message-email-html-create-content${i}">
                                                                       <div class="form-group">
                                                                           <label for="message-text-edit${i}" class="col-form-label">Texto Html:</label>
                                                                           <textarea class="form-control" id="message-email-html-edit${i}" >${fk_email_plantilla_html}</textarea>
                                                                       </div>
                                                                   </div>  
                                                               </div> 
+                                                              <div class="form-row">                                                                          
+                                                                  <div class="templateseditorunlayercss templateseditorunlayer${i}">
+                                                                  </div>
+                                                              </div>
+
+                                                              <div class="form-row">
+                                                                <div id="editorunlayer${i}" style="height: 1024px;margin:15px"></div> 
+                                                              </div>
+
                                                               <button class="btn btn-primary" type="button" onclick="nextItemContenidoedit(1, ${i})">Guardar Email</button>
                                                           </div> 
                                                       </div>
@@ -680,7 +706,7 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
       }
     }
     return container;
-  }  
+  }
   function getTableUsersActSelect (usersData, cities, autoselect){
 
     var userArray = usersData ? usersData.fk_user_asocd : []
@@ -910,7 +936,24 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
       container += elheadlist
     }
     return container;
-  } 
+  }
+  //unlayer
+  function getTableUnlayerMenu(bodyunlayer, index){
+    var bodyHtml = '';
+    for (let i = 0; i < bodyunlayer.length; i++) {
+      const element = bodyunlayer[i];
+      bodyHtml +=  `
+      <a onclick="loadTemplate('${bodyunlayer[i].id}', ${index})" class="TemplateItem-card card" style="width: 220px;max-width: 220px;height: 250px;max-height: 250px;">
+        <img src="${element.image}" class="card-img">
+        <div class="card-body">
+          <div class="TemplateItem-cardTitle card-title">${element.name}</div>
+          <div class="TemplateItem-cardType">email</div>
+        </div>
+      </a>
+      `;
+    }
+    return bodyHtml
+  }
 /**
 *  FUNCIOND DE INTERACCION ENFORMULARIOS
 */
@@ -1192,6 +1235,5 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
     console.log('#tabContenido a#tabcontedit'+pos+index)
     $('#tabContenido a#tabcontedit'+pos+index).tab('show')
   }
-
 
 

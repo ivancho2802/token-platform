@@ -6,19 +6,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Language" content="en">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Regular Tables - Tables are the backbone of almost all web applications.</title>
+    <title>Usuarios - Administracion de Usuarios Segmentacion.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <meta name="description" content="Tables are the backbone of almost all web applications.">
+    <meta name="description" content="Usuarios - Administracion de Usuarios Segmentacion.">
     <meta name="msapplication-tap-highlight" content="no">
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <link href="./main.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="57x57" href="../images/favicon/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="../images/favicon/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/favicon/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="../images/favicon/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/favicon/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="../images/favicon/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="../images/favicon/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="../images/favicon/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/favicon/android-icon-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="../images/favicon/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon/favicon-16x16.png"/>
     <!-- librerias para cookies -->
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
-    <script src="../js/controllers/company.js"></script>
-    <script src="../js/script.js"></script>
     <!-- end librerias para cookies --> 
+    <script type="text/javascript" src="../js/moment.min.js"></script>
+    <script src="../js/controllers/company.js"></script>
+    <script src="../js/controllers/bell.js"></script>
+    <script src="../js/script.js"></script>
     <script type="text/JavaScript">
         //console.log(JSON.parse($.cookie("business")))
         $( document ).ready(function() {
@@ -27,53 +42,246 @@
             */
             if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
                 return;
-            var followersData, citiesData, clientsData, cuponeclienetscanData, branchsData
-            //fallowers
-            companier.followers(JSON.parse($.cookie("userData"))._id)
-            .then((response)=> { followersData = response }, 
-                (err) =>{console.log("error companier.followers "+err)}); 
-            //cities
-            companier.cities()
-            .then((response)=> { citiesData = response; }, 
-                (err) =>{console.log("error companier.cities "+err)});
-            //cuponclinete redimidos mayot costo
-            companier.cuponeclienetscan()
-            .then((response)=> { cuponeclienetscanData = response; }, 
-                (err) =>{console.log("error companier.cuponeclienetscan "+err)});
-            // clientes
-            companier.clients()
-            .then((response)=> { clientsData = response; }, 
-                (err) =>{console.log("error companier.clients "+err)});
-            // sucursales
-            companier.branchs()
-            .then((response)=> { branchsData = response; }, 
-                (err) =>{console.log("error companier.branchs "+err)});
-
+                
             document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
             document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
             document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
-            /**
-            *   numeros de seguidores correo y demas
-            */
-            document.getElementById("follower").innerHTML = followersData ? followersData.numseguidores : 0;
+
+            getFollowers();
+            findSegmentForValid();
+            findCuponclientemayorgasto()
+            findSucursales()
+            
             // document.getElementById("numSms").innerHTML = balancesmsemailData ? balancesmsemailData.numSms : 0;
             // document.getElementById("numEmail").innerHTML = balancesmsemailData ? balancesmsemailData.numEmail : 0;
             // document.getElementById("saldoTotal").innerHTML = balancesmsemailData ? balancesmsemailData.saldoTotal : 0;
+        });
+        /**
+         * crear segemntos para campañas
+         * */
+        function crearSegment(name){
+            bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
+            .then((response1)=> {
+                companier.cuponeclienetscan()
+                .then((response2)=> { 
+                    var cuponeclienetscanData = response2;
+                    //6 listas
+                    for (let index = 0; index < response1.length; index++) {
+                        const element = response1[index];
+                        if(response1[index].name && response1[index].name.search(name)!==-1){
+                            console.log("este boton no debe existir")
+                            return "este boton no debe existir"
+                        }else{
+                            var arraymaygasto = []
 
-            var element = document.createElement("div");
+                            arraymaygasto = generateArrayMayGasto(cuponeclienetscanData, name)
 
-            document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData)
-            document.getElementById("numUserRedim").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.length ? (cuponeclienetscanData.userredimieron.length-1): 0: 0;
-            document.getElementById("numUserMayorCosto").innerHTML = cuponeclienetscanData ? cuponeclienetscanData.usermayorgasto.length ? (cuponeclienetscanData.usermayorgasto.length-1): 0: 0;
-            document.getElementById("numUserClients").innerHTML = clientsData ? clientsData.myCount.length ? (clientsData.myCount.length-1): 0: 0;
-            document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
+                            console.log(arraymaygasto)
 
-             
-        })
+                            if(!arraymaygasto){ 
+                                document.getElementById("responseCreationSegemnet").innerHtml = `
+                                <div class="alert alert-danger fade show" role="alert">Error No hay suficientes clientes!</div>
+                                `;
+                                return 
+                            }
+                            var formararray=[]
+                            for (let i = 0; i < generateArrayMayGasto(cuponeclienetscanData, name).length; i++) {
+                                const element = generateArrayMayGasto(cuponeclienetscanData, name)[i];
+                                formararray.push(element.iduser)
+                            }
+                            
+                            const bodyseg = { name: 'Clientes '+name, fk_user: formararray};
+                            console.log(bodyseg)
+                            bellier.setsegmentuser(bodyseg)
+                            .then((response2)=> { 
+                                document.getElementById("responseCreationSegemnet").innerHtml = `
+                                <div class="alert alert-success fade show" role="alert">Segmento creado con exito!</div>
+                                `;
+                                if(name=="Fieles"){
+                                    document.getElementById("botonUserFieles").disabled = true
+                                    document.getElementById("botonUserFieles").textContent  = "Segmento Creado"
+                                }else if(name=="Recurrentes"){
+                                    document.getElementById("botonUserRecurrentes").disabled = true
+                                    document.getElementById("botonUserRecurrentes").textContent  = "Segmento Creado"
+                                }else if(name=="Potenciales"){
+                                    document.getElementById("botonUserPotenciales").disabled = true
+                                    document.getElementById("botonUserPotenciales").textContent  = "Segmento Potenciales"
+                                }else if(name=="Rentables"){
+                                    document.getElementById("botonUserRentables").disabled = true
+                                    document.getElementById("botonUserRentables").textContent  = "Segmento Rentables"
+                                }
+                            }, 
+                            (errorsegment) =>{
+                                document.getElementById("responseCreationSegemnet").innerHtml = `
+                                <div class="alert alert-danger fade show" role="alert">Error al crear segmento!</div>
+                                `;
+                            })
+
+                        }
+                    }
+                })
+            })
+        }
+        /**
+        * sucursales
+         * */
+        function findSucursales(){
+            companier.branchs()
+            .then((response)=> { 
+                branchsData = response; 
+                document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
+            }, 
+            (err) =>{console.log("error companier.branchs "+err)});
+        }
+        /**
+         * funciotn para ver seguidores
+         * */
+        function getFollowers(){
+            var followersData, citiesData, clientsData, cuponeclienetscanData, branchsData
+            //fallowers
+            companier.followers(JSON.parse($.cookie("userData"))._id)
+            .then((response1)=> { 
+                //cities
+                companier.cities()
+                .then((response2)=> { 
+                    citiesData = response2; 
+                    followersData = response1;
+                    /**
+                    *   numeros de seguidores correo y demas
+                    */
+                    document.getElementById("follower").innerHTML = followersData ? followersData.numseguidores : 0
+                    document.getElementById("userfallowers").innerHTML = getTableUsers(followersData, citiesData); 
+                }, 
+                (err) =>{console.log("error companier.cities "+err)});
+            }, 
+            (err) =>{console.log("error companier.followers "+err)}); 
+        }
+        /**
+         *  FUNCION PARA VER SEGMENTOS Y VALIDAR BOTON DE CREAR SEGMENTOAS
+         * */
+        function findSegmentForValid(){
+            bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
+            .then((response)=> {
+                for (let i = 0; i < response.length; i++) {
+                    const element = response[i];
+                    if(response[i].name && response[i].name.search("Fieles")!==-1){
+                        document.getElementById("botonUserFieles").disabled = true
+                        document.getElementById("botonUserFieles").textContent  = "Seg U. Fieles Existente"
+                    }else if(response[i].name && response[i].name.search("Recurrentes")!==-1){
+                        document.getElementById("botonUserRecurrentes").disabled = true
+                        document.getElementById("botonUserRecurrentes").textContent  = "Seg U. Recurrentes Existente"
+                    }else if(response[i].name && response[i].name.search("Potenciales")!==-1){
+                        document.getElementById("botonUserPotenciales").disabled = true
+                        document.getElementById("botonUserPotenciales").textContent  = "Seg U. Potenciales Existente"
+                    }else if(response[i].name && response[i].name.search("Rentables")!==-1){
+                        document.getElementById("botonUserRentables").disabled = true
+                        document.getElementById("botonUserRentables").textContent  = "Seg U. Rentables Existente"
+                    }
+                }
+            })
+        }
+        /**
+         * cuponclinete redimidos mayot costo
+         * */
+        function findCuponclientemayorgasto(){
+            //cuponclinete redimidos mayot costo
+            companier.cuponeclienetscan()
+            .then((response)=> { 
+                cuponeclienetscanData = response;
+                console.log("cuponeclienetscanData")
+                console.log(cuponeclienetscanData)
+                var arrayUserRedim = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.fk_user_asocd ? (cuponeclienetscanData.userredimieron.fk_user_asocd): []: [];
+                document.getElementById("numUserRedim").innerHTML = arrayUserRedim.length
+                var arrayusermayorgasto = cuponeclienetscanData.usermayorgasto ? cuponeclienetscanData.usermayorgasto ? (cuponeclienetscanData.usermayorgasto): []: []
+                , arrayusermayorgastofrecuente = [], arrayusermayorgastofieles = [], arrayusermayorgastorecurrentes = []
+                , arrayusermayorgastopotenciales = [], arrayusermayorgastorentables=[];
+
+                indexuser = 0//arrayusermayorgasto.length *
+                for (let i = 0; i < indexuser; i++) {
+                    const element = arrayusermayorgasto[i];
+                        arrayusermayorgastofrecuente.push(element)
+                }
+                var indexuserfieles = 0, indexuserrecurrentes = 0, indexuserpotenciales = 0, indexuserrentables=0, indexuserfrecu = 0;
+                indexuserfieles = arrayusermayorgasto.length * 0.25
+                indexuserrecurrentes = arrayusermayorgasto.length * 0.75
+                indexuserpotenciales = arrayusermayorgasto.length * 1
+                indexuserrentables = arrayusermayorgasto.length * 0.20
+                for (let i = 0; i < arrayusermayorgasto.length; i++) {
+                    const element = arrayusermayorgasto[i];
+                    //fieles
+                    if(i<=indexuserfieles){
+                        arrayusermayorgastofieles.push(element)
+                    }else
+                    //recurrentes
+                    if(i>indexuserfieles && i<=indexuserrecurrentes){
+                        arrayusermayorgastorecurrentes.push(element)
+                    }else
+                    //potenciales
+                    if(i>=indexuserrecurrentes && i<=indexuserpotenciales){
+                        arrayusermayorgastopotenciales.push(element)
+                    }
+                    //frecuente
+                }
+
+                arrayusermayorgasto.sort(function (a, b) {
+                    if (a.data.acamount > b.data.acamount) {
+                        return -1;
+                    }
+                    if (a.data.acamount < b.data.acamount) {
+                        return 1;
+                    }
+                    if (a.data.acamount == b.data.acamount) {
+                        if (a.data.numcupones > b.data.numcupones) {
+                            return -1;
+                        }else if (a.data.numcupones < b.data.numcupones) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+                //rentables
+                for (let j = 0; j < arrayusermayorgasto.length; j++) {
+                    const element = arrayusermayorgasto[j];
+                    if(j>0 && j<=indexuserrentables){
+                        arrayusermayorgastorentables.push(element)
+                    }
+                    
+                }
+                document.getElementById("numUserFieles").innerHTML = arrayusermayorgastofieles.length
+                document.getElementById("numUserRecurrentes").innerHTML = arrayusermayorgastorecurrentes.length
+                document.getElementById("numUserPotenciales").innerHTML = arrayusermayorgastopotenciales.length
+                document.getElementById("numUserRentables").innerHTML = arrayusermayorgastorentables.length
+                // clientes
+                companier.clients()
+                .then((response)=> { 
+                    clientsData = response; 
+                    document.getElementById("numUserRedim").innerHTML = clientsData ? clientsData.fk_user_asocd.length ? (clientsData.fk_user_asocd.length): 0: 0;
+                    companier.cities()
+                    .then((response2)=> { 
+                        citiesData = response2; 
+                        /**
+                        *   numeros de seguidores correo y demas
+                        */
+                       document.getElementById("userFieles").innerHTML = getTableUsersBellClose(clientsData.fk_user_asocd, arrayusermayorgastofieles, citiesData); 
+                        document.getElementById("userRecurrentes").innerHTML = getTableUsersBellClose(clientsData.fk_user_asocd, arrayusermayorgastorecurrentes, citiesData); 
+                        document.getElementById("userPotenciales").innerHTML = getTableUsersBellClose(clientsData.fk_user_asocd, arrayusermayorgastopotenciales, citiesData); 
+                        document.getElementById("userRentables").innerHTML = getTableUsersBellClose(clientsData.fk_user_asocd, arrayusermayorgastorentables, citiesData); 
+                        document.getElementById("useractives").innerHTML = getTableUsersBellClose(clientsData.fk_user_asocd, arrayusermayorgasto, citiesData); 
+                    })
+                }, 
+                (err) =>{console.log("error companier.clients "+err)});
+                //numPuntosObtenidos
+                //numUserClients
+            }, 
+            (err) =>{console.log("error companier.cuponeclienetscan "+err)});
+        }
     </script>
     <link href="./main.css" rel="stylesheet">
 </head>
 <body>
+    
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
@@ -453,6 +661,7 @@
             </div>
         </div>        
         <div class="app-main">
+
                 <div class="app-sidebar sidebar-shadow">
                     <div class="app-header__logo">
                         <div class="logo-src"></div>
@@ -554,6 +763,7 @@
                                     <div>Usuarios Token
                                         <div class="page-title-subheading">Tables are the backbone of almost all web applications.
                                         </div>
+                                        <div id="responseCreationSegemnet"></div>
                                     </div>
                                 </div>
                                 <div class="page-title-actions">
@@ -634,33 +844,7 @@
                                             <div class="widget-subheading">Obtenido por los clientes</div>
                                         </div>
                                         <div class="widget-content-right">
-                                            <div class="widget-numbers text-primary"><span id="numUserMayorCosto">0</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-xl-4">
-                                <div class="card mb-3 widget-content">
-                                    <div class="widget-content-wrapper">
-                                        <div class="widget-content-left">
-                                            <div class="widget-heading">Usuarios</div>
-                                            <div class="widget-subheading">que son frecuentes</div>
-                                        </div>
-                                        <div class="widget-content-right">
-                                            <div class="widget-numbers text-warning"><span id="numUserClients">0</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-xl-4">
-                                <div class="card mb-3 widget-content">
-                                    <div class="widget-content-wrapper">
-                                        <div class="widget-content-left">
-                                            <div class="widget-heading">Usuarios</div>
-                                            <div class="widget-subheading">de mayor gasto</div>
-                                        </div>
-                                        <div class="widget-content-right">
-                                            <div class="widget-numbers text-danger"><span>300</span></div>
+                                            <div class="widget-numbers text-primary"><span id="numPuntosObtenidos">0</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -678,65 +862,57 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="main-card mb-3 card">
-                                    <div class="card-header">Users Que te Siguen
-                                        <div class="btn-actions-pane-right">
-                                            <div role="group" class="btn-group-sm btn-group">
-                                                <button class="active btn btn-focus">Last Week</button>
-                                                <button class="btn btn-focus">All Month</button>
-                                            </div>
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="card mb-3 widget-content">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Usuarios <button onClick="crearSegment('Fieles')" id="botonUserFieles" type="button" class="btn btn-primary btn-sm btn-smal" >Crear Segmento U. Fieles</button></div>
+                                            <div class="widget-subheading">Fieles</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-primary"><span id="numUserFieles">0</span></div>
                                         </div>
                                     </div>
-                                    <div class="table-responsive">
-                                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-center">#</th>
-                                                <th>Nombre</th>
-                                                <th class="text-center">Edad</th>
-                                                <th class="text-center">Género</th>
-                                                <th class="text-center">Frecuencia Compras</th>
-                                                <th class="text-center">Última Compra</th>
-
-                                            </tr>
-                                            </thead>
-                                            <tbody id="userfallowers">
-                                            <tr>
-                                                <td class="text-center text-muted">#-</td>
-                                                <td>
-                                                    <div class="widget-content p-0">
-                                                        <div class="widget-content-wrapper">
-                                                            <div class="widget-content-left mr-3">
-                                                                <div class="widget-content-left">
-                                                                    <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
-                                                                </div>
-                                                            </div>
-                                                            <div class="widget-content-left flex2">
-                                                                <div class="widget-heading">---- ----</div>
-                                                                <div class="widget-subheading opacity-7">--- ---</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td class="text-center">---</td>
-                                                <td class="text-center">---
-                                                    <!-- <div class="badge badge-warning"></div> -->
-                                                </td>
-                                                <td class="text-center">
-                                                    ---
-                                                    <!-- <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">Details</button> -->
-                                                </td>
-                                                <td class="text-center">
-                                                    <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">Details</button>
-                                                </td>
-                                            </tr>  
-                                            </tbody>
-                                        </table>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="card mb-3 widget-content">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Usuarios <button type="button" onClick="crearSegment('Recurrentes')" id="botonUserRecurrentes" class="btn btn-primary btn-sm btn-smal" >Crear Segmento U. Recurrentes</button></div>
+                                            <div class="widget-subheading">Recurrentes</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-primary"><span id="numUserRecurrentes">0</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="card mb-3 widget-content">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Usuarios <button id="botonUserPotencial" type="button"  onClick="crearSegment('Potencial')" class="btn btn-primary btn-sm btn-smal" >Crear Segmento U. Potencial</button></div>
+                                            <div class="widget-subheading">Potencial</div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-primary"><span id="numUserPotenciales">0</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="card mb-3 widget-content">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Usuarios  <button onClick="crearSegment('Rentables')" id="botonUserRentables" type="button" class="btn btn-primary btn-sm btn-smal" >Crear Segmento U. Rentables</button></div>
+                                            <div class="widget-subheading">Rentables ó de mayor gasto
+                                            </div>
+                                        </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-primary"><span id="numUserRentables">0</span></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -745,56 +921,198 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="main-card mb-3 card">
-                                    <div class="card-header">Active Users
+                                    <div class="card-header">Usuarios
                                         <div class="btn-actions-pane-right">
-                                            <div role="group" class="btn-group-sm btn-group">
-                                                <button class="active btn btn-focus">Last Week</button>
-                                                <button class="btn btn-focus">All Month</button>
+                                            <div role="group" class="btn-group-sm nav btn-group">
+                                                <a data-toggle="tab" href="#userfallowerstab" class="btn-shadow active btn btn-focus">Seguidores</a>
+                                                <a data-toggle="tab" href="#useractivestab" class="btn-shadow  btn btn-focus">Activos</a>
+                                                <a data-toggle="tab" href="#userFielestab" class="btn-shadow  btn btn-focus">Fieles</a>
+                                                <a data-toggle="tab" href="#userRecurrentestab" class="btn-shadow  btn btn-focus">Recurrentes</a>
+                                                <a data-toggle="tab" href="#userRentablestab" class="btn-shadow  btn btn-focus">Rentables</a>
+                                            </div>
+                                        </div>
+                                    </div>     
+                                    
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <div id="userfallowerstab" class="tab-pane active" role="tabpanel">
+                                                <div clas="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Ubicacion</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Puntuacion</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="userfallowers">
+                                                        <tr>
+                                                            <td class="text-center text-muted">#-</td>
+                                                            <td>
+                                                                <div class="widget-content p-0">
+                                                                    <div class="widget-content-wrapper">
+                                                                        <div class="widget-content-left mr-3">
+                                                                            <div class="widget-content-left">
+                                                                                <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="widget-content-left flex2">
+                                                                            <div class="widget-heading">---- ----</div>
+                                                                            <div class="widget-subheading opacity-7">--- ---</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+        
+                                                            <td class="text-center">---</td>
+                                                            <td class="text-center">---
+                                                                <!-- <div class="badge badge-warning"></div> -->
+                                                            </td>
+                                                            <td class="text-center">
+                                                                ---
+                                                                <!-- <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">Details</button> -->
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">Details</button>
+                                                            </td>
+                                                        </tr>  
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="useractivestab" class="tab-pane" role="tabpanel">
+                                                <div class="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Visitas</th>
+                                                            <th class="text-center">Monto Facturado</th>
+                                                            <th class="text-center">Puntuacion</th>
+                                                        </tr>
+                                                        </thead>
+                                                        
+                                                        <tbody id="useractives" >
+                                                            <tr class="col-12">
+                                                                <td class="text-center text-muted">No hay clientes</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="userFielestab" class="tab-pane" role="tabpanel">
+                                                <div class="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Visitas</th>
+                                                            <th class="text-center">Monto Facturado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        
+                                                        <tbody id="userFieles" >
+                                                            <tr class="col-12">
+                                                                <td class="text-center text-muted">No hay clientes</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="userRecurrentestab" class="tab-pane" role="tabpanel">
+                                                <div class="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Visitas</th>
+                                                            <th class="text-center">Monto Facturado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        
+                                                        <tbody id="userRecurrentes" >
+                                                            <tr class="col-12">
+                                                                <td class="text-center text-muted">No hay clientes</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="userPotencialestab" class="tab-pane" role="tabpanel">
+                                                <div class="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Visitas</th>
+                                                            <th class="text-center">Monto Facturado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        
+                                                        <tbody id="userPotenciales" >
+                                                            <tr class="col-12">
+                                                                <td class="text-center text-muted">No hay clientes</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="userRentablestab" class="tab-pane" role="tabpanel">
+                                                <div class="table-responsive ">
+                                                    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="text-center">#</th>
+                                                            <th>Nombre</th>
+                                                            <th class="text-center">Edad</th>
+                                                            <th class="text-center">Género</th>
+                                                            <th class="text-center">Frecuencia Compras</th>
+                                                            <th class="text-center">Última Compra</th>
+                                                            <th class="text-center">Visitas</th>
+                                                            <th class="text-center">Monto Facturado</th>
+                                                            <th class="text-center">Puntuacion</th>
+                                                        </tr>
+                                                        </thead>
+                                                        
+                                                        <tbody id="userRentables" >
+                                                            <tr class="col-12">
+                                                                <td class="text-center" colspan="8">No hay clientes</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="table-responsive">
-                                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-center">#</th>
-                                                <th>Nombre</th>
-                                                <th class="text-center">Edad</th>
-                                                <th class="text-center">Género</th>
-                                                <th class="text-center">Frecuencia Compras</th>
-                                                <th class="text-center">Última Compra</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td class="text-center text-muted">#---</td>
-                                                <td>
-                                                    <div class="widget-content p-0">
-                                                        <div class="widget-content-wrapper">
-                                                            <div class="widget-content-left mr-3">
-                                                                <div class="widget-content-left">
-                                                                    <img width="40" class="rounded-circle" src="assets/images/avatars/10.jpg" alt="">
-                                                                </div>
-                                                            </div>
-                                                            <div class="widget-content-left flex2">
-                                                                <div class="widget-heading">---</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center">---</td>
-                                                <td class="text-center">
-                                                    <div class="badge badge-warning">---</div>
-                                                </td>
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                            </tr> 
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
+
                         <div class="row">
                                 <div class="col-lg-6 col-xl-4">
                                     <div class="card mb-3 widget-content">
@@ -852,10 +1170,10 @@
                     </div>
 
                     
-                </div> 
-            </div>
+                </div>  
         </div>
-    </div>
+    </div> 
     <script type="text/javascript" src="./assets/scripts/main.js"></script>
+    <script type="text/javascript" src="./assets/scripts/usuarios-adm.js"></script> 
 </body>
 </html>

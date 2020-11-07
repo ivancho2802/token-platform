@@ -30,7 +30,7 @@
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
     <script src="../js/controllers/bell.js"></script>
-    <script src="../js/controllers/company.js"></script>
+    <script src="../js/controllers/company.js"></script> 
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
 
@@ -123,9 +123,9 @@
                         // Save the json, or html here
                         htmlCustom = html
                     });
-                    unlayer.saveDesign(function(design) {
+                    /* unlayer.saveDesign(function(design) {
                         console.log('design', design);
-                    });
+                    }); */ 
                 }else{
                     htmlCustom = document.getElementById("message-email-html-create").value
                 }
@@ -200,6 +200,8 @@
             getBells()
             // obtener clientes de este usuario
             getClients()
+            // load menu unlayer
+            loadMenuTemplate(null)
         })
 
         var forms = document.getElementsByClassName('needs-validation');
@@ -298,7 +300,7 @@
                 companier.cities()
                 .then((citiesData2)=> {
                     
-                    companier.sendgrinddesigns()
+                    /* companier.sendgrinddesigns()
                         .then((designs)=> {
                             console.log("designs")
                             console.log(designs)
@@ -306,12 +308,13 @@
                         (err) =>{
                             console.log(err)
                             console.log("error solicitud.sendgrind ")
-                    })
+                    }) */
 
                     for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
                         document.getElementsByClassName("segmentsUserData2")[i].innerHTML = getTableUsersActSegmentSelect2(response, citiesData2, i)
                         //sendgrind/designs
                     }
+
                     document.getElementById("segmentsUserData").innerHTML = getTableUsersActSegmentSelect(response, citiesData2)
                 })
                 // console.log("bells")
@@ -511,7 +514,7 @@
         } 
         //obtener clientes
         function getClients(){
-            companier.clients(JSON.parse($.cookie("userData"))._id)
+            companier.clientsforbell(JSON.parse($.cookie("userData"))._id)
             .then((response)=> {
                 var usersData = response; 
                 // document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
@@ -687,23 +690,40 @@
         /**
         * funcion para validar el checkeo de lanzar la campaña o programar fecha 
         **/
-        function validcheckedunlayer(index){
+        var unlayer2
+        function validcheckedunlayer(index, htmlcustom){
             if(index!==null){
                 console.log(index)
-                var els = document.getElementsByName('launch'+(index));
-                console.log(els)
-                var datecurrent = new Date();
-                console.log(datecurrent.toISOString().replace("Z", ""));
-                for (var i=0;i<els.length;i++){
-                  if ( els[i].checked && els[i].value == 'launch'+index) {
-                    document.getElementById("datetime_campana"+(index)).readOnly =true
-                    document.getElementById("datetime_campana_backup"+(index)).value=document.getElementById("datetime_campana"+(index)).value
+                var contentEmailCustom = document.getElementById('message-email-html-create-content'+index);
+                var contentEmailUnlayer = document.getElementById('editorunlayer'+index);
+                
+                var els = document.getElementById('message-email-html-unlayer'+index);
+                
+                unlayer.init({
+                    id: 'editorunlayer'+index,
+                    displayMode: 'email'
+                })
+                if(htmlcustom)
+                unlayer.loadDesign({
+                    id: 'editorunlayer'+index,
+                    html: htmlcustom,
+                    classic: true
+                }); 
+                loadMenuTemplate(index);
+                
+                if ( els.checked  ) {
+                    
+                    contentEmailCustom.classList.remove('show');
+                    contentEmailCustom.classList.add('fade');
 
-                    document.getElementById("datetime_campana"+(index)).value=datecurrent.toISOString().replace("Z", "")
-                  }else{
-                    document.getElementById("datetime_campana"+(index)).readOnly =false
-                    document.getElementById("datetime_campana"+(index)).value = document.getElementById("datetime_campana_backup"+(index)).value
-                  }
+                    contentEmailUnlayer.classList.remove('fade');
+                    contentEmailUnlayer.classList.add('show');
+                }else{
+                    contentEmailCustom.classList.remove('fade');
+                    contentEmailCustom.classList.add('show');
+
+                    contentEmailUnlayer.classList.remove('show');
+                    contentEmailUnlayer.classList.add('fade');
                 }
             }else{ 
                 
@@ -727,9 +747,71 @@
                 }
             }
         }
+        /**
+        *   funcion para generar todas plantillas
+        */
+        function loadMenuTemplate(index){ 
+                 
+            companier.getjsondisaen()
+            .then((response)=> {
+                if(response){
+                    if(index==null){
+                        var unlayermenus= document.getElementsByClassName("templateseditorunlayer")
+                        for (let j = 0; j < unlayermenus.length; j++) {
+                            const element = unlayermenus[j];
+                            element.innerHTML = getTableUnlayerMenu(response, null)
+                        }
+                    }else{
+                        var unlayermenus2= document.getElementsByClassName("templateseditorunlayer"+index)
+                        for (let j = 0; j < unlayermenus2.length; j++) {
+                            const element2 = unlayermenus2[j];
+                            element2.innerHTML = getTableUnlayerMenu(response, index)
+                        }
+                    }
+                }
+            }) 
+            
+        }
+        function loadTemplate(id, index) { 
+            
+            companier.getjsondisaen()
+            .then((bodyunlayer)=> {
+                if(index==null){
+                    if(bodyunlayer.length)
+                    for (let i = 0; i < bodyunlayer.length; i++) { 
+                        if (id == bodyunlayer[i].id) {
+                            //unlayer.loadDesign(bodyunlayer[i].json);
+                            unlayer.loadTemplate(bodyunlayer[i].id); 
+                        }
+                    }
+                }else{
+                    if(bodyunlayer.length) 
+                    for (let i = 0; i < bodyunlayer.length; i++) { 
+                        if (id == bodyunlayer[i].id) {
+                            //unlayer.loadDesign(bodyunlayer[i].json);
+
+                            
+                            var $parent = $('#editorunlayer'+index).parent();
+                            $('#editorunlayer'+index).remove();
+                            $parent.append(`<div id="editorunlayer${index}" style="height: 1024px;margin:15px"></div>`);
+
+                            var $parent = $('#editorunlayer').parent();
+                            $('#editorunlayer').remove();
+                            $parent.append(`<div id="editorunlayer" style="height: 1024px;margin:15px"></div>`);
+
+                            unlayer.init({
+                                id: 'editorunlayer'+index,
+                                displayMode: 'email'
+                            })  
+                            unlayer.loadDesign(bodyunlayer[i].json);
+                        }
+                    }
+                }
+            }) 
+        }
     </script> 
 </head>
-<body>
+<body class="scrollbar scrollbar-mean-fruit">
     <div id="toasts"></div>
     <div class="modal fade" tabindex="-1" role="dialog" id="modalTokens">
         <div class="modal-dialog modal-lg" role="document" id="modalTokensContent">
@@ -1468,7 +1550,7 @@
                                                                             </div>
                                                                             
                                                                             <div class="col-md-12 mb-12 form-group">
-                                                                                <h4>Contenido del Email:</h4>
+                                                                                <h5>Contenido del Email:</h5>
                                                                             </div>
 
                                                                             <div class="col-md-2 mb-2 form-group">
@@ -1476,7 +1558,7 @@
                                                                                 <div class=" ">
                                                                                     <div class="theme-switch-wrapper">
                                                                                         <label class="theme-switch" for="message-email-html-unlayer">
-                                                                                            <input type="checkbox" id="message-email-html-unlayer" name="message-email-html-unlayer" value="message-email-html-unlayer" onchange="validcheckedunlayer(null)"/>
+                                                                                            <input type="checkbox" id="message-email-html-unlayer" name="message-email-html-unlayer" value="message-email-html-unlayer" onchange="validcheckedunlayer(null, '')"/>
                                                                                             <div class="slider round"></div>
                                                                                         </label>
                                                                                     </div>
@@ -1491,15 +1573,20 @@
                                                                             </div>  
                                                                         </div>
 
+                                                                        
+                                                                        <div class="form-row">                                                                            
+                                                                            <div class="templateseditorunlayer">
+                                                                            </div>
+                                                                        </div>
+
                                                                         <div class="form-row">
-                                                                            <!-- <script src="https://editor.unlayer.com/embed.js"></script> -->
-                                                                            <div id="editorunlayer" style="height: 1024px;"></div>
+                                                                            <div id="editorunlayer" style="height: 1024px;" class="scrollbar scrollbar-mean-fruit"></div>
                                                                             <script>
-                                                                            unlayer.init({
-                                                                                id: 'editorunlayer',
-                                                                                projectId: 7213,
-                                                                                templateId: "19506"
-                                                                            })
+                                                                                unlayer.init({
+                                                                                    id: 'editorunlayer',
+                                                                                    projectId: 7213,
+                                                                                    templateId: "19506"
+                                                                                })
                                                                             </script>
                                                                         </div>
                                                                         <button class="btn btn-primary" type="button" onclick="nextItemContenido(1)">Guardar Email</button>

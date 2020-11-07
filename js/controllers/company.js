@@ -11,6 +11,14 @@
       this.globalContext = {};
     }
 
+    Company.prototype.getjsondisaen = function() {
+  		return $.ajax({
+  			url : 'https://barter-token.herokuapp.com/api/unlayerjsondisaen',
+  			type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        headers: {"Authorization":  $.cookie("TOKEN")}
+  		}) 
+    };
     Company.prototype.followers = function(idcompany) {
   		if(!idcompany)
   			return false
@@ -72,6 +80,26 @@
         }) 
       }
     }; 
+    Company.prototype.clientsforbell = function() {
+      if($.cookie('idbranch')){
+        return $.ajax({
+          url : 'https://barter-token.herokuapp.com/api/clientsforbell/'+$.cookie('idbranch'),
+          type: 'GET',
+          // data : JSON.stringify(body),
+             contentType: "application/json; charset=utf-8",
+             headers: {"Authorization":  $.cookie("TOKEN")}
+        }) 
+      }else{
+        return $.ajax({
+          url : 'https://barter-token.herokuapp.com/api/clientsforbell',
+          type: 'GET',
+          // data : JSON.stringify(body),
+             contentType: "application/json; charset=utf-8",
+             headers: {"Authorization":  $.cookie("TOKEN")}
+        }) 
+      }
+    }; 
+    
     Company.prototype.branchs = function() {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/branchs',
