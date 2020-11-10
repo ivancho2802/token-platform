@@ -36,6 +36,7 @@
     <script src="../js/controllers/company.js"></script>
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <!-- end librerias para cookies -->
 
 </head>
@@ -128,7 +129,7 @@
                 </div>
             </div>
         </div>
-        <!-- <h1 class="titulo_calif">Calificaciones</h1> -->   
+        <!-- menu principal -->
         <div class="app-main">
             <div class="app-sidebar sidebar-shadow">
                 <div class="app-header__logo">
@@ -168,7 +169,7 @@
                         <ul class="vertical-nav-menu">
                             <li class="app-sidebar__heading">TOKEN</li>
                             <li>
-                                <a href="index.html" class="mm-active">
+                                <a href="index.html">
                                     <i class="metismenu-icon pe-7s-rocket"></i>
                                     Dashboard Token
                                 </a>
@@ -211,7 +212,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="calificaciones.html">
+                                <a href="calificaciones.html" class="mm-active">
                                     <i class="metismenu-icon pe-7s-eyedropper">
                                     </i>Calificaciones
                                 </a>
@@ -285,13 +286,54 @@
                             </div>    
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-10 col-lg-12">
+                            <div class="mb-1 card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6">
+                                            <div class="doughnut p-3">
+                                                <canvas id="myChart" width="400" height="400"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    mensajes sin respuesta
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="col-md-3 imagen__user">
+                                                        <img width="42" class="rounded-circle" id="avatar" src="assets/images/avatars/1.jpg" alt="user_avatar">
+                                                        <p class="font-weight-bold name__user">User One</p>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                                        <a href="#" class="btn btn-primary">responder</a>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">msm two</h5>
+                                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                                    <a href="#" class="btn btn-primary">responder</a>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">msm three</h5>
+                                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                                    <a href="#" class="btn btn-primary">responder</a>
+                                                </div>
+                                              </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    </div>
-    </div>
+        <!-- fin menu -->
+    </div>}
+    <script type="text/javascript" src="assets/scripts/calificaciones.js"></script>
 </body>
 
 </html>
