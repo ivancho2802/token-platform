@@ -30,10 +30,15 @@
     <!-- librerias para cookies -->
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
-    <script src="../js/controllers/company.js"></script>
+    <script type="text/javascript" src="./assets/scripts/main.js"></script>
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script src="../js/controllers/company.js"></script>
+    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
+    <script type="text/javascript" src="./assets/scripts/general.js"></script> 
+
     <link href="./main.css" rel="stylesheet">
     <script type="text/JavaScript">
         $( document ).ready(function() {
@@ -190,7 +195,7 @@
                     else if(paramtime=="day")
                         bodyStatics = groupByAmountStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                     else if(paramtime=="month")
-                        bodyStatics = groupByAmountStaticsWeekMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                        bodyStatics = groupByAmountStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
                         document.getElementById("canvasstaticsaddress").style.display="none";
                         document.getElementById("canvasstaticsgenero").style.display="none";
                         document.getElementById("canvasstaticsfech_nac").style.display="none"; 
@@ -434,8 +439,8 @@
         } 
     </script>
 </head>
-<body> 
-    <div class="modal fade" tabindex="-1" role="dialog" id="modalTokens">
+<body>  
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="modalTokens" aria-labelledby="myLargeModalLabel"  aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document" id="modalTokensContent">
             
         </div>
@@ -914,7 +919,12 @@
                     <div class="app-page-title">
                         <div class="page-title-wrapper"> 
                             <div class="page-title-heading">
-                                <div class="page-title-icon">
+                                <div class="page-title-icon"> 
+                                    <!--
+                                        <button type="button" class="btn mr-2 mb-2 btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                        Basic Modal
+                                        </button> 
+                                    -->
                                     <i class="pe-7s-car icon-gradient bg-mean-fruit">
                                     </i>
                                 </div>
@@ -983,7 +993,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6 col-xl-6">
-                                            <div class="card mb-3 widget-content bg-midnight-bloom" id="staticsactivos" onclick="listCuponesAct()">
+                                            <div class="card mb-3 widget-content bg-midnight-bloom" id="staticsactivos" onclick="listCuponesAct()" data-toggle="modal" data-target="#modalTokens">
                                                 <div class="widget-content-wrapper text-white">
                                                     <div class="widget-content-left">
                                                         <div class="widget-heading">Activos</div>
@@ -996,7 +1006,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-xl-6">
-                                            <div class="card mb-3 widget-content bg-arielle-smile" id="staticsinactivos" onclick="listCuponesinAct()" >
+                                            <div class="card mb-3 widget-content bg-arielle-smile" id="staticsinactivos" onclick="listCuponesinAct()" data-toggle="modal" data-target="#modalTokens">
                                                 <div class="widget-content-wrapper text-white">
                                                     <div class="widget-content-left">
                                                         <div class="widget-heading">Inactivos</div>
@@ -1099,10 +1109,8 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="../js/script.js"></script>
-    <script type="text/javascript" src="./assets/scripts/main.js"></script>
+    <!--<script type="text/javascript" src="../js/script.js"></script>-->
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
 
 
 </body>

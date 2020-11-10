@@ -27,12 +27,14 @@
     <link rel="icon" type="image/png" sizes="96x96" href="../images/favicon/favicon-96x96.png"/>
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon/favicon-16x16.png"/>
     <!-- librerias genericas -->
-    <script src="../js/js.cookie.js"></script>
-    <script src="../js/jquery.cookie.js"></script>
-    <script src="../js/controllers/bell.js"></script>
-    <script src="../js/controllers/company.js"></script> 
-
+    <script type="text/javascript" src="../js/js.cookie.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
     <script type="text/javascript" src="../js/moment.min.js"></script>
+
+    <script type="text/javascript" src="../js/controllers/bell.js"></script>
+    <script type="text/javascript" src="../js/controllers/company.js"></script> 
+    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
+    <script type="text/javascript" src="./assets/scripts/general.js"></script> 
 
     <!-- unlayereditor -->
     <script src="https://editor.unlayer.com/embed.js"></script>
@@ -83,9 +85,8 @@
                 }, false);
             })(); 
             document.getElementById("formbell").addEventListener('submit', function (event) {  
-
+                
                 var valid = false
-
                 var listasbell = [];
                 var els = document.getElementsByName('segmentlistnew');
                 for (var i=0;i<els.length;i++){
@@ -109,8 +110,6 @@
                 var form_data = $(this).serializeArray(); //Encode form elements for submission
                 event.preventDefault(); //prevent default action 
 
-                // document.getElementById("fk_bell_user_list"+index).value=listasbell;
-
                 var htmlCustom = '';
                 //#editorunlayer design-web editor-desktop
                 if( document.getElementById('message-email-html-unlayer').checked ){
@@ -129,7 +128,7 @@
                 }else{
                     htmlCustom = document.getElementById("message-email-html-create").value
                 }
-                console.log(htmlCustom)
+                //console.log(htmlCustom)
 
                 var bodyEmail = {
                     subject:   document.getElementById("message-email-subject-create").value ,
@@ -146,7 +145,8 @@
 
                 var body = {
                     name: document.getElementById("name").value,
-                    date: document.getElementById("datetime_campana").value,
+                    date: document.getElementById("launch").checked ? document.getElementById("datetime_campana").value: "",
+                    datecurrentdate: new Date,
                     sms: document.getElementById("sms").checked,
                     email: document.getElementById("email").checked,
                     notipush: document.getElementById("notipush").checked,
@@ -422,6 +422,7 @@
                     idbell: document.getElementById("bellid"+index).value,
                     name: document.getElementById("name"+index).value,
                     date: document.getElementById("datetime_campana"+index).value,
+                    datecurrentdate: new Date,
                     sms: document.getElementById("sms"+index).checked,
                     email: document.getElementById("email"+index).checked,
                     notipush: document.getElementById("notipush"+index).checked,
@@ -1481,7 +1482,7 @@
 
                                                                                 <div class="d-block text-center card-footer">
                                                                                     <!-- <button class="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i class="pe-7s-trash btn-icon-wrapper"> </i></button> -->
-                                                                                    <button class="btn-wide btn btn-success" onclick="saveListUser()"  data-toggle="modal" data-target="#modalTokens">Guardar lista</button>
+                                                                                    <button class="btn-wide btn btn-success"  data-toggle="modal" data-target="#modalTokens" onclick="saveListUser()" type="button">Guardar lista</button>
                                                                                 </div>
                                                                             </div>
 
@@ -1908,7 +1909,7 @@
     </div>  
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
-    <script type="text/javascript" src="../js/script.js"></script>
+    <!-- <script type="text/javascript" src="../js/script.js"></script> -->
     <script type="text/javascript" src="./assets/scripts/main.js"></script>
     <script type="text/javascript" src="./assets/scripts/campanas.js"></script> 
 </body>

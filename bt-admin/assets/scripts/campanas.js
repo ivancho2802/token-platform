@@ -30,6 +30,26 @@
                     <button type="button" type="button" data-toggle="collapse" href="#editar${index}" class="btn btn-primary" onclick="showEdit(${index})">Testear Campaña</button>
                     `;
     }
+    function validprogram(dateprogram, status){ 
+      
+      const datecurrent = new Date;
+      var dateprogramset = new Date(dateprogram);
+      var datediff = dateprogramset.getTime()-datecurrent.getTime();
+      var d = moment.duration(datediff, 'milliseconds');
+      var days = Math.floor(d.asDays());
+      var hours = Math.floor(d.asHours() - days * 24);
+      var mins = Math.floor(d.asMinutes()) - (days * 24 * 60) - (hours * 60 );
+      var segs = Math.floor(d.asSeconds()) - (days * 24 * 60 * 60) - (hours * 60 * 60) - (mins * 60 );
+      var diffMins = days+" < Dias, " + hours+ " < Horas " + mins + " < Minutos " + segs + " < Segundos";
+      //setTimeout(function(){ validprogram(dateprogram, status); }, 1000)
+      console.log(moment(datecurrent).isAfter(dateprogramset, 'day'))
+      console.log(status)
+      if((moment(datecurrent).isAfter(dateprogramset, 'day')) && status==true){
+        return `<div class="alert alert-warning fade show" role="alert">Hubo un error en la programacion de la campaña!</div>`;//  : ${diffMins}
+      }else{
+        return `<div class="alert alert-success fade show" role="alert">Campaña ejecutada con exito!  : ${diffMins}</div>`;
+      }
+    }
 
     var container="" , 
 
@@ -87,13 +107,14 @@ saldoTotalRestante=0, pvsms=0, pvemail=0, tested, idbell;
               <div class="main-card mb-3 card">
                   <div class="card-header">
                       <i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>
-                      <span>${bellsData[i].name} - ${bellsData[i].date}</span> 
+                      <span>${bellsData[i].name} - ${bellsData[i].date} </span> 
                   </div>
                   <div class="card-body">
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tab-eg1-0" role="tabpanel"><p>
-                        Esta campaña puede  ${sendMensajes(bellsData[i].sms)} ${sendEmails(bellsData[i].email)} ${sendNotify(bellsData[i].notipush)}.</p></div>
-                      
+                        <div class="tab-pane active" id="tab-eg1-0" role="tabpanel">
+                          <p> Esta campaña puede  ${sendMensajes(bellsData[i].sms)} ${sendEmails(bellsData[i].email)} ${sendNotify(bellsData[i].notipush)}.</p>
+                        </div>
+                        ${validprogram(bellsData[i].date, bellsData[i].status)}
                     </div>
 
                     <div class="collapse" id="editar${i}">
