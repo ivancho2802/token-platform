@@ -39,7 +39,7 @@
     <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
     <script type="text/javascript" src="./assets/scripts/general.js"></script> 
 
-    <link href="./main.css" rel="stylesheet">
+    <!-- <link href="./main.css" rel="stylesheet"> -->
     <script type="text/JavaScript">
         $( document ).ready(function() {
             var branchsData, bodyStatics, citiesData ;
@@ -86,8 +86,7 @@
         function groupStatics(groupStaticsvalue){
             //statics
             companier.staticsbyAdress()
-            .then((response)=> { 
-                console.log(response)
+            .then((response)=> {
 
                 var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
 
