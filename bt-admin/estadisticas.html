@@ -30,414 +30,16 @@
     <!-- librerias para cookies -->
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="./assets/scripts/main.js"></script>
-
     <script type="text/javascript" src="../js/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
+    <script type="text/javascript" src="./assets/scripts/main.js"></script>
     <script src="../js/controllers/company.js"></script>
+
+    <script type="text/javascript" src="./assets/scripts/helper.js"></script> 
     <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
-    <script type="text/javascript" src="./assets/scripts/general.js"></script> 
 
     <link href="./main.css" rel="stylesheet">
-    <script type="text/JavaScript">
-        $( document ).ready(function() {
-            var branchsData, bodyStatics, citiesData ;
-            /**
-            *   data de la empresa perfil
-            */
-            if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
-                return;
-
-            document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
-            document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
-            document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
-
-            // sucursales
-            companier.branchs()
-            .then((response)=> { 
-                document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
-                branchsData = response; 
-            }, 
-            (err) =>{console.log("error companier.branchs "+err)});
-
-            //animacion tabs de statics
-            $('.tabsstatics').on('click', 'a', function() {
-              var $this = $(this),
-                $ul = $this.parents('ul');
-              $ul.find('a').removeClass('active');
-              $this.addClass('active');
-            });
-        })
-
-        function groupStaticsByHistory(){
-            var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-            paramtime = paramTime.id.replace("tall", "")
-
-            var paramMedidor=document.querySelector('ul#medidorAllToken > li > a.active'), parammedidor='';
-            parammedidor = paramMedidor.id.replace("tall", "")
-            // tallgenero
-            // tallubicacion
-            // talledad
-            // tallamount
-            groupStatics(parammedidor)
-        }
-        // cupones activos e inactivos
-        function groupStatics(groupStaticsvalue){
-            //statics
-            companier.staticsbyAdress()
-            .then((response)=> { 
-                console.log(response)
-
-                var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-
-                // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
-                document.getElementById("cantCuponsActivos").innerHTML = response.acumCuponClientActivos.length;
-                document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-                if(groupStaticsvalue=='genero'){
-
-                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                    paramtime = paramTime.id.replace("tall", "");
-
-                    if(paramtime=="week")
-                    bodyStatics = groupByGeneroStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="day")
-                    bodyStatics = groupByGeneroStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="month")
-                    bodyStatics = groupByGeneroStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-
-                    document.getElementById("canvasstaticsaddress").style.display="none"; 
-                    document.getElementById("canvasstaticsfech_nac").style.display="none";
-                    document.getElementById("canvasstaticsamount").style.display="none";
-                    document.getElementById("canvasstaticsgenero").style.display="block";
-
-                    var $parent = $('#canvasstaticsgenero').parent();
-                    $('#canvasstaticsgenero').remove();
-                    $parent.append('<canvas id="canvasstaticsgenero"></canvas>');
-
-                    var canvas = document.getElementById("canvasstaticsgenero"); 
-                    if (canvas) {
-                        var e = canvas.getContext("2d");
-                        e.fillStyle = "rgba(0, 0, 0, 0)";
-                        e.clearRect(0, 0, e.canvas.width, e.canvas.height);
-                        e.beginPath();//ADD THIS LINE!<<<<<<<<<<<<<
-                        e.moveTo(0,0);
-                        e.lineTo(event.clientX,event.clientY);
-                        e.stroke();
-                        window.myBar = new Chart(e, {
-                            type: "bar",
-                            data: bodyStatics, 
-                            options: {
-                                responsive: !0,
-                                legend: {
-                                    position: "top"
-                                },
-                                title: {
-                                    display: !1,
-                                    text: "Estadisticas Token"
-                                }
-                            }
-                        })
-                    }
-                }else if(groupStaticsvalue=='adress'){
-                    //cities
-                    companier.cities()
-                    .then((responsecity)=> {
-                        citiesData = responsecity;
-
-                        var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                        paramtime = paramTime.id.replace("tall", "")
-
-                        console.log(paramtime)
-
-                        if(paramtime=="week")
-                        bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        else if(paramtime=="day")
-                        bodyStatics = groupByAdressStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        else if(paramtime=="month")
-                        bodyStatics = groupByAdressStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        document.getElementById("canvasstaticsgenero").style.display="none";
-                        document.getElementById("canvasstaticsfech_nac").style.display="none";
-                        document.getElementById("canvasstaticsamount").style.display="none";
-                        document.getElementById("canvasstaticsaddress").style.display="block";
-
-                            var $parent = $('#canvasstaticsaddress').parent();
-                            $('#canvasstaticsaddress').remove();
-                            $parent.append('<canvas id="canvasstaticsaddress"></canvas>');
-
-                            var canvas = document.getElementById("canvasstaticsaddress");
-                            if (canvas) {
-                                var e = canvas.getContext("2d");
-                                e.clearRect(0, 0, canvas.width, canvas.height);
-                                window.myBar = new Chart(e, {
-                                    type: "bar",
-                                    data: bodyStatics, 
-                                    options: {
-                                        responsive: !0,
-                                        legend: {
-                                            position: "top"
-                                        },
-                                        title: {
-                                            display: !1,
-                                            text: "Estadisticas Token"
-                                        }
-                                    }
-                                })
-                            }
-                    }, 
-                    (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-                }else if(groupStaticsvalue=="amount"){
-                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                    paramtime = paramTime.id.replace("tall", "")
-
-                    if(paramtime=="week")
-                        bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="day")
-                        bodyStatics = groupByAmountStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="month")
-                        bodyStatics = groupByAmountStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                        document.getElementById("canvasstaticsaddress").style.display="none";
-                        document.getElementById("canvasstaticsgenero").style.display="none";
-                        document.getElementById("canvasstaticsfech_nac").style.display="none"; 
-                        document.getElementById("canvasstaticsamount").style.display="block";
-
-
-                    var $parent = $('#canvasstaticsamount').parent();
-                    $('#canvasstaticsamount').remove();
-                    $parent.append('<canvas id="canvasstaticsamount"></canvas>');
-
-                    var canvas = document.getElementById("canvasstaticsamount");
-                    if (canvas) {
-                        var e = canvas.getContext("2d");
-                        e.clearRect(0, 0, canvas.width, canvas.height);
-                        window.myBar = new Chart(e, {
-                            type: "bar",
-                            data: bodyStatics, 
-                            options: {
-                                responsive: !0,
-                                legend: {
-                                    position: "top"
-                                },
-                                title: {
-                                    display: !1,
-                                    text: "Estadisticas Token"
-                                }
-                            }
-                        })
-                    }
-                }else if(groupStaticsvalue=="edad"){
-
-                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                    paramtime = paramTime.id.replace("tall", "")
-
-                    if(paramtime=="week")
-                    bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="day")
-                    bodyStatics = groupByEdadStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    else if(paramtime=="month")
-                    bodyStatics = groupByEdadStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                        document.getElementById("canvasstaticsaddress").style.display="none";
-                        document.getElementById("canvasstaticsgenero").style.display="none"; 
-                        document.getElementById("canvasstaticsamount").style.display="none";
-                        document.getElementById("canvasstaticsfech_nac").style.display="block";
-
-                    var $parent = $('#canvasstaticsfech_nac').parent();
-                    $('#canvasstaticsfech_nac').remove();
-                    $parent.append('<canvas id="canvasstaticsfech_nac"></canvas>');
-
-                    var canvas = document.getElementById("canvasstaticsfech_nac");
-                    if (canvas) {
-                        var e = canvas.getContext("2d");
-                        e.clearRect(0, 0, canvas.width, canvas.height);
-                        window.myBar = new Chart(e, {
-                            type: "bar",
-                            data: bodyStatics, 
-                            options: {
-                                responsive: !0,
-                                legend: {
-                                    position: "top"
-                                },
-                                title: {
-                                    display: !1,
-                                    text: "Estadisticas Token"
-                                }
-                            }
-                        })
-                    }
-                }
-                // //cupones vendidos o redimidos
-                // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
-            }, 
-            (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-        } 
-        groupStatics('genero');
-        /**
-        *   ver estadisticas por activos - ver cupones activos
-        */
-        function listCuponesAct(){
-            console.log("staticsactivos")
-
-            companier.tokens()
-            .then((response)=> { 
-                modalTokens(true, response)
-            }, 
-            (err) =>{console.log("error companier.branchs "+err)});
-        }
-        function goTokenEstadistics(idcupon, groupStaticsvalue, nametoken){
-
-            $.cookie('idcupon',idcupon);
-            $.cookie('nametoken',nametoken);
-            
-            var x = document.getElementsByClassName('ByCupon');
-            for (var i = 0; i < x.length; i++) {
-              x[i].classList.add('show');
-            } 
-
-            var y = document.getElementsByClassName('nametoken');
-            for (var i = 0; i < y.length; i++) {
-              y[i].innerHTML=nametoken;
-            }
-
-            companier.staticsByToken(idcupon)
-            .then((response)=> { 
-                var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-
-                // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
-                document.getElementById("cantCuponsActivosByCupon").innerHTML = response.acumCuponClientActivos.length;
-                document.getElementById("cantCuponsinActivosByCupon").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-                if(groupStaticsvalue=='week'){
-                    bodyStatics = groupByWeekStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                        document.getElementById("canvasstaticsaddressByCupon").style.display="none"; 
-                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
-                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
-                        document.getElementById("canvasstaticsgeneroByCupon").style.display="block";
-                        var canvas = document.getElementById("canvasstaticsgeneroByCupon");
-                        if (canvas) {
-                            var e = canvas.getContext("2d");
-                            e.clearRect(0, 0, canvas.width, canvas.height);
-                            window.myBar = new Chart(e, {
-                                type: "bar",
-                                data: bodyStatics, 
-                                options: {
-                                    responsive: !0,
-                                    legend: {
-                                        position: "top"
-                                    },
-                                    title: {
-                                        display: !1,
-                                        text: "Estadisticas Token"
-                                    }
-                                }
-                            })
-                        }
-                }else if(groupStaticsvalue=='adress'){
-                    //cities
-                    companier.cities()
-                    .then((responsecity)=> {
-                        citiesData = responsecity;
-
-                        bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none";
-                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none";
-                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
-                        document.getElementById("canvasstaticsaddressByCupon").style.display="block";
-                            var canvas = document.getElementById("canvasstaticsaddressByCupon");
-                            if (canvas) {
-                                var e = canvas.getContext("2d");
-                                e.clearRect(0, 0, canvas.width, canvas.height);
-                                window.myBar = new Chart(e, {
-                                    type: "bar",
-                                    data: bodyStatics, 
-                                    options: {
-                                        responsive: !0,
-                                        legend: {
-                                            position: "top"
-                                        },
-                                        title: {
-                                            display: !1,
-                                            text: "Estadisticas Token"
-                                        }
-                                    }
-                                })
-                            }
-                    }, 
-                    (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-                }else if(groupStaticsvalue=="amount"){
-                    bodyStatics = groupByAdressStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData);
-                        document.getElementById("canvasstaticsaddressByCupon").style.display="none";
-                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none";
-                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="none"; 
-                        document.getElementById("canvasstaticsamountByCupon").style.display="block";
-                    var canvas = document.getElementById("canvasstaticsamountByCupon");
-                    if (canvas) {
-                        var e = canvas.getContext("2d");
-                        e.clearRect(0, 0, canvas.width, canvas.height);
-                        window.myBar = new Chart(e, {
-                            type: "bar",
-                            data: bodyStatics, 
-                            options: {
-                                responsive: !0,
-                                legend: {
-                                },
-                                title: {
-                                    display: !1,
-                                    text: "Estadisticas Token"
-                                }
-                            }
-                        })
-                    }
-                }else if(groupStaticsvalue=="edad"){
-
-                    bodyStatics = groupByEdadStatics(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                        document.getElementById("canvasstaticsaddressByCupon").style.display="none";
-                        document.getElementById("canvasstaticsgeneroByCupon").style.display="none"; 
-                        document.getElementById("canvasstaticsamountByCupon").style.display="none";
-                        document.getElementById("canvasstaticsfech_nacByCupon").style.display="block";
-                    var canvas = document.getElementById("canvasstaticsfech_nacByCupon");
-                    if (canvas) {
-                        var e = canvas.getContext("2d");
-                        e.clearRect(0, 0, canvas.width, canvas.height);
-                        window.myBar = new Chart(e, {
-                            type: "bar",
-                            data: bodyStatics, 
-                            options: {
-                                responsive: !0,
-                                legend: {
-                                    position: "top"
-                                },
-                                title: {
-                                    display: !1,
-                                    text: "Estadisticas Token"
-                                }
-                            }
-                        })
-                    }
-                }
-                // //cupones vendidos o redimidos
-                // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
-            }, 
-            (err) =>{console.log("error companier.branchs "+err)});
-        }
-        $('#modalTokens').on('shown.bs.modal', function () {
-                console.log("veo el modal")
-
-        });
-
-        /**
-        *   ver estadisticas por  e inactivos
-        */
-        function listCuponesinAct(){ 
-
-
-            console.log("staticsinactivos")
-            companier.tokens()
-            .then((response)=> { 
-                console.log(response)
-                modalTokens(false, response)
-            }, 
-            (err) =>{console.log("error companier.branchs "+err)});
-        } 
-    </script>
 </head>
 <body>  
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="modalTokens" aria-labelledby="myLargeModalLabel"  aria-hidden="true">
@@ -934,62 +536,62 @@
                                 </div>  
                             </div>
                             <div class="page-title-actions">
-                                    <button type="button" data-toggle="tooltip" title="Sucursal por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
-                                        <i class="fa fa-star text-white "></i>
-                                    </button>
+                                <button type="button" data-toggle="tooltip" title="Sucursal por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
+                                    <i class="fa fa-star text-white "></i>
+                                </button>
 
-                                    <div class="d-inline-block dropdown">
-                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
-                                            <span class="btn-icon-wrapper pr-2 opacity-7">
-                                                <i class="fa fa-business-time fa-w-20"></i>
-                                            </span>
-                                            Sucursales
-                                        </button>
-                                        <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <ul class="nav flex-column" id="branchs">
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <i class="nav-link-icon lnr-inbox"></i>
-                                                        <span>
-                                                            Inbox
-                                                        </span>
-                                                        <div class="ml-auto badge badge-pill badge-secondary">86</div>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <i class="nav-link-icon lnr-book"></i>
-                                                        <span>
-                                                            Book
-                                                        </span>
-                                                        <div class="ml-auto badge badge-pill badge-danger">5</div>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <i class="nav-link-icon lnr-picture"></i>
-                                                        <span>
-                                                            Picture
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a disabled href="javascript:void(0);" class="nav-link disabled">
-                                                        <i class="nav-link-icon lnr-file-empty"></i>
-                                                        <span>
-                                                            File Disabled
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                <div class="d-inline-block dropdown">
+                                    <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
+                                        <span class="btn-icon-wrapper pr-2 opacity-7">
+                                            <i class="fa fa-business-time fa-w-20"></i>
+                                        </span>
+                                        Sucursales
+                                    </button>
+                                    <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                        <ul class="nav flex-column" id="branchs">
+                                            <li class="nav-item">
+                                                <a href="javascript:void(0);" class="nav-link">
+                                                    <i class="nav-link-icon lnr-inbox"></i>
+                                                    <span>
+                                                        Inbox
+                                                    </span>
+                                                    <div class="ml-auto badge badge-pill badge-secondary">86</div>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="javascript:void(0);" class="nav-link">
+                                                    <i class="nav-link-icon lnr-book"></i>
+                                                    <span>
+                                                        Book
+                                                    </span>
+                                                    <div class="ml-auto badge badge-pill badge-danger">5</div>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="javascript:void(0);" class="nav-link">
+                                                    <i class="nav-link-icon lnr-picture"></i>
+                                                    <span>
+                                                        Picture
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a disabled href="javascript:void(0);" class="nav-link disabled">
+                                                    <i class="nav-link-icon lnr-file-empty"></i>
+                                                    <span>
+                                                        File Disabled
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
+                                </div>
                             </div>    
                         </div>
                     </div>            
                     <div class="row">
                         <div class="col-md-10 col-lg-12">
-                            <div class="mb-1 card">
+                            <div class="mb-3 card">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6 col-xl-6">
@@ -1061,7 +663,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
-                            <div class="mb-12 card">
+                            <div class="mb-3 card">
                                 <div class="card-header-tab card-header-tab-animation card-header">
                                     <div class="card-header-title">
                                         <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>

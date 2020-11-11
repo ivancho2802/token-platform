@@ -4,7 +4,7 @@
 
   Bell = (function() {
     function Bell() {
-      this.translate = __bind(this.translate, this);      this.data = {
+      this.data = {
         values: {},
         contexts: []
       };
@@ -83,6 +83,15 @@
     Bell.prototype.testbell = function(idbell, body) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
+        type: 'POST',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(body)
+      })
+    }; 
+    Bell.prototype.programbell = function(idbell, body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/bellprogram/'+idbell,
         type: 'POST',
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8",
