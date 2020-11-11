@@ -1,6 +1,26 @@
+.row
+{
+    max-width: 96vw; 
+}
 .titulo_calif
 {
     margin-top: 2em;
     text-align: center;
     text-transform: uppercase;
+}
+
+.img_user
+{
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+}
+.scroll_card
+{
+    height: 50vh;
+    overflow-y: scroll;
+}
+.canvas_calificaciones
+{
+    max-height: 405px;
 }

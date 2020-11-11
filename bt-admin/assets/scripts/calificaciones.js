@@ -30,3 +30,13 @@ var myChart = new Chart(ctx, {
         }
     }
 });
+
+/* return $.ajax({
+    url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
+    type: 'GET',
+    headers: {"Authorization":  $.cookie("TOKEN")},
+    contentType: "application/json; charset=utf-8"
+}) */
+
+
+
