@@ -31,6 +31,37 @@ var myChart = new Chart(ctx, {
     }
 });
 
+$( document ).ready(function() {
+    var branchsData, bodyStatics, citiesData ;
+    /**
+    *   data de la empresa perfil
+    */
+    if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
+        return;
+
+   /*  document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
+    document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
+    document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image; */
+
+    // sucursales
+    companier.branchs()
+    .then((response)=> { 
+        console.log('test 1');
+        document.getElementById("branchs").innerHTML = getTableBranchs(branchsData);
+        console.log(document.getElementById("branchs").innerHTML);
+        branchsData = response; 
+    }, 
+    (err) =>{console.log("error companier.branchs "+err)});
+
+    //animacion tabs de statics
+    /* $('.tabsstatics').on('click', 'a', function() {
+        var $this = $(this),
+          $ul = $this.parents('ul');
+        $ul.find('a').removeClass('active');
+        $this.addClass('active');
+    }); */
+});
+
 /* return $.ajax({
     url : 'https://barter-token.herokuapp.com/api/belltest/'+idbell,
     type: 'GET',
