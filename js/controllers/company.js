@@ -153,7 +153,16 @@
            contentType: "application/json; charset=utf-8",
            headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
-    };  
+    };
+    Company.prototype.getqualification = function(id_branch=null) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/calificationsA/'+id_branch,
+        type: 'GET',
+        // data : JSON.stringify(body),
+        contentType: "application/json; charset=utf-8",
+        headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    };
     Company.prototype.solicitudHash = function(hash, context) {
       var k, v;
 
