@@ -12,6 +12,8 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="This is an example dashboard created using build-in elements and components.">
     <meta name="msapplication-tap-highlight" content="no">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
     <link href="./main.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/calificaciones.css">
 
@@ -33,10 +35,14 @@
     <!-- librerias para cookies -->
     <script src="../js/js.cookie.js"></script>
     <script src="../js/jquery.cookie.js"></script>
-    <script src="../js/controllers/company.js"></script>
+    <script type="text/javascript" src="./assets/scripts/main.js"></script>
 
     <script type="text/javascript" src="../js/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script src="../js/controllers/company.js"></script>
+    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
+    <script type="text/javascript" src="./assets/scripts/general.js"></script> 
     <!-- end librerias para cookies -->
 
 </head>
@@ -226,16 +232,7 @@
                 <div class="app-main__inner">
                     <div class="app-page-title">
                         <div class="page-title-wrapper"> 
-                            <div class="page-title-heading">
-                                <div> 
-                                    <div class="page-title-subheading">
-                                    </div>
-                                </div>  
-                            </div>
                             <div class="page-title-actions">
-                                    <button type="button" data-toggle="tooltip" title="Sucursal por defecto" data-placement="bottom" class="btn-shadow mr-3 btn btn-warning">
-                                        <i class="fa fa-star text-white "></i>
-                                    </button>
 
                                     <div class="d-inline-block dropdown">
                                         <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
@@ -246,32 +243,6 @@
                                         </button>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                             <ul class="nav flex-column" id="branchs">
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <!-- <i class="nav-link-icon lnr-inbox"></i> -->
-                                                        <span>
-                                                            Inbox
-                                                        </span>
-                                                        <div class="ml-auto badge badge-pill badge-secondary">86</div>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <i class="nav-link-icon lnr-book"></i>
-                                                        <span>
-                                                            Book
-                                                        </span>
-                                                        <div class="ml-auto badge badge-pill badge-danger">5</div>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="javascript:void(0);" class="nav-link">
-                                                        <i class="nav-link-icon lnr-picture"></i>
-                                                        <span>
-                                                            Picture
-                                                        </span>
-                                                    </a>
-                                                </li>
                                                 <li class="nav-item">
                                                     <a disabled href="javascript:void(0);" class="nav-link disabled">
                                                         <i class="nav-link-icon lnr-file-empty"></i>
