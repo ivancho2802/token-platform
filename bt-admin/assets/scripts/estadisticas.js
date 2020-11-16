@@ -1,6 +1,5 @@
 
 $( document ).ready(function() {
-    var bodyStatics, citiesData ;
     /**
     *   data de la empresa perfil
     */
@@ -21,6 +20,7 @@ $( document ).ready(function() {
       $ul.find('a').removeClass('active');
       $this.addClass('active');
     });
+    groupStatics('genero');
 })
 
     function groupStaticsByHistory(){
@@ -223,7 +223,6 @@ $( document ).ready(function() {
           console.log("error solicitud.balancesmsemail "+err)
         });
     } 
-    groupStatics('genero');
     /**
     *   ver estadisticas por activos - ver cupones activos
     */
