@@ -1,9 +1,13 @@
 $( document ).ready(function() {
     if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
-    
+        
     new Help().loadbrnachs();
-    
+    campanier.createOrGetSegment('Fieles')
+    campanier.createOrGetSegment('Recurrentes')
+    campanier.createOrGetSegment('Potenciales')
+    campanier.createOrGetSegment('Rentables')
+
     var bellData=[], balancesmsemailData
     document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
     document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
@@ -235,8 +239,6 @@ function getBalance(){
 function getBells(){
     bellier.bells()//JSON.parse($.cookie("userData"))._id
     .then((response)=> {
-        console.log("bells")
-        console.log(response)
         bellData = response; 
         if(bellData.length)
         document.getElementById("campanaslist").innerHTML = campanier.gerTableBells(bellData);
@@ -788,9 +790,9 @@ function loadTemplate(id, index) {
       };
       this.globalContext = {};
     }
-  /**
-  *  FUNCIONES AUXILIARES DE TAVLAS GENERANDO CONTENUIDO
-  */   
+    /**
+     *  FUNCIONES AUXILIARES DE TAVLAS GENERANDO CONTENUIDO
+     */   
     // bellsData CUENTAScampañas
     Campana.prototype.gerTableBells = function(bellsData) { 
       function sendMensajes(bol){
@@ -1765,10 +1767,10 @@ function loadTemplate(id, index) {
       }
       return bodyHtml
     }
-  /**
-  *  FUNCIOND DE INTERACCION ENFORMULARIOS
-  */
-    // funcion que calcula el saldo restante en alcance
+    /**
+     *  FUNCIOND DE INTERACCION ENFORMULARIOS
+     * funcion que calcula el saldo restante en alcance
+     */
     Campana.prototype.calcSaldoRestante = function  (){  
 
       var numsms=0, numeemail=0, saldorestante=0, pvemail=1, pvsms=1, saldototal=unFormat(document.getElementById("saldoTotal").innerHTML), saldoestimado=0;
@@ -2036,9 +2038,9 @@ function loadTemplate(id, index) {
       }
       document.getElementById("saldoEstimadoedit"+index).innerHTML = format(saldoestimado)
     }
-  /**
-  *  FUNCIONES DE DINAMISMO DE LA PAGINA
-  */
+    /**
+     *  FUNCIONES DE DINAMISMO DE LA PAGINA
+     */
     Campana.prototype.nextItemContenido = function (origen){
       var pos = origen+1==3 ? 0 :  origen+1;
       // $('#tabContenido').tab('show')   tabcontcreate1
@@ -2051,7 +2053,9 @@ function loadTemplate(id, index) {
       console.log('#tabContenido a#tabcontedit'+pos+index)
       $('#tabContenido a#tabcontedit'+pos+index).tab('show')
     }
-    // funcion para programar campaña
+    /** 
+     * funcion para programar campaña
+    */ 
     Campana.prototype.programbellbyreq = function (body, idbell, index){
 
       if(index){ 
@@ -2099,6 +2103,142 @@ function loadTemplate(id, index) {
         });
       }
     }
+    /**
+     * funcion para inicializar segmentos
+     */ 
+    Campana.prototype.createOrGetSegment = function (name){
+        bellier.getsegmentuser()
+        .then((response1)=> {
+            companier.cuponeclienetscan()
+            .then((response2)=> { 
+                var cuponeclienetscanData = response2, idsegmenttodelete;
+                //6 listas
+                for (let index = 0; index < response1.length; index++) {
+                    const element = response1[index];
+                    if(response1[index].name && response1[index].name.search(name)!==-1){
+                        idsegmenttodelete = response1[index]._id
+                    } 
+                }
+                var arraymaygasto = [];
+
+                arraymaygasto = Campana.prototype.generateArrayMayGasto(cuponeclienetscanData, name)
+
+                var formararray=[]
+                for (let i = 0; i < arraymaygasto.length; i++) {
+                    const element = arraymaygasto[i];
+                    formararray.push(element.iduser)
+                }
+                
+                bellier.deletesegmentuser(idsegmenttodelete)
+                .then((responsedelete)=> {
+                    const bodyseg = { name: 'Clientes '+name, fk_user: formararray};
+                    bellier.setsegmentuser(bodyseg)
+                    .then((response2)=> {
+                        companier.cities()
+                        .then((citiesData2)=> {
+                            for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
+                                document.getElementsByClassName("segmentsUserData2")[i].innerHTML = campanier.getTableUsersActSegmentSelect2(response2, citiesData2, i)
+                                //sendgrind/designs
+                            }
+                            document.getElementsByClassName("page-title-subheading")[0].innerHtml = `
+                            <div class="alert alert-success fade show" role="alert">Segmento actualizados con exito!</div>
+                            `; 
+                        })
+                        return 
+                    }, 
+                    (errorsegment) =>{
+                        document.getElementsByClassName("page-title-subheading")[0].innerHtml = `
+                        <div class="alert alert-danger fade show" role="alert">Error al actualizar segmento!</div>
+                        `;
+                        return 
+                    })
+                })
+            })
+        })
+    }
+    /**
+    *  para generar arrays
+    */
+   Campana.prototype.generateArrayMayGasto = (response, tipo)=>{
+        var cuponeclienetscanData
+        cuponeclienetscanData = response;
+        var arrayUserRedim = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.fk_user_asocd ? (cuponeclienetscanData.userredimieron.fk_user_asocd): []: [];
+        var arrayusermayorgasto = cuponeclienetscanData.usermayorgasto ? cuponeclienetscanData.usermayorgasto ? (cuponeclienetscanData.usermayorgasto): []: [],
+        arrayusermayorgastoinvert = []
+        , arrayusermayorgastofrecuente = [], arrayusermayorgastofieles = [], arrayusermayorgastorecurrentes = []
+        , arrayusermayorgastopotenciales = [], arrayusermayorgastorentables=[];
+
+        indexuser = 0//arrayusermayorgasto.length *
+        for (let i = 0; i < indexuser; i++) {
+            const element = arrayusermayorgasto[i];
+                arrayusermayorgastofrecuente.push(element)
+        }
+        var indexuserfieles = 0, indexuserrecurrentes = 0, indexuserpotenciales = 0, indexuserrentables=0, indexuserfrecu = 0;
+        indexuserfieles = Math.round(arrayusermayorgasto.length * 0.25)
+        indexuserrecurrentes = Math.round(arrayusermayorgasto.length * 0.75)
+        indexuserpotenciales = Math.round(arrayusermayorgasto.length * 1)
+        indexuserrentables = Math.round(arrayusermayorgasto.length * 0.20)
+        for (let i = 0; i < arrayusermayorgasto.length; i++) {
+            const element = arrayusermayorgasto[i];
+            //fieles
+            if(i<=indexuserfieles-1){
+                arrayusermayorgastofieles.push(element)
+            }else
+            //recurrentes
+            if(i>indexuserfieles-1 && i<=indexuserrecurrentes-1){
+                arrayusermayorgastorecurrentes.push(element)
+            }else
+            //potenciales
+            if(i>indexuserrecurrentes-1 && i<=indexuserpotenciales-1){
+                arrayusermayorgastopotenciales.push(element)
+            }
+        }
+        arrayusermayorgastoinvert = arrayusermayorgasto
+        arrayusermayorgastoinvert.sort(function (a, b) {
+            if (a.data.acamount > b.data.acamount) {
+                return -1;
+            }
+            if (a.data.acamount < b.data.acamount) {
+                return 1;
+            }
+            if (a.data.acamount == b.data.acamount) {
+                if (a.data.numcupones > b.data.numcupones) {
+                    return -1;
+                }else if (a.data.numcupones < b.data.numcupones) {
+                    return 1;
+                }
+                return 0;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        //rentables
+        for (let j = 0; j < arrayusermayorgastoinvert.length; j++) {
+            const element = arrayusermayorgastoinvert[j];
+            if(j>=0 && j<=indexuserrentables-1){
+                arrayusermayorgastorentables.push(element)
+            }  
+        }
+        // clientes 
+        /**
+        *   numeros de seguidores correo y demas
+        */
+        if(tipo=='Frecuente')
+        return arrayusermayorgastofrecuente 
+        else if(tipo=='Fieles')
+        return arrayusermayorgastofieles 
+        else if(tipo=='Recurrentes')
+        return arrayusermayorgastorecurrentes 
+        else if(tipo=='Potenciales')
+        return arrayusermayorgastopotenciales 
+        else if(tipo=='Rentables')
+        return arrayusermayorgastorentables 
+        else if(tipo=='All')
+        return arrayusermayorgasto  
+        //numPuntosObtenidos
+        //numUserClients
+    }
+
     return Campana;
   })();
 

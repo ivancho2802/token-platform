@@ -118,9 +118,9 @@
            headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
     };  
-    Company.prototype.staticsbyAdress = function() {
+    Company.prototype.staticsbyAdress = function(idbranch) {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/staticsAdress',
+        url : 'https://barter-token.herokuapp.com/api/staticsAdress/'+idbranch,
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",

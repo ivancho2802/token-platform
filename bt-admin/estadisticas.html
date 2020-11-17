@@ -32,12 +32,12 @@
     <script src="../js/jquery.cookie.js"></script>
     <script type="text/javascript" src="../js/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
     <script type="text/javascript" src="./assets/scripts/main.js"></script>
-    <script src="../js/controllers/company.js"></script>
 
-    <script type="text/javascript" src="./assets/scripts/helper.js"></script> 
-    <script type="text/javascript" src="./assets/scripts/estadisticas.js"></script> 
+    <script type="text/javascript"  src="./app/router/company.js"></script>
+
+    <script type="text/javascript" src="./app/controller/helper.js"></script> 
+    <script type="text/javascript" src="./app/controller/estadisticas.js"></script> 
 
     <link href="./main.css" rel="stylesheet">
 </head>
@@ -549,40 +549,7 @@
                                     </button>
                                     <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                         <ul class="nav flex-column" id="branchs">
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-inbox"></i>
-                                                    <span>
-                                                        Inbox
-                                                    </span>
-                                                    <div class="ml-auto badge badge-pill badge-secondary">86</div>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-book"></i>
-                                                    <span>
-                                                        Book
-                                                    </span>
-                                                    <div class="ml-auto badge badge-pill badge-danger">5</div>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="javascript:void(0);" class="nav-link">
-                                                    <i class="nav-link-icon lnr-picture"></i>
-                                                    <span>
-                                                        Picture
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a disabled href="javascript:void(0);" class="nav-link disabled">
-                                                    <i class="nav-link-icon lnr-file-empty"></i>
-                                                    <span>
-                                                        File Disabled
-                                                    </span>
-                                                </a>
-                                            </li>
+                                            
                                         </ul>
                                     </div>
                                 </div>
@@ -622,14 +589,8 @@
                                         </div>
                                         
                                     </div>
-                                   
-
-                                    
-
                                 </div>
-
                             </div>
-
                         </div>
                        
 
@@ -672,15 +633,16 @@
                                 </div>
                                 <div class="card-header-tab card-header-tab-animation card-header">
                                     <ul class="nav tabsstatics" id="timeAllToken" style="margin: 0;">
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStaticsByHistory()" class=" nav-link" id="tallmonth">Mensual</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStaticsByHistory()" class="nav-link" id="tallweek">Semanal</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStaticsByHistory()" class="active nav-link second-tab-toggle" id="tallday">Dia de la Semana</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class=" nav-link" id="tallmonth">Mensual</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class="nav-link" id="tallweek">Semanal</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class="active nav-link second-tab-toggle" id="tallday">Dia de la Semana</a></li>
                                     </ul>
+        
                                     <ul class="nav tabsstatics" id="medidorAllToken">
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('genero')" class="active nav-link" id="tallgenero">Genero</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('adress')" class="nav-link" id="talladress">Ubicacion</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('edad')" class="nav-link second-tab-toggle" id="talledad">Edad.</a></li>
-                                        <li class="nav-item"><a href="javascript:void(0);" onclick="groupStatics('amount')" class="nav-link second-tab-toggle" id="tallamount">Monto Fact.</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('genero', $.cookie('idbranch'))" class="active nav-link" id="tallgenero">Genero</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('adress', $.cookie('idbranch'))" class="nav-link" id="talladress">Ubicacion</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('edad', $.cookie('idbranch'))" class="nav-link second-tab-toggle" id="talledad">Edad.</a></li>
+                                        <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('amount', $.cookie('idbranch'))" class="nav-link second-tab-toggle" id="tallamount">Monto Fact.</a></li>
                                     </ul>
                                 </div>
                                 <div class="card-body">

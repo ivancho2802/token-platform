@@ -1,5 +1,208 @@
 
-$( document ).ready(function() {
+class Estadistica  {
+  constructor () {}
+  // cupones activos e inactivos 
+  groupStatics(groupStaticsvalue, idbranch){
+    //statics
+    companier.staticsbyAdress(idbranch=undefined)
+    .then((response)=> { 
+
+        var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
+
+        // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
+        document.getElementById("cantCuponsActivos").innerHTML = response.acumCuponClientActivos.length;
+        document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
+        if(groupStaticsvalue=='genero'){
+
+            var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+            paramtime = paramTime.id.replace("tall", "");
+
+            if(paramtime=="week")
+            bodyStatics = groupByGeneroStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="day")
+            bodyStatics = groupByGeneroStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="month")
+            bodyStatics = groupByGeneroStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+
+            document.getElementById("canvasstaticsaddress").style.display="none"; 
+            document.getElementById("canvasstaticsfech_nac").style.display="none";
+            document.getElementById("canvasstaticsamount").style.display="none";
+            document.getElementById("canvasstaticsgenero").style.display="block";
+
+            var $parent = $('#canvasstaticsgenero').parent();
+            $('#canvasstaticsgenero').remove();
+            $parent.append('<canvas id="canvasstaticsgenero"></canvas>');
+
+            var canvas = document.getElementById("canvasstaticsgenero"); 
+            if (canvas) {
+                var e = canvas.getContext("2d");
+                e.fillStyle = "rgba(0, 0, 0, 0)";
+                e.clearRect(0, 0, e.canvas.width, e.canvas.height);
+                e.beginPath();//ADD THIS LINE!<<<<<<<<<<<<<
+                e.moveTo(0,0);
+                e.lineTo(event.clientX,event.clientY);
+                e.stroke();
+                window.myBar = new Chart(e, {
+                    type: "bar",
+                    data: bodyStatics, //{label: ["elemnt", "elemnt", "elemnt", "elemnt"], data:[12, 12, 12,12]}
+                    options: {
+                        responsive: !0,
+                        legend: {
+                            position: "top"
+                        },
+                        title: {
+                            display: !1,
+                            text: "Estadisticas Token"
+                        }
+                    }
+                })
+            }
+        }else if(groupStaticsvalue=='adress'){
+            //cities
+            companier.cities()
+            .then((responsecity)=> {
+                var citiesData = responsecity;
+
+                var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+                paramtime = paramTime.id.replace("tall", "")
+
+
+                if(paramtime=="week")
+                bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                else if(paramtime=="day")
+                bodyStatics = groupByAdressStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                else if(paramtime=="month")
+                bodyStatics = groupByAdressStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
+                document.getElementById("canvasstaticsgenero").style.display="none";
+                document.getElementById("canvasstaticsfech_nac").style.display="none";
+                document.getElementById("canvasstaticsamount").style.display="none";
+                document.getElementById("canvasstaticsaddress").style.display="block";
+
+                    var $parent = $('#canvasstaticsaddress').parent();
+                    $('#canvasstaticsaddress').remove();
+                    $parent.append('<canvas id="canvasstaticsaddress"></canvas>');
+
+                    var canvas = document.getElementById("canvasstaticsaddress");
+                    if (canvas) {
+                        var e = canvas.getContext("2d");
+                        e.clearRect(0, 0, canvas.width, canvas.height);
+                        window.myBar = new Chart(e, {
+                            type: "bar",
+                            data: bodyStatics, 
+                            options: {
+                                responsive: !0,
+                                legend: {
+                                    position: "top"
+                                },
+                                title: {
+                                    display: !1,
+                                    text: "Estadisticas Token"
+                                }
+                            }
+                        })
+                    }
+            }, 
+            (err) =>{console.log("error solicitud.balancesmsemail "+err)});
+        }else if(groupStaticsvalue=="amount"){
+            var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+            paramtime = paramTime.id.replace("tall", "")
+
+            if(paramtime=="week")
+                bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="day")
+                bodyStatics = groupByAmountStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="month")
+                bodyStatics = groupByAmountStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                document.getElementById("canvasstaticsaddress").style.display="none";
+                document.getElementById("canvasstaticsgenero").style.display="none";
+                document.getElementById("canvasstaticsfech_nac").style.display="none"; 
+                document.getElementById("canvasstaticsamount").style.display="block";
+
+
+            var $parent = $('#canvasstaticsamount').parent();
+            $('#canvasstaticsamount').remove();
+            $parent.append('<canvas id="canvasstaticsamount"></canvas>');
+
+            var canvas = document.getElementById("canvasstaticsamount");
+            if (canvas) {
+                var e = canvas.getContext("2d");
+                e.clearRect(0, 0, canvas.width, canvas.height);
+                window.myBar = new Chart(e, {
+                    type: "bar",
+                    data: bodyStatics, 
+                    options: {
+                        responsive: !0,
+                        legend: {
+                            position: "top"
+                        },
+                        title: {
+                            display: !1,
+                            text: "Estadisticas Token"
+                        }
+                    }
+                })
+            }
+        }else if(groupStaticsvalue=="edad"){
+
+            var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+            paramtime = paramTime.id.replace("tall", "")
+
+            if(paramtime=="week")
+            bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="day")
+            bodyStatics = groupByEdadStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+            else if(paramtime=="month")
+            bodyStatics = groupByEdadStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
+                document.getElementById("canvasstaticsaddress").style.display="none";
+                document.getElementById("canvasstaticsgenero").style.display="none"; 
+                document.getElementById("canvasstaticsamount").style.display="none";
+                document.getElementById("canvasstaticsfech_nac").style.display="block";
+
+            var $parent = $('#canvasstaticsfech_nac').parent();
+            $('#canvasstaticsfech_nac').remove();
+            $parent.append('<canvas id="canvasstaticsfech_nac"></canvas>');
+
+            var canvas = document.getElementById("canvasstaticsfech_nac");
+            if (canvas) {
+                var e = canvas.getContext("2d");
+                e.clearRect(0, 0, canvas.width, canvas.height);
+                window.myBar = new Chart(e, {
+                    type: "bar",
+                    data: bodyStatics, 
+                    options: {
+                        responsive: !0,
+                        legend: {
+                            position: "top"
+                        },
+                        title: {
+                            display: !1,
+                            text: "Estadisticas Token"
+                        }
+                    }
+                })
+            }
+        }
+        // //cupones vendidos o redimidos
+        // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
+    }, 
+    (err) =>{
+      console.log("error solicitud.balancesmsemail "+err)
+    });
+  }
+  groupStaticsByHistory(){
+    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
+    paramtime = paramTime.id.replace("tall", "")
+
+    var paramMedidor=document.querySelector('ul#medidorAllToken > li > a.active'), parammedidor='';
+    parammedidor = paramMedidor.id.replace("tall", "")
+    // tallgenero
+    // tallubicacion
+    // talledad
+    // tallamount
+    new Estadistica().groupStatics(parammedidor, $.cookie('idbranch'))
+  }
+}
+    $( document ).ready(function() {
     /**
     *   data de la empresa perfil
     */
@@ -20,209 +223,10 @@ $( document ).ready(function() {
       $ul.find('a').removeClass('active');
       $this.addClass('active');
     });
-    groupStatics('genero');
+    $.cookie('idbranch', undefined);
+    new Estadistica().groupStatics('genero', $.cookie('idbranch'));
 })
-
-    function groupStaticsByHistory(){
-        var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-        paramtime = paramTime.id.replace("tall", "")
-
-        var paramMedidor=document.querySelector('ul#medidorAllToken > li > a.active'), parammedidor='';
-        parammedidor = paramMedidor.id.replace("tall", "")
-        // tallgenero
-        // tallubicacion
-        // talledad
-        // tallamount
-        groupStatics(parammedidor)
-    }
-    // cupones activos e inactivos
-    function groupStatics(groupStaticsvalue){
-        //statics
-        companier.staticsbyAdress()
-        .then((response)=> { 
-
-            var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-
-            // document.getElementById("cantCuponsSee").innerHTML = cantCuponsSee;
-            document.getElementById("cantCuponsActivos").innerHTML = response.acumCuponClientActivos.length;
-            document.getElementById("cantCuponsinActivos").innerHTML = response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;
-            if(groupStaticsvalue=='genero'){
-
-                var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                paramtime = paramTime.id.replace("tall", "");
-
-                if(paramtime=="week")
-                bodyStatics = groupByGeneroStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="day")
-                bodyStatics = groupByGeneroStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="month")
-                bodyStatics = groupByGeneroStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-
-                document.getElementById("canvasstaticsaddress").style.display="none"; 
-                document.getElementById("canvasstaticsfech_nac").style.display="none";
-                document.getElementById("canvasstaticsamount").style.display="none";
-                document.getElementById("canvasstaticsgenero").style.display="block";
-
-                var $parent = $('#canvasstaticsgenero').parent();
-                $('#canvasstaticsgenero').remove();
-                $parent.append('<canvas id="canvasstaticsgenero"></canvas>');
-
-                var canvas = document.getElementById("canvasstaticsgenero"); 
-                if (canvas) {
-                    var e = canvas.getContext("2d");
-                    e.fillStyle = "rgba(0, 0, 0, 0)";
-                    e.clearRect(0, 0, e.canvas.width, e.canvas.height);
-                    e.beginPath();//ADD THIS LINE!<<<<<<<<<<<<<
-                    e.moveTo(0,0);
-                    e.lineTo(event.clientX,event.clientY);
-                    e.stroke();
-                    window.myBar = new Chart(e, {
-                        type: "bar",
-                        data: bodyStatics, //{label: ["elemnt", "elemnt", "elemnt", "elemnt"], data:[12, 12, 12,12]}
-                        options: {
-                            responsive: !0,
-                            legend: {
-                                position: "top"
-                            },
-                            title: {
-                                display: !1,
-                                text: "Estadisticas Token"
-                            }
-                        }
-                    })
-                }
-            }else if(groupStaticsvalue=='adress'){
-                //cities
-                companier.cities()
-                .then((responsecity)=> {
-                    citiesData = responsecity;
-
-                    var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                    paramtime = paramTime.id.replace("tall", "")
-
-
-                    if(paramtime=="week")
-                    bodyStatics = groupByAdressStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                    else if(paramtime=="day")
-                    bodyStatics = groupByAdressStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                    else if(paramtime=="month")
-                    bodyStatics = groupByAdressStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan, citiesData); 
-                    document.getElementById("canvasstaticsgenero").style.display="none";
-                    document.getElementById("canvasstaticsfech_nac").style.display="none";
-                    document.getElementById("canvasstaticsamount").style.display="none";
-                    document.getElementById("canvasstaticsaddress").style.display="block";
-
-                        var $parent = $('#canvasstaticsaddress').parent();
-                        $('#canvasstaticsaddress').remove();
-                        $parent.append('<canvas id="canvasstaticsaddress"></canvas>');
-
-                        var canvas = document.getElementById("canvasstaticsaddress");
-                        if (canvas) {
-                            var e = canvas.getContext("2d");
-                            e.clearRect(0, 0, canvas.width, canvas.height);
-                            window.myBar = new Chart(e, {
-                                type: "bar",
-                                data: bodyStatics, 
-                                options: {
-                                    responsive: !0,
-                                    legend: {
-                                        position: "top"
-                                    },
-                                    title: {
-                                        display: !1,
-                                        text: "Estadisticas Token"
-                                    }
-                                }
-                            })
-                        }
-                }, 
-                (err) =>{console.log("error solicitud.balancesmsemail "+err)});
-            }else if(groupStaticsvalue=="amount"){
-                var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                paramtime = paramTime.id.replace("tall", "")
-
-                if(paramtime=="week")
-                    bodyStatics = groupByAmountStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="day")
-                    bodyStatics = groupByAmountStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="month")
-                    bodyStatics = groupByAmountStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    document.getElementById("canvasstaticsaddress").style.display="none";
-                    document.getElementById("canvasstaticsgenero").style.display="none";
-                    document.getElementById("canvasstaticsfech_nac").style.display="none"; 
-                    document.getElementById("canvasstaticsamount").style.display="block";
-
-
-                var $parent = $('#canvasstaticsamount').parent();
-                $('#canvasstaticsamount').remove();
-                $parent.append('<canvas id="canvasstaticsamount"></canvas>');
-
-                var canvas = document.getElementById("canvasstaticsamount");
-                if (canvas) {
-                    var e = canvas.getContext("2d");
-                    e.clearRect(0, 0, canvas.width, canvas.height);
-                    window.myBar = new Chart(e, {
-                        type: "bar",
-                        data: bodyStatics, 
-                        options: {
-                            responsive: !0,
-                            legend: {
-                                position: "top"
-                            },
-                            title: {
-                                display: !1,
-                                text: "Estadisticas Token"
-                            }
-                        }
-                    })
-                }
-            }else if(groupStaticsvalue=="edad"){
-
-                var paramTime=document.querySelector('ul#timeAllToken > li > a.active'), paramtime='';
-                paramtime = paramTime.id.replace("tall", "")
-
-                if(paramtime=="week")
-                bodyStatics = groupByEdadStaticsWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="day")
-                bodyStatics = groupByEdadStaticsDayWeek(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                else if(paramtime=="month")
-                bodyStatics = groupByEdadStaticsMonth(response.acumCuponClientActivos, response.acumCuponClientActivosVencido, response.acumCuponClientScan);
-                    document.getElementById("canvasstaticsaddress").style.display="none";
-                    document.getElementById("canvasstaticsgenero").style.display="none"; 
-                    document.getElementById("canvasstaticsamount").style.display="none";
-                    document.getElementById("canvasstaticsfech_nac").style.display="block";
-
-                var $parent = $('#canvasstaticsfech_nac').parent();
-                $('#canvasstaticsfech_nac').remove();
-                $parent.append('<canvas id="canvasstaticsfech_nac"></canvas>');
-
-                var canvas = document.getElementById("canvasstaticsfech_nac");
-                if (canvas) {
-                    var e = canvas.getContext("2d");
-                    e.clearRect(0, 0, canvas.width, canvas.height);
-                    window.myBar = new Chart(e, {
-                        type: "bar",
-                        data: bodyStatics, 
-                        options: {
-                            responsive: !0,
-                            legend: {
-                                position: "top"
-                            },
-                            title: {
-                                display: !1,
-                                text: "Estadisticas Token"
-                            }
-                        }
-                    })
-                }
-            }
-            // //cupones vendidos o redimidos
-            // document.getElementById("productsSold").innerHTML = acumElementIIILOfArrayObject(response.acumCuponClientScan, 'fk_cupones', '0', 'amount',true);
-        }, 
-        (err) =>{
-          console.log("error solicitud.balancesmsemail "+err)
-        });
-    } 
+ 
     /**
     *   ver estadisticas por activos - ver cupones activos
     */
@@ -1375,15 +1379,14 @@ function comparedates(product){
       if(acumCuponClientScan.length){
         cuponsClienteScan = groupByMonth(acumCuponClientScan)
       }
-      // var formatsemanaMayor = '2020'
 
       for (var i = 0; i < arrayMonth.length; i++) {
 
           if(cuponsClienteActivo.length)
-          cuponsClienteActivo.forEach(semana => {
+          cuponsClienteActivo.forEach(element => {
             if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
               cuponclienteedad = []
-              cuponclienteedad = groupByGenero(semana.data) ? groupByGenero(semana.data) :[]
+              cuponclienteedad = groupByGenero(element.data) ? groupByGenero(element.data) :[]
 
               if(cuponclienteedad.length)
               for (var j = 0; j < cuponclienteedad.length; j++) {
@@ -1394,37 +1397,32 @@ function comparedates(product){
           });
 
           if(cuponsClienteScan.length)
-          cuponsClienteScan.forEach(semana => {
-            if(semana.dayweek == arrayDayWeek[i]){ 
+          cuponsClienteScan.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
               var cuponclienteedad = []
-              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+              cuponclienteedad = groupByEdad(element.data) ? groupByEdad(element.data) :[]
 
               if(cuponclienteedad.length)
               for (var j = 0; j < cuponclienteedad.length; j++) {
-                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                labelsStatics.push(arrayMonth[i].label+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
                 dataCuponsClienteScan.push(cuponclienteedad[j].data.length)
               }
             } 
           });
 
           if(cuponsClienteVencido.length)
-          cuponsClienteVencido.forEach(semana => {
-            if(semana.dayweek == arrayDayWeek[i]){ 
-              // labelsStatics.push("Semana "+i);
+          cuponsClienteVencido.forEach(element => {
+            if(new Date(element.month).getMonth() == arrayMonth[i].value){ 
               var cuponclienteedad = []
-              cuponclienteedad = groupByEdad(semana.data) ? groupByEdad(semana.data) :[]
+              cuponclienteedad = groupByEdad(element.data) ? groupByEdad(element.data) :[]
               
               if(cuponclienteedad.length)
               for (var j = 0; j < cuponclienteedad.length; j++) {
-                labelsStatics.push(semana.dayweek+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
+                labelsStatics.push(arrayMonth[i].label+ " - Edad: "+ cuponclienteedad[j].fecha_nac);
                 dataCuponsClienteVencido.push(cuponclienteedad[j].data.length)
               }
-            } else if(!labelsStatics.find(element => element.includes(arrayDayWeek[i])) ){
-                labelsStatics.push(arrayDayWeek[i]);
-                dataCuponsClienteActivo.push(0)
             }
           });
-
           if(!labelsStatics.find(e => e.includes(arrayMonth[i].label))  ){
             labelsStatics.push(arrayMonth[i].label);
             dataCuponsClienteVencido.push(0)
