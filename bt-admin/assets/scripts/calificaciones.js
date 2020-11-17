@@ -25,10 +25,11 @@ companier.getqualification(null)
     if(response.data)
     {
         let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
-        let Data = [];
+        let Data = response.data;
         let card_body_html = ``; 
         let element = document.getElementById('contenedor');
-        Data = response.data;
+        let star_create;
+        // Data = response.data;
         let colorstar= "#fed22b";
         
         Data.forEach(element => {
@@ -52,13 +53,24 @@ companier.getqualification(null)
             }
 
             card_body_html += `<div class='card-body' id='card_${element.number}' > <span class='img_user'><img width='33' class='rounded-circle' id='avatar' src='${element.fk_user.image}' alt='user_avatar' />  ${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span>`;
+            
             if(element.comentary == undefined || element.comentary === "")
             { 
-                card_body_html += `<p class='card-text comentario'> calificación sin comentario. </p> <div class="calificacion"> <a href="#" class="btn btn-primary btn-sm text-uppercase">responder</a> <span class="float-right" id="stars">`;
+                card_body_html += `<p class='card-text comentario'> calificación sin comentario. </p> <div class="calificacion">
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply">
+                    responder
+                </button>
+                
+                <span class="float-right" id="stars">`;
             }else
             {
-                card_body_html += `<p class='card-text'> ${element.comentary} </p> <div class="calificacion"> <a href="#" class="btn btn-primary btn-sm text-uppercase" >responder</a> <span class="float-right" id="stars">`;
+                card_body_html += `<p class='card-text'> ${element.comentary} </p> <div class="calificacion"> 
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply">
+                    responder
+                </button>
+                <span class="float-right">`;
             }
+            // crear estrellas como calificacion.
             for (let index = 0; index <= 4; index++) 
             {
                 if(index < element.number)
@@ -72,9 +84,35 @@ companier.getqualification(null)
                     </svg>`;
                 }
             }
-
+            // star_create = crear la captura del span con la cantidad de estrellas para este msm
             card_body_html += `<span></div> </div>`
-
+             // captura del div con el id para la modal e insercion de respuesta
+            document.getElementById("replyContent").innerHTML = `
+            <div class="modal-content">
+              <div class="modal-header">
+                <img width='33' class='rounded-circle' id='avatar' src='${element.fk_user.image}'      alt='user_avatar' />  
+                <p class="p-2">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username})</p>
+                <span class="float-right">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div id="modalalert"></div>
+                <h6 class="modal-title text-uppercase">MSM  </h6>
+                <p>${element.comentary=== undefined ? "calificación sin comentario.": element.comentary}</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="msm de respuesta" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal">Enviar</button>
+                <button type="button" class="btn btn-primary text-uppercase" >Añadir Gifcard</button>
+              </div>
+            </div>`;
         });
         element.innerHTML = card_body_html;
         /* data dinamicamente obtenida para grafica calificaciones en forma circular chart.js  */
@@ -109,10 +147,14 @@ companier.getqualification(null)
                 }
             }
         });
-        // cargar ventana emergente para responder msm y o enviar gifcard
     }
 },
 (err) =>{console.log("error solicitud.followers "+err)});
+
+
+
+
+
 
 
 
