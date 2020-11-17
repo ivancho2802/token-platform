@@ -25064,3 +25064,14 @@ input:checked + .slider:before {
     cursor: pointer;
     border: 1px solid #999;
 }
+.ion-color-barter3 {
+    background : -moz-linear-gradient(0% 50% 0deg,rgba(128, 0, 13, 1) 0%,rgba(184, 0, 19, 1) 18.19%,rgba(225, 0, 24, 1) 30.3%,rgba(229, 0, 24, 1) 69.4%,rgba(182, 0, 19, 1) 85.3%,rgba(128, 0, 13, 1) 100%);
+    background : -webkit-linear-gradient(0deg, rgba(128, 0, 13, 1) 0%, rgba(184, 0, 19, 1) 18.19%, rgba(225, 0, 24, 1) 30.3%, rgba(229, 0, 24, 1) 69.4%, rgba(182, 0, 19, 1) 85.3%, rgba(128, 0, 13, 1) 100%);
+    background : -webkit-gradient(linear,0% 50% ,100% 50% ,color-stop(0,rgba(128, 0, 13, 1) ),color-stop(0.1819,rgba(184, 0, 19, 1) ),color-stop(0.303,rgba(225, 0, 24, 1) ),color-stop(0.694,rgba(229, 0, 24, 1) ),color-stop(0.853,rgba(182, 0, 19, 1) ),color-stop(1,rgba(128, 0, 13, 1) ));
+    background : -o-linear-gradient(0deg, rgba(128, 0, 13, 1) 0%, rgba(184, 0, 19, 1) 18.19%, rgba(225, 0, 24, 1) 30.3%, rgba(229, 0, 24, 1) 69.4%, rgba(182, 0, 19, 1) 85.3%, rgba(128, 0, 13, 1) 100%);
+    background : -ms-linear-gradient(0deg, rgba(128, 0, 13, 1) 0%, rgba(184, 0, 19, 1) 18.19%, rgba(225, 0, 24, 1) 30.3%, rgba(229, 0, 24, 1) 69.4%, rgba(182, 0, 19, 1) 85.3%, rgba(128, 0, 13, 1) 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000D', endColorstr='#80000D' ,GradientType=0)";
+    background : linear-gradient(90deg, rgba(128, 0, 13, 1) 0%, rgba(184, 0, 19, 1) 18.19%, rgba(225, 0, 24, 1) 30.3%, rgba(229, 0, 24, 1) 69.4%, rgba(182, 0, 19, 1) 85.3%, rgba(128, 0, 13, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000D',endColorstr='#80000D' , GradientType=1);
+    color :#ffffff;
+}

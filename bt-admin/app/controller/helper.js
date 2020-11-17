@@ -3,10 +3,10 @@ class Help {
   constructor () {}
   // Getter
   get area() {
-     return this.calcArea();
-   } 
+    return this.calcArea();
+  } 
   // Método
-  loadbrnachs(){  
+  loadbrnachs(){
      companier.branchs()
     .then((branchsData)=> { 
       var eltr = document.createElement("ul"), branchsArray=[];
@@ -17,7 +17,7 @@ class Help {
           // if(branchsArray[i].status)
           eltr.innerHTML += `
           <li class="nav-item">
-              <a href="javascript:void(0);" class="nav-link" click="selectBranch(${branchsArray[i]._id})">
+              <a href="javascript:void(0);" class="nav-link" click="selectBranch(${branchsArray[i]})">
                   <i class="nav-link-icon lnr-inbox"></i>
                   <span>
                       ${branchsArray[i].nombre} -  ${branchsArray[i].address}
@@ -32,6 +32,7 @@ class Help {
     }, 
     (err) =>{console.log("error companier.branchs "+err)});
   }
+
 }  
 /**
  * funcion para formatear numero a miles con puntos y comas
