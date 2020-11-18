@@ -29,3 +29,8 @@
 {
     color: darkgrey;
 }
+
+textarea 
+{
+    resize: none;
+}
