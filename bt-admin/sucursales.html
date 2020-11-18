@@ -679,12 +679,12 @@
                                     </div>
                                     <div class="row">
                                         <div class=" col-md-10 col-lg-12">
-                                            <div class="main-card mb-3 card">
+                                            <div class="main-card mb-3 card" id="usuarios_box">
                                                 <div class="card-body">
                                                     <h5 class="card-title">Datos del Usuario 1</h5>
-                                                    <div class="position-relative form-group"><label for="nameuser0" class="">Nombre</label><input name="nameuser0" id="nameuser0" placeholder="Nombre Completo" type="text" class="form-control" required></div>
-                                                    <div class="position-relative form-group"><label for="nameuser0" class="">Username</label><input name="username0" id="username0" placeholder="Username" type="text" class="form-control" required></div>
-                                                    <div class="position-relative form-group"><label for="pswuser0" class="">Contraseña</label><input name="pswuser0" id="pswuser0" type="password" class="form-control" required></div>
+                                                    <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" required></div>
+                                                    <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" required></div>
+                                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" required></div>
                                                 </div>
                                             </div>
                                         </div> 
@@ -692,7 +692,8 @@
                                         <div class=" col-md-10 col-lg-12">
                                             <div class="main-card mb-3 card">
                                                 <div class="d-block text-center card-footer">
-                                                    <button class="btn-wide btn btn-success" type="button">Agregar Usuario</button><!--  onclick="new Sucursal().insertBranch()" -->
+                                                    <button class="btn-wide btn btn-primary" type="button" onclick="new Sucursal().adduser()">Agregar Usuario</button>
+                                                    <!--  onclick="new Sucursal().insertBranch()" -->
                                                 </div>
                                             </div>
                                         </div> 

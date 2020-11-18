@@ -69,7 +69,20 @@ class Sucursal  {
                 });
             }
         } 
-    }  
+    }
+
+    adduser(){
+        var tamuserbox = 0;
+        tamuserbox = document.getElementsByName("nameuser").length + 1 ;
+        document.getElementById("usuarios_box").innerHTML += `
+        <div class="card-body">
+            <h5 class="card-title">Datos del Usuario ${tamuserbox}</h5>
+            <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" required></div>
+            <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" required></div>
+            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" required></div>
+        </div>
+        `;
+    }
 }
 $( document ).ready(function() {
     /**
