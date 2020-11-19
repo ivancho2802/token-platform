@@ -118,6 +118,10 @@ companier.getqualification(null)
             }
         });
     }
+    else
+    {
+        return "No se encontro información.";
+    }
 },
 (err) =>{console.log("error solicitud.followers "+err)});
 
@@ -140,16 +144,28 @@ function fnBtnId(cont)
         <div class="modal-body">
             <h6 class="modal-title font-weight-bold text-uppercase">Mensaje del usuario.  </h6>
             <p> ${mensaje.innerText} </p>
-            <div class="input-group mb-3">
+            <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
                 </div>
                 <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140"></textarea>
             </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input" id="check_msm"><span class="pl-3">&nbsp; MSM &nbsp;&nbsp;</span>
+                    </div>
+                </div>
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input" id="check_email"><span class="pl-3">EMAIL &nbsp;</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal">Enviar</button>
-            <button type="button" class="btn btn-primary text-uppercase" >Añadir Gifcard</button>
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturar_check()">Enviar</button>
+            <button type="button" class="btn btn-primary text-uppercase" id="add_gif" onclick="capturar_check()">Añadir Gifcard</button>
         </div>
     </div>`;
 
@@ -157,7 +173,23 @@ function fnBtnId(cont)
     document.getElementById("replyContent").innerHTML = modal_resp;
 }
 
+function capturar_check()
+{
+    let checkbox_msm = document.getElementById("check_msm");
+    let checkbox_email = document.getElementById("check_email");
+    if(checkbox_msm.checked === true)
+    {
+        console.log("checkbox_msm: ", checkbox_msm.checked);
+    }
 
+    if(checkbox_email.checked === true)
+    {
+        console.log("checkbox_email: ", checkbox_email.checked);
+    }
+
+}
+
+// console.log(document.getElementsByClassName("modal-open"));
 
 
 
