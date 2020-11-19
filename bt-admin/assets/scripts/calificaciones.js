@@ -25,10 +25,11 @@ companier.getqualification(null)
     if(response.data)
     {
         let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
-        let Data = [];
+        let Data = response.data;
         let card_body_html = ``; 
-        let element = document.getElementById('contenedor');
-        Data = response.data;
+        let card_element = document.getElementById('contenedor');
+        let cont = 1;
+        let modal_resp = "";
         let colorstar= "#fed22b";
         
         Data.forEach(element => {
@@ -46,19 +47,25 @@ companier.getqualification(null)
                 case 5:
                     according += 1;
                     break;
-                // default:
-                //     return "Token sin calificación.";
-                //     break;
             }
 
-            card_body_html += `<div class='card-body' id='card_${element.number}' > <span class='img_user'><img width='33' class='rounded-circle' id='avatar' src='${element.fk_user.image}' alt='user_avatar' />  ${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span>`;
+            card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}"><img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='user_avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+            
             if(element.comentary == undefined || element.comentary === "")
             { 
-                card_body_html += `<p class='card-text comentario'> calificación sin comentario. </p> <div class="calificacion"> <a href="#" class="btn btn-primary btn-sm text-uppercase">responder</a> <span class="float-right" id="stars">`;
+                card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                    responder
+                </button>`;
             }else
             {
-                card_body_html += `<p class='card-text'> ${element.comentary} </p> <div class="calificacion"> <a href="#" class="btn btn-primary btn-sm text-uppercase" >responder</a> <span class="float-right" id="stars">`;
+                card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                    responder
+                </button>`;
             }
+            // crear estrellas como calificacion.
+            card_body_html += `<span class="float-right" id="stars_${cont}">`;
             for (let index = 0; index <= 4; index++) 
             {
                 if(index < element.number)
@@ -72,11 +79,12 @@ companier.getqualification(null)
                     </svg>`;
                 }
             }
-
-            card_body_html += `<span></div> </div>`
-
+            card_body_html += `<span></div> </div>`;
+            cont +=1;
         });
-        element.innerHTML = card_body_html;
+        card_element.innerHTML = card_body_html; 
+           
+        
         /* data dinamicamente obtenida para grafica calificaciones en forma circular chart.js  */
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
@@ -109,10 +117,46 @@ companier.getqualification(null)
                 }
             }
         });
-        // cargar ventana emergente para responder msm y o enviar gifcard
     }
 },
 (err) =>{console.log("error solicitud.followers "+err)});
+
+function fnBtnId(cont)
+{
+    let id = cont.id, num;
+    num = id.slice(4);
+    //  crear la captura del span con la cantidad de estrellas para este msm
+    let card_header = document.getElementById(`card_heder_${num}`);
+    let star_calificacion = document.getElementById(`stars_${num}`);
+    let mensaje = document.getElementById(`comment_${num}`);
+    // crear modal con data del cliente dinamicamente
+    modal_resp = 
+    `<div class="modal-content">
+        <div class="modal-header"> ${card_header.innerHTML}<span class="px-3 pt-1" >${star_calificacion.innerHTML}</span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h6 class="modal-title font-weight-bold text-uppercase">Mensaje del usuario.  </h6>
+            <p> ${mensaje.innerText} </p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
+                </div>
+                <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal">Enviar</button>
+            <button type="button" class="btn btn-primary text-uppercase" >Añadir Gifcard</button>
+        </div>
+    </div>`;
+
+     // captura del div con el id para la modal e insercion de respuesta
+    document.getElementById("replyContent").innerHTML = modal_resp;
+}
+
 
 
 
