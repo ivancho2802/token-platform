@@ -23,11 +23,10 @@
         }, 
         (err) =>{console.log("error solicitud.followers "+err)});
         //clientes 
-        companier.clients(JSON.parse($.cookie("userData"))._id)
+        companier.clients()
         .then((response)=> {
+            console.log(response)
             usersData = response; 
-            console.log("usersData")
-            console.log(usersData)
             document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
 
             //cities
@@ -37,7 +36,7 @@
             }, 
             (err) =>{console.log("error solicitud.balancesmsemail "+err)});
         }, 
-        (err) =>{console.log("error solicitud.followers "+err)});
+        (err) =>{ console.log(err); console.log("error companier.clients "+err.responseJSON.msg)});
 
         //balance sms email
         companier.balancesmsemail(JSON.parse($.cookie("userData"))._id)
@@ -52,7 +51,7 @@
         //statics
         companier.staticsHome()
         .then((response)=> { 
-            // console.log(response)
+            console.log(response)
             var cuponsClienteActivo=[], cuponsClienteScan=[], cuponsClienteVencido=[], labelsStatics=[], semanaMayor, dataCuponsClienteScan=[], dataCuponsClienteVencido=[], dataCuponsClienteActivo=[];
 
             var cantCuponsSee = response.acumCuponClientActivos.length + response.acumCuponClientActivosVencido.length + response.acumCuponClientScan.length;

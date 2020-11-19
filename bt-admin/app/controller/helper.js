@@ -181,5 +181,5 @@ function positionCorrect (position){
   var element = document.getElementById(position);
   // smooth scroll to element and align it at the bottom
   // console.log(element)
-  element.scrollIntoView();//{ behavior: 'smooth', block: 'end'}
+  element.scrollIntoView({ block: 'end',  behavior: 'smooth' });//{ behavior: 'smooth', block: 'end'}
 }

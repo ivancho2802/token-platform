@@ -592,36 +592,8 @@
                                 </div>
                             </div>
                         </div>
-                       
-
-                       <!-- <div class="col-md-6 col-xl-6 ByCupon fade">
-                            <div class="card mb-3 widget-content bg-premium-dark">
-                                <div class="widget-content-wrapper text-white">
-                                    <div class="widget-content-left">
-                                        <div class="widget-heading">Token: <span class="nametoken"></span></div>
-                                        <div class="widget-subheading">Tokenes activos por cupon</div>
-                                    </div>
-                                    <div class="widget-content-right">
-                                        <div class="widget-numbers text-white"><span id="cantCuponsActivosByCupon">0</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 col-xl-6 ByCupon fade">
-                            <div class="card mb-3 widget-content bg-premium-dark">
-                                <div class="widget-content-wrapper text-white">
-                                    <div class="widget-content-left">
-                                        <div class="widget-heading">Token: <span class="nametoken"></span></div>
-                                        <div class="widget-subheading">Tokenes inactivos por cupon</div>
-                                    </div>
-                                    <div class="widget-content-right">
-                                        <div class="widget-numbers text-white"><span id="cantCuponsinActivosByCupon">0</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
                     </div>
+                    
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="mb-3 card">
@@ -649,7 +621,7 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="tabs-eg-77">
                                             <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
-                                                <div class="widget-chat-wrapper-outer">
+                                                <div class="widget-chat-wrapper-outer"> 
                                                     <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
                                                         <canvas id="canvasstaticsaddress"></canvas>
                                                         <canvas id="canvasstaticsgenero"></canvas>
@@ -667,7 +639,96 @@
 
                        
                     </div>
-                   
+
+                    <section id="ByCupon">
+                        <div class="row  ByCupon fade">
+                            <div class="col-md-10 col-lg-12">
+                                <div class="mb-3 card">
+                                    <div class="card-body">
+                                        <div class="row">
+
+                                            <div class="col-md-6 col-xl-6 ByCupon fade">
+                                                <div class="card mb-3 widget-content bg-premium-dark">
+                                                    <div class="widget-content-wrapper text-white">
+                                                        <div class="widget-content-left">
+                                                            <div class="widget-heading">Token: <span class="nametoken"></span></div>
+                                                            <div class="widget-subheading">Tokenes activos por cupon</div>
+                                                        </div>
+                                                        <div class="widget-content-right">
+                                                            <div class="widget-numbers text-white"><span id="cantCuponsActivosByCupon">0</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-6 ByCupon fade">
+                                                <div class="card mb-3 widget-content bg-premium-dark">
+                                                    <div class="widget-content-wrapper text-white">
+                                                        <div class="widget-content-left">
+                                                            <div class="widget-heading">Token: <span class="nametoken"></span></div>
+                                                            <div class="widget-subheading">Tokenes inactivos por cupon</div>
+                                                        </div>
+                                                        <div class="widget-content-right">
+                                                            <div class="widget-numbers text-white"><span id="cantCuponsinActivosByCupon">0</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row  ByCupon fade">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="mb-3 card">
+                                    <div class="card-header-tab card-header-tab-animation card-header">
+                                        <div class="card-header-title">
+                                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                                            Rendimiento de todos los tokens 
+                                        </div>
+                                    </div>
+                                    <div class="card-header-tab card-header-tab-animation card-header">
+                                        <ul class="nav tabsstatics" id="timeAllToken" style="margin: 0;">
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class=" nav-link" id="tallmonth">Mensual</a></li>
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class="nav-link" id="tallweek">Semanal</a></li>
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStaticsByHistory()" class="active nav-link second-tab-toggle" id="tallday">Dia de la Semana</a></li>
+                                        </ul>
+            
+                                        <ul class="nav tabsstatics" id="medidorAllToken">
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('genero', $.cookie('idbranch'))" class="active nav-link" id="tallgenero">Genero</a></li>
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('adress', $.cookie('idbranch'))" class="nav-link" id="talladress">Ubicacion</a></li>
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('edad', $.cookie('idbranch'))" class="nav-link second-tab-toggle" id="talledad">Edad.</a></li>
+                                            <li class="nav-item"><a href="javascript:void(0);" onclick="new Estadistica().groupStatics('amount', $.cookie('idbranch'))" class="nav-link second-tab-toggle" id="tallamount">Monto Fact.</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="tabs-eg-77">
+                                                <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
+                                                    <div class="widget-chat-wrapper-outer"> 
+                                                        <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
+                                                            <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
+                                                                <canvas id="canvasstaticsaddressByCupon"></canvas>
+                                                                <canvas id="canvasstaticsgeneroByCupon"></canvas>
+                                                                <canvas id="canvasstaticsfech_nacByCupon"></canvas>
+                                                                <canvas id="canvasstaticsamountByCupon"></canvas>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        
+                        </div>
+
+                    </section>
                 </div>
             </div>
         </div>
