@@ -1,5 +1,14 @@
 $( document ).ready(function() {
-    var bodyStatics, citiesData ;
+    var citiesData;
+    const send_resp = false, gif_card = false;
+    body_ratings =
+    {
+        idcalify: "",
+        msgcalificationb: "",
+        idgiftcard: "",
+        sendSms: false,
+        sendEmail: false,
+    }
     /** data de la empresa perfil */
     if($.cookie("userData") && $.cookie("business") && !(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
@@ -164,8 +173,8 @@ function fnBtnId(cont)
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturar_check()">Enviar</button>
-            <button type="button" class="btn btn-primary text-uppercase" id="add_gif" onclick="capturar_check()">Añadir Gifcard</button>
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturarCheck(this)">Enviar</button>
+            <button type="button" class="btn btn-primary text-uppercase" id="add_gif" onclick="capturarCheck(this)">Añadir Gifcard</button>
         </div>
     </div>`;
 
@@ -173,23 +182,57 @@ function fnBtnId(cont)
     document.getElementById("replyContent").innerHTML = modal_resp;
 }
 
-function capturar_check()
+function capturarCheck(id_btn)
 {
     let checkbox_msm = document.getElementById("check_msm");
     let checkbox_email = document.getElementById("check_email");
-    if(checkbox_msm.checked === true)
+    if(id_btn.id !=="enviar")
     {
-        console.log("checkbox_msm: ", checkbox_msm.checked);
+        const gif_card = loadGifCard();
+        console.log(gif_card);
     }
-
-    if(checkbox_email.checked === true)
+    else
     {
-        console.log("checkbox_email: ", checkbox_email.checked);
+        if(checkbox_msm.checked === true)
+        {
+            console.log("checkbox_msm: ", checkbox_msm.checked);
+            body_ratings.sendSms = true;
+        }
+    
+        if(checkbox_email.checked === true)
+        {
+            console.log("checkbox_email: ", checkbox_email.checked);
+            body_ratings.sendEmail = true;
+    
+        }
+        const send_resp = sendResp();
+        console.log("send_resp: ",send_resp);
     }
-
 }
 
-// console.log(document.getElementsByClassName("modal-open"));
+function loadGifCard()
+{
+    console.log("test loadGifCard", body_ratings);
+    companier.getgiftsA()
+    .then((response)=> 
+    {
+        console.log(response);
+        if(response.data)
+        {
+
+        }
+    },
+    (err) =>{console.log("error solicitud.followers "+err)});
+    return true;
+}
+
+function sendResp()
+{
+    console.log("click button enviar: ",body_ratings);
+    return true;
+}
+
+// const btn_add_gif = document.getElementById("add_gif") => ();
 
 
 

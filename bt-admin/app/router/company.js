@@ -163,6 +163,14 @@
         headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
     };
+    Company.prototype.getgiftsA = function() {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/giftsA',
+        type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        headers: {"Authorization":  $.cookie("TOKEN")}
+      }) 
+    };
     Company.prototype.solicitudHash = function(hash, context) {
       var k, v;
 
