@@ -164,7 +164,6 @@ function passtoparametters()
         console.log(typeof(elem));
         console.log(elem);
     })
-    // console.log("btn: ",btn[0]);
     return contenedor.innerHTML;
 }
 
