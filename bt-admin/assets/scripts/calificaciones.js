@@ -18,7 +18,6 @@ $( document ).ready(function() {
       $ul.find('a').removeClass('active');
       $this.addClass('active');
     });
-    let bottons = passtoparametters();
 })
 companier.getqualification(null)
 .then((response)=> 
@@ -28,10 +27,9 @@ companier.getqualification(null)
         let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
         let Data = response.data;
         let card_body_html = ``; 
-        let element = document.getElementById('contenedor');
+        let card_element = document.getElementById('contenedor');
         let cont = 1;
         let modal_resp = "";
-        // Data = response.data;
         let colorstar= "#fed22b";
         
         Data.forEach(element => {
@@ -55,14 +53,14 @@ companier.getqualification(null)
             
             if(element.comentary == undefined || element.comentary === "")
             { 
-                card_body_html += `<p class='card-text comentario'> calificación sin comentario. </p> <div class="calificacion">
-                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}">
+                card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
                     responder
                 </button>`;
             }else
             {
-                card_body_html += `<p class='card-text'> ${element.comentary} </p> <div class="calificacion"> 
-                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}">
+                card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
+                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
                     responder
                 </button>`;
             }
@@ -84,38 +82,7 @@ companier.getqualification(null)
             card_body_html += `<span></div> </div>`;
             cont +=1;
         });
-        element.innerHTML = card_body_html;
-        let card = document.getElementById("card_1");
-        let card_header = document.getElementById("card_heder_1");
-        let star_calificacion = document.getElementById("stars_1");
-        let mensaje = card.textContent;
-        star_calificacion.className 
-        // star_create = crear la captura del span con la cantidad de estrellas para este msm
-        
-        modal_resp = `<div class="modal-content">
-            <div class="modal-header"> ${card_header.innerHTML}<span class="px-3 pt-1" >${star_calificacion.innerHTML}</span>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <div class="modal-body">
-            <h6 class="modal-title font-weight-bold text-uppercase">Mensaje del usuario.  </h6>
-            <p> ${mensaje} </p>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
-                </div>
-                <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140"></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal">Enviar</button>
-            <button type="button" class="btn btn-primary text-uppercase" >Añadir Gifcard</button>
-        </div>`;
-            
-
-         // captura del div con el id para la modal e insercion de respuesta
-        document.getElementById("replyContent").innerHTML = modal_resp;
+        card_element.innerHTML = card_body_html; 
            
         
         /* data dinamicamente obtenida para grafica calificaciones en forma circular chart.js  */
@@ -154,17 +121,40 @@ companier.getqualification(null)
 },
 (err) =>{console.log("error solicitud.followers "+err)});
 
-function passtoparametters()
+function fnBtnId(cont)
 {
-    let contenedor = document.querySelectorAll("#contenedor");
-    let btn = document.querySelectorAll(".scroll_card");
-    let btn_final = [];
-    console.log("contenedor: ",contenedor);
-    btn.forEach(elem => {
-        console.log(typeof(elem));
-        console.log(elem);
-    })
-    return contenedor.innerHTML;
+    let id = cont.id, num;
+    num = id.slice(4);
+    //  crear la captura del span con la cantidad de estrellas para este msm
+    let card_header = document.getElementById(`card_heder_${num}`);
+    let star_calificacion = document.getElementById(`stars_${num}`);
+    let mensaje = document.getElementById(`comment_${num}`);
+    // crear modal con data del cliente dinamicamente
+    modal_resp = 
+    `<div class="modal-content">
+        <div class="modal-header"> ${card_header.innerHTML}<span class="px-3 pt-1" >${star_calificacion.innerHTML}</span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h6 class="modal-title font-weight-bold text-uppercase">Mensaje del usuario.  </h6>
+            <p> ${mensaje.innerText} </p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
+                </div>
+                <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal">Enviar</button>
+            <button type="button" class="btn btn-primary text-uppercase" >Añadir Gifcard</button>
+        </div>
+    </div>`;
+
+     // captura del div con el id para la modal e insercion de respuesta
+    document.getElementById("replyContent").innerHTML = modal_resp;
 }
 
 

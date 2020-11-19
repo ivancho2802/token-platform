@@ -30,6 +30,11 @@
     color: darkgrey;
 }
 
+.modal-footer
+{
+    justify-content: flex-start;
+}
+
 textarea 
 {
     resize: none;
