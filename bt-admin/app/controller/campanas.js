@@ -2160,8 +2160,6 @@ function loadTemplate(id, index) {
    Campana.prototype.generateArrayMayGasto = (response, tipo)=>{
         var cuponeclienetscanData
         cuponeclienetscanData = response;
-        console.log("cuponeclienetscanData")
-        console.log(cuponeclienetscanData)
 
         var arrayUserRedim = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.fk_user_asocd ? (cuponeclienetscanData.userredimieron.fk_user_asocd): []: [];
         var arrayusermayorgasto = cuponeclienetscanData.usermayorgasto ? cuponeclienetscanData.usermayorgasto ? (cuponeclienetscanData.usermayorgasto): []: [],

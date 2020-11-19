@@ -62,7 +62,7 @@
       }) 
     }; 
     Company.prototype.clients = function(idbranch=false) {
-      console.log(idbranch)
+      //console.log(idbranch)
       /* if(idbranch){
         return $.ajax({
           url : 'https://barter-token.herokuapp.com/api/clients/'+idbranch,

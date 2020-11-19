@@ -610,7 +610,6 @@ function selectBranch(idbranch){
       Brancher.prototype.branchsclient = function() {
         brancherRouter.branchs()
         .then(branchs=>{
-            console.log(branchs )
             for (let i = 0; i < branchs.length; i++) {
                 const branch = branchs[i];
                 var usersbranch = `<td class="text-center">`;
