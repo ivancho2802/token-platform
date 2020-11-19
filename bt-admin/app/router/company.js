@@ -61,16 +61,17 @@
            headers: {"Authorization":  $.cookie("TOKEN")}
       }) 
     }; 
-    Company.prototype.clients = function() {
-      if($.cookie('idbranch')){
+    Company.prototype.clients = function(idbranch=false) {
+      //console.log(idbranch)
+      /* if(idbranch){
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clients/'+$.cookie('idbranch'),
+          url : 'https://barter-token.herokuapp.com/api/clients/'+idbranch,
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
              headers: {"Authorization":  $.cookie("TOKEN")}
         }) 
-      }else{
+      }else{ */
         return $.ajax({
           url : 'https://barter-token.herokuapp.com/api/clients',
           type: 'GET',
@@ -78,18 +79,18 @@
              contentType: "application/json; charset=utf-8",
              headers: {"Authorization":  $.cookie("TOKEN")}
         }) 
-      }
+      /* } */
     }; 
-    Company.prototype.clientsforbell = function() {
-      if($.cookie('idbranch')){
-        return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clientsforbell/'+$.cookie('idbranch'),
+    Company.prototype.clientsforbell = function(idbranch) {
+      /* if(idbranch){ */
+        /* return $.ajax({
+          url : 'https://barter-token.herokuapp.com/api/clientsforbell'+idbranch,
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
              headers: {"Authorization":  $.cookie("TOKEN")}
-        }) 
-      }else{
+        })  */
+      /* }else{ */
         return $.ajax({
           url : 'https://barter-token.herokuapp.com/api/clientsforbell',
           type: 'GET',
@@ -97,7 +98,7 @@
              contentType: "application/json; charset=utf-8",
              headers: {"Authorization":  $.cookie("TOKEN")}
         }) 
-      }
+      /* } */
     }; 
     
     Company.prototype.branchs = function() {

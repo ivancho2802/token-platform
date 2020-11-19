@@ -52,8 +52,6 @@ function findCuponclientemayorgasto(){
     companier.cuponeclienetscan()
     .then((response)=> { 
         cuponeclienetscanData = response;
-        console.log("cuponeclienetscanData")
-        console.log(cuponeclienetscanData)
         var arrayUserRedim = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.fk_user_asocd ? (cuponeclienetscanData.userredimieron.fk_user_asocd): []: [];
         document.getElementById("numUserRedim").innerHTML = arrayUserRedim.length
         var arrayusermayorgasto = cuponeclienetscanData.usermayorgasto ? cuponeclienetscanData.usermayorgasto ? (cuponeclienetscanData.usermayorgasto): []: []

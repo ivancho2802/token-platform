@@ -8,25 +8,25 @@ class Help {
   // Método
   loadbrnachs(){
      companier.branchs()
-    .then((branchsData)=> { 
-      var eltr = document.createElement("ul"), branchsArray=[];
+    .then((branchsData)=> {
+      var eltr = document.createElement("ul"), branchsArray=branchsData, acumeltr ='';
       if(!branchsArray || !branchsArray.length ){
         eltr= '<td><div class="text-muted opacity-6">No hay Sucursales</div></td>';
       }else{
         for (var i = 0; i < branchsArray.length; i++) {
-          // if(branchsArray[i].status)
-          eltr.innerHTML += `
+          //if(branchsArray[i].status)
+          acumeltr += `
           <li class="nav-item">
-              <a href="javascript:void(0);" class="nav-link" click="selectBranch(${branchsArray[i]})">
+              <a href="javascript:void(0);" class="nav-link" onclick="selectBranch('${branchsArray[i]._id}')">
                   <i class="nav-link-icon lnr-inbox"></i>
-                  <span>
+                  <div>
                       ${branchsArray[i].nombre} -  ${branchsArray[i].address}
-                  </span>
-                  <div class="ml-auto badge badge-pill badge-secondary">86</div>
+                  </div>
               </a>
           </li>  
           `;
         }
+        eltr = acumeltr
       }
       document.getElementById("branchs").innerHTML = eltr;
     }, 
@@ -181,5 +181,5 @@ function positionCorrect (position){
   var element = document.getElementById(position);
   // smooth scroll to element and align it at the bottom
   // console.log(element)
-  element.scrollIntoView();//{ behavior: 'smooth', block: 'end'}
+  element.scrollIntoView({ block: 'end',  behavior: 'smooth' });//{ behavior: 'smooth', block: 'end'}
 }

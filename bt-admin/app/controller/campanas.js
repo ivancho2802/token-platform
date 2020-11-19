@@ -2,7 +2,7 @@ $( document ).ready(function() {
     if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
         
-    new Help().loadbrnachs();
+    /* new Help().loadbrnachs(); */
     campanier.createOrGetSegment('Fieles')
     campanier.createOrGetSegment('Recurrentes')
     campanier.createOrGetSegment('Potenciales')
@@ -480,8 +480,8 @@ function setBellDefault(idbell, index){
     });
 } 
 //obtener clientes
-function getClients(){
-    companier.clientsforbell(JSON.parse($.cookie("userData"))._id)
+function getClients(idbranch){
+    companier.clientsforbell(idbranch)
     .then((response)=> {
         var usersData = response; 
         // document.getElementById("percentFollowers").innerHTML = Math.round((document.getElementById("follower").innerHTML * 100)/ usersData.fk_user_asocd.length);
@@ -993,9 +993,7 @@ function loadTemplate(id, index) {
                                                   <div class="col-md-12">
                                                       <div class="main-card mb-12 card">
                                                           <div class="card-body">
-                                                              <!-- <h5 class="card-title">Crear Lista de Usuarios</h5> -->
                                                               <div class="col-md-12 mb-12">
-                                                                  <!-- <label for="search">Username</label> -->
 
                                                                   <div class="input-group">
                                                                       <div class="input-group-prepend">
@@ -1977,7 +1975,7 @@ function loadTemplate(id, index) {
     Campana.prototype.searchgeneroedit = function  (genero){
       var generol, fk_user_asocd_sechaded =[]
 
-      campanier.clients(JSON.parse($.cookie("userData"))._id)
+      campanier.clients()
       .then((usersData)=> {
           //cities
           campanier.cities()
@@ -2162,6 +2160,7 @@ function loadTemplate(id, index) {
    Campana.prototype.generateArrayMayGasto = (response, tipo)=>{
         var cuponeclienetscanData
         cuponeclienetscanData = response;
+
         var arrayUserRedim = cuponeclienetscanData ? cuponeclienetscanData.userredimieron.fk_user_asocd ? (cuponeclienetscanData.userredimieron.fk_user_asocd): []: [];
         var arrayusermayorgasto = cuponeclienetscanData.usermayorgasto ? cuponeclienetscanData.usermayorgasto ? (cuponeclienetscanData.usermayorgasto): []: [],
         arrayusermayorgastoinvert = []

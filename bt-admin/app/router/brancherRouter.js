@@ -20,6 +20,26 @@
           /* data : JSON.stringify(body) */
         })
       };
+
+      BranchRouter.prototype.setbranch = function(body) {
+        return $.ajax({
+          url : 'https://barter-token.herokuapp.com/api/branchs',
+          type: 'POST',
+          headers: {"Authorization":  $.cookie("TOKEN")},
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(body)
+        })
+      };
+
+      BranchRouter.prototype.putbranch = function(body) {
+        return $.ajax({
+          url : 'https://barter-token.herokuapp.com/api/branchs',
+          type: 'PUT',
+          headers: {"Authorization":  $.cookie("TOKEN")},
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(body)
+        })
+      };
       
       return BranchRouter;
     })();

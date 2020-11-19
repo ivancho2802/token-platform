@@ -243,6 +243,8 @@ class Estadistica  {
 
         $.cookie('idcupon',idcupon);
         $.cookie('nametoken',nametoken);
+
+        positionCorrect("ByCupon")
         
         var x = document.getElementsByClassName('ByCupon');
         for (var i = 0; i < x.length; i++) {
@@ -461,7 +463,7 @@ function modalTokens(origin, tokens){
                               </label>
                               </td>
                               <td class="text-center">
-                                  <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</button>
+                                  <a id="PopoverCustomT-1" class="btn btn-primary btn-sm" href="#ByCupon" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</a>
                               </td>
                           </tr>  
    
@@ -494,7 +496,7 @@ function modalTokens(origin, tokens){
                             </label>
                             </td>
                             <td class="text-center">
-                                <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</button>
+                                <a  id="PopoverCustomT-1" class="btn btn-primary btn-sm" href="#ByCupon" onclick="goTokenEstadistics('${tokens[i]._id}', 'week', '${tokens[i].nombre}')" data-dismiss="modal">Estadisticas</a>
                             </td>
                         </tr>  
  
