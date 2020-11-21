@@ -172,48 +172,9 @@ function fnBtnId(cont)
         </div>
         <div class="card-body">
             <div class="row collapse" id="collapseExample123">
+                ${"creacion de la gifcard de manera dimanica"}
                 <div class="col-sm-6 col-md-6 col-lg-6"> 
                     <div class="main-card mb-3 card ion-color-barter3">
-                        <div class="row">
-                            <div class="col">
-                                <p ><b id="gift_amount">10,000$</b></p>
-                            </div>
-                        </div>
-                        
-                        <div class="card-body">
-                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
-                        </div>
-                        
-                        <div class="card-body">
-                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
-                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
-                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
-                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
-                        </div>
-                    </div> 
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-6"> 
-                    <div class="main-card mb-3 card ion-color-barter3 ">
-                        <div class="row">
-                            <div class="col">
-                                <p ><b id="gift_amount">10,000$</b></p>
-                            </div>
-                        </div>
-                        
-                        <div class="card-body">
-                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
-                        </div>
-                        
-                        <div class="card-body">
-                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
-                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
-                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
-                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
-                        </div>
-                    </div> 
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-6"> 
-                    <div class="main-card mb-3 card ion-color-barter3 ">
                         <div class="row">
                             <div class="col">
                                 <p ><b id="gift_amount">10,000$</b></p>
@@ -273,22 +234,66 @@ function loadGifCard()
         nombre_gif: "",
         fecha_vence_gif: ""
     }
+    let img_gifcard = ``;
+    // <div class="col-sm-6 col-md-6 col-lg-6"> 
+    //     <div class="main-card mb-3 card ion-color-barter3">
+    //         <div class="row">
+    //             <div class="col">
+    //                 <p ><b id="gift_amount">10,000$</b></p>
+    //             </div>
+    //         </div>
+            
+    //         <div class="card-body">
+    //             <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+    //         </div>
+            
+    //         <div class="card-body">
+    //             <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+    //             <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+    //             <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+    //             <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
+    //         </div>
+    //     </div> 
+    // </div>`;
     companier.getgiftsA()
     .then((response)=> 
     {
-
-        const info_gif = response;
-        info_gif.forEach(element => 
+        const f = new Date();
+        response.forEach(element => 
         {
-            console.log("element info_gif: ", element._id);
-            inf_gif.amount_gif =  element.amount;
-            inf_gif.amount_gif =  element.amount;
-            inf_gif.amount_gif =  element.amount;
-            inf_gif.amount_gif =  element.amount;
+            const f_gif = new Date(element.fecha_final);
+            if(f_gif.getTime() > f.getTime() && (element.status === true))
+            {
+                img_gifcard += `
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3">
+                        <div class="row">
+                            <div class="col">
+                                <p >
+                                    <b id="gift_amount">${element.amount}</b>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                        </div>
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">${element.nombre } ${ element.descripcion}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            // inf_gif.amount_gif =  element.amount;
+            // inf_gif.amount_gif =  element.amount;
+            // inf_gif.amount_gif =  element.amount;
         });
+
+        // captura del contenedor para insertar las tarjetas gif creadas dinamicamente.
+        document.getElementById("collapseExample123").innerHTML = img_gifcard;
     },
     (err) =>{console.log("error solicitud.followers "+err)});
     return true;
+
 }
 
 function sendResp(idgiftcard = "")
