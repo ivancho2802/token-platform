@@ -1,5 +1,7 @@
 $( document ).ready(function() {
-    var bodyStatics, citiesData ;
+    var citiesData;
+    const send_resp = false, gif_card = false;
+    body_ratings ={}, inf_gif={};
     /** data de la empresa perfil */
     if($.cookie("userData") && $.cookie("business") && !(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
@@ -19,7 +21,7 @@ $( document ).ready(function() {
       $this.addClass('active');
     });
 })
-companier.getqualification(null)
+companier.getqualification()
 .then((response)=> 
 {
     if(response.data)
@@ -29,7 +31,6 @@ companier.getqualification(null)
         let card_body_html = ``; 
         let card_element = document.getElementById('contenedor');
         let cont = 1;
-        let modal_resp = "";
         let colorstar= "#fed22b";
         
         Data.forEach(element => {
@@ -50,7 +51,7 @@ companier.getqualification(null)
             }
 
             card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}"><img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='user_avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
-            
+
             if(element.comentary == undefined || element.comentary === "")
             { 
                 card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
@@ -79,7 +80,7 @@ companier.getqualification(null)
                     </svg>`;
                 }
             }
-            card_body_html += `<span></div> </div>`;
+            card_body_html += `<p class="d-none" id="valor_calificacion">${element._id}</p></span></div> </div>`;
             cont +=1;
         });
         card_element.innerHTML = card_body_html; 
@@ -148,7 +149,7 @@ function fnBtnId(cont)
                 <div class="input-group-prepend">
                     <span class="input-group-text text-uppercase" id="basic-addon1"> responder</span>
                 </div>
-                <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140"></textarea>
+                <textarea name="textarea" rows="4" cols="50" placeholder="Write something here..." maxlength="140" id="textare_comment"></textarea>
             </div>
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -163,33 +164,174 @@ function fnBtnId(cont)
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturar_check()">Enviar</button>
-            <button type="button" class="btn btn-primary text-uppercase" id="add_gif" onclick="capturar_check()">Añadir Gifcard</button>
+        <div class="modal-footer dropup">
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturarCheck(this)">Enviar</button>`
+        // crear div para escoger gif
+        modal_resp += 
+            `<button type="button" class="btn btn-primary text-uppercase" data-toggle="collapse" id="add_gif" href="#collapseExample123" onclick="capturarCheck(this)">Seleccionar Gifcard</button>
+        </div>
+        <div class="card-body">
+            <div class="row collapse" id="collapseExample123">
+                ${"creacion de la gifcard de manera dimanica"}
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3">
+                        <div class="row">
+                            <div class="col">
+                                <p ><b id="gift_amount">10,000$</b></p>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                        </div>
+                        
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
         </div>
     </div>`;
-
+    // crear el objeto con datos iniciales
+    body_ratings =
+    {
+        idcalify: "",
+        tradename: "",
+        msgcalificationb: "",
+        idgiftcard: "",
+        sendSms: false,
+        sendEmail: false,
+    }
      // captura del div con el id para la modal e insercion de respuesta
     document.getElementById("replyContent").innerHTML = modal_resp;
 }
 
-function capturar_check()
+function capturarCheck(id_btn)
 {
+    
+    if(id_btn.id !=="enviar")
+    {
+        const gif_card = loadGifCard();
+    }
+    else
+    {
+        const send_resp = sendResp();
+    }
+}
+
+function loadGifCard()
+{
+    inf_gif =
+    {
+        amount_gif: "",
+        id_gif: "",
+        descripcion_gif: "",
+        fk_empresa_gif: "",
+        nombre_gif: "",
+        fecha_vence_gif: ""
+    }
+    let img_gifcard = ``;
+    // <div class="col-sm-6 col-md-6 col-lg-6"> 
+    //     <div class="main-card mb-3 card ion-color-barter3">
+    //         <div class="row">
+    //             <div class="col">
+    //                 <p ><b id="gift_amount">10,000$</b></p>
+    //             </div>
+    //         </div>
+            
+    //         <div class="card-body">
+    //             <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+    //         </div>
+            
+    //         <div class="card-body">
+    //             <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+    //             <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+    //             <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+    //             <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
+    //         </div>
+    //     </div> 
+    // </div>`;
+    companier.getgiftsA()
+    .then((response)=> 
+    {
+        const f = new Date();
+        response.forEach(element => 
+        {
+            const f_gif = new Date(element.fecha_final);
+            if(f_gif.getTime() > f.getTime() && (element.status === true))
+            {
+                img_gifcard += `
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3">
+                        <div class="row">
+                            <div class="col">
+                                <p >
+                                    <b id="gift_amount">${element.amount}</b>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                        </div>
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">${element.nombre } ${ element.descripcion}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            // inf_gif.amount_gif =  element.amount;
+            // inf_gif.amount_gif =  element.amount;
+            // inf_gif.amount_gif =  element.amount;
+        });
+
+        // captura del contenedor para insertar las tarjetas gif creadas dinamicamente.
+        document.getElementById("collapseExample123").innerHTML = img_gifcard;
+    },
+    (err) =>{console.log("error solicitud.followers "+err)});
+    return true;
+
+}
+
+function sendResp(idgiftcard = "")
+{
+    // obtener idcalificacion
+    let valor_calificacion = document.getElementById("valor_calificacion");
+    body_ratings.idcalify = valor_calificacion.innerHTML;
+    // obtener tradname 
+    body_ratings.tradename = JSON.parse($.cookie("business")).nombre;
+    // obtener comentario de respuesta
+    body_ratings.msgcalificationb = document.getElementById('textare_comment').value;
+    //obtener idgiftcard 
+    body_ratings.idgiftcard = idgiftcard;
+    // obtener checkbox 
     let checkbox_msm = document.getElementById("check_msm");
     let checkbox_email = document.getElementById("check_email");
     if(checkbox_msm.checked === true)
     {
-        console.log("checkbox_msm: ", checkbox_msm.checked);
+        body_ratings.sendSms = true;
     }
 
     if(checkbox_email.checked === true)
     {
-        console.log("checkbox_email: ", checkbox_email.checked);
+        body_ratings.sendEmail = true;
     }
-
+    return body_ratings;
 }
+ // body_ratings =
+        // {
+        //     idcalify: "",
+        //     tradename: "",
+        //     msgcalificationb: "",
+        //     idgiftcard: "",
+        //     sendSms: false,
+        //     sendEmail: false,
+        // }
 
-// console.log(document.getElementsByClassName("modal-open"));
+// const btn_add_gif = document.getElementById("add_gif") => ();
 
 
 
