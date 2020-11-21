@@ -43,7 +43,7 @@ var geocoder = new google.maps.Geocoder;
                                 </div>
                                         
                                 <div class="d-block text-center card-footer">
-                                    <div role="group" class="btn-group" data-toggle="buttons">
+                                    <div role="group" class="btn-group">
                                         <button class="btn btn-warning" type="submit">Actualizar</button>
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens" onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
                                     </div>
@@ -308,9 +308,11 @@ var geocoder = new google.maps.Geocoder;
             }else{
                 tamuserbox = document.getElementsByName("nameuser").length;
                 document.getElementById("usuarios_box"+index).innerHTML += `
+
                 <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${index}" role="alert">
-                    <form class="needs-validation-create-user" novalidate  action="#" method="post"  id="formbranch${idbranch}${index}">
+                    <form onsubmit="return tokenSubmitFunction(event, this, 'errorcreateuser${index}')">
                         <div class="card-header ">
+                            <span id="errorcreateuser${index}"></span>
                             <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
                         </div>
                         <div class="card-body ">
@@ -323,7 +325,7 @@ var geocoder = new google.maps.Geocoder;
                         </div>
                         
                         <div class="d-block text-center card-footer">
-                            <div role="group" class="btn-group" data-toggle="buttons">
+                            <div role="group" class="btn-group">
                                 <button type="submit" class="btn btn-primary">Crear</button>
                             </div>
                         </div>
@@ -467,7 +469,7 @@ $( document ).ready(function() {
                                         </div>
                                         
                                         <div class="d-block text-center card-footer">
-                                            <div role="group" class="btn-group" data-toggle="buttons">
+                                            <div role="group" class="btn-group">
                                                 <button class="btn btn-warning" type="submit">Actualizar</button>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens" onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
                                             </div>
@@ -648,7 +650,7 @@ $( document ).ready(function() {
                                         </div>
 
                                         <div class="d-block text-center card-footer">
-                                            <div role="group" class="btn-group" data-toggle="buttons">
+                                            <div role="group" class="btn-group">
                                                 <button class="btn btn-warning" type="submit">Actualizar</button>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens"  onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
                                             </div>
@@ -759,190 +761,8 @@ $( document ).ready(function() {
                     },errbranch=>{
                         console.log("errbranch")
                         console.log(errbranch)
-                        console.log(errbranch.responseJSON.msgrbranch)
+                        console.log(errbranch.responseJSON.msg)
                         document.getElementById("alert-container").innerHTML = `
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                                ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
-                            </div>
-                        `;
-                        $('html, body').animate({scrollTop: 0}, 600);
-                    })
-
-
-                }, false);
-            });
-        }, false);
-    })();
-
-    
-    (function() {
-        'use strict';
-        window.addEventListener('load', function() {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation-create-user');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    form.classList.add('was-validated');
-                    if (form.checkValidity() === false) {
-                        console.log("INVALIDO multi")
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return
-                    }
-                    console.log("form.elements")
-                    console.log(form.elements["nameuser"])
-                    var index = form.elements["index"].value;
-                    let body = {
-                        nameuser: form.elements["nameuser"].value,
-                        username: form.elements["username"].value,
-                        pswuser: form.elements["pswuser"].value,
-                        idbranch: form.elements["idbranch"].value
-                    }
-                    //console.log(body)
-                    console.log("agregar user")
-                    brancherRouter.putbranchsetuser(body)
-                    .then(branchs=>{
-                        for (let i = 0; i < branchs.length; i++) {
-                            const branch = branchs[i];
-                            var usersbranch = `<td class="text-center">`;
-                            var formuserbranch = ``;
-
-                            for (let j = 0; j < branch.fk_user_branch.length; j++) {
-                                const fk_user_branch = branch.fk_user_branch[j];
-                                usersbranch += `
-                                    <div class="row">
-                                        <div class="col">Nombre: ${fk_user_branch.name}</div>
-                                        <div class="col">Username: ${fk_user_branch.username}</div>
-                                    </div>
-                                `;
-                                formuserbranch += `.
-                                <form class="needs-validation-put-user" novalidate  action="#" method="post"  id="formbranch${branch._id}${fk_user_branch._id}">
-                                    <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Datos del Usuario ${j+1}</h5>
-                                            <input hidden name="_2802iduser" value="${fk_user_branch._id}">
-                                            <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
-                                            <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
-                                        </div>
-
-                                        <div class="d-block text-center card-footer">
-                                            <div role="group" class="btn-group" data-toggle="buttons">
-                                                <button class="btn btn-warning" type="submit">Actualizar</button>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens"  onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                `;
-                            }
-                            usersbranch += `</td>`;
-                            document.getElementById("clientbranchs").innerHTML = `
-                            <tr>
-                                <td class="text-center">${branch.nombre}</td>
-                                <td class="text-center">${branch.address}</td>
-                                <td class="text-center">${branch.addressComplete}</td>
-                                ${usersbranch}
-                                <td class="text-center">
-                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="12">
-                                        <div class="row ">
-                                            <div class="col-12">
-
-                                                <div class="collapse" id="collapsebranch${branch._id}">
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="main-card mb-3 card">
-                                                                    <div class="card-body">
-                                                                    
-                                                                        <form class="needs-validation-put" novalidate  action="#" method="post"  id="formbranch${branch._id}">
-                                                                            <h5 class="card-title">Datos de la Sucursal</h5>
-                                                                            <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
-                                                                            <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
-                                                                            <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
-                                                                                
-                                                                                <div class="input-group">
-                                                                                    <div class="input-group-prepend">
-                                                                                        <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
-                                                                                    </div>
-                                                                                    <input name="addressCompleteLat"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
-                                                                                </div>
-                                                                                <div class="input-group">
-                                                                                    <div class="input-group-prepend">
-                                                                                        <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
-                                                                                    </div>
-                                                                                    <input name="addressCompleteLng"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
-                                                                                </div>
-                
-                                                                            </div>
-                                                                            
-                                                                            <div class="d-block text-center card-footer">
-                                                                                <button class="btn-wide btn btn-success" type="submit">Ediar Sucursal</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <div class="main-card mb-3 card">
-                                                                    <div class="card-body">
-                                                                        <div class="card-title">Ubicacion por GPS - Google Maps</div>
-                                                                        <div id="mapcompany${i}" class="paginaPrinc map mapcompany"></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class=" col-md-12 col-lg-12">
-                                                                <div id="usuarios_box${i}">
-
-                                                                    ${formuserbranch}
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class=" col-md-10 col-lg-12">
-                                                                <div class="main-card mb-3 card">
-                                                                    <div class="d-block text-center card-footer">
-                                                                        <button class="btn-wide btn btn-primary" type="button" onclick="brancher.adduser(${i}, '${branch._id}')">Agregar Usuario</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div> 
-                                                        </div>
-                                                </div>
-
-                                            
-                                            </div>
-                                            
-
-                                        </div>
-                                    
-
-                                </td>
-                            </tr>
-                            `;
-                            
-                            brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
-                        }
-                        document.getElementById("carduser"+index).innerHTML = `
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <button type="button" class="close" aria-label="Close" data-dismiss="alert" ><span aria-hidden="true">×</span></button>
-                                Usuario Creado con exito!
-                            </div>
-                        `;
-                        $('html, body').animate({scrollTop: 0}, 600);
-                    },errbranch=>{
-                        console.log("errbranch")
-                        console.log(errbranch)
-                        console.log(errbranch.responseJSON.msgrbranch)
-                        document.getElementById("carduser"+index).innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
                                 ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
@@ -1025,7 +845,7 @@ $( document ).ready(function() {
                                         </div>
                                         
                                         <div class="d-block text-center card-footer">
-                                            <div role="group" class="btn-group" data-toggle="buttons">
+                                            <div role="group" class="btn-group">
                                                 <button class="btn btn-warning" type="submit">Actualizar</button>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens"  onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
                                             </div>
@@ -1137,7 +957,7 @@ $( document ).ready(function() {
                     },errbranch=>{
                         console.log("errbranch")
                         console.log(errbranch)
-                        console.log(ererrbranch.responseJSON.msgrbranch)
+                        console.log(errbranch.responseJSON.msg)
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
@@ -1153,6 +973,178 @@ $( document ).ready(function() {
     
     })();
 })
+
+function tokenSubmitFunction(event, form, index2) {
+
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            console.log("form.elements")
+            console.log(form.elements["nameuser"])
+
+            var index = form.elements["index"].value;
+            console.log(index)
+            console.log(index2)
+            let body = {
+                nameuser: form.elements["nameuser"].value,
+                username: form.elements["username"].value,
+                pswuser: form.elements["pswuser"].value,
+                _id: form.elements["idbranch"].value
+            }
+            //console.log(body)
+            console.log("agregar user")
+            brancherRouter.putbranchsetuser(body)
+            .then(branchs=>{
+                for (let i = 0; i < branchs.length; i++) {
+                    const branch = branchs[i];
+                    var usersbranch = `<td class="text-center">`;
+                    var formuserbranch = ``;
+
+                    for (let j = 0; j < branch.fk_user_branch.length; j++) {
+                        const fk_user_branch = branch.fk_user_branch[j];
+                        usersbranch += `
+                            <div class="row">
+                                <div class="col">Nombre: ${fk_user_branch.name}</div>
+                                <div class="col">Username: ${fk_user_branch.username}</div>
+                            </div>
+                        `;
+                        formuserbranch += `.
+                        <form class="needs-validation-put-user" novalidate  action="#" method="post"  id="formbranch${branch._id}${fk_user_branch._id}">
+                            <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
+                                <div class="card-body">
+                                    <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                    <input hidden name="_2802iduser" value="${fk_user_branch._id}">
+                                    <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
+                                    <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
+                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                </div>
+
+                                <div class="d-block text-center card-footer">
+                                    <div role="group" class="btn-group">
+                                        <button class="btn btn-warning" type="submit">Actualizar</button>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalTokens"  onclick="brancher.deleteUserBranch('${fk_user_branch._id}', '${branch._id}', 'carduser${fk_user_branch._id}', '${fk_user_branch.username} ${fk_user_branch.username}')">Borrar o Deshabilitar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        `;
+                    }
+                    usersbranch += `</td>`;
+                    document.getElementById("clientbranchs").innerHTML = `
+                    <tr>
+                        <td class="text-center">${branch.nombre}</td>
+                        <td class="text-center">${branch.address}</td>
+                        <td class="text-center">${branch.addressComplete}</td>
+                        ${usersbranch}
+                        <td class="text-center">
+                            <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                                <div class="row ">
+                                    <div class="col-12">
+
+                                        <div class="collapse" id="collapsebranch${branch._id}">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="main-card mb-3 card">
+                                                            <div class="card-body">
+                                                            
+                                                                <form class="needs-validation-put" novalidate  action="#" method="post"  id="formbranch${branch._id}">
+                                                                    <h5 class="card-title">Datos de la Sucursal</h5>
+                                                                    <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
+                                                                    <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
+                                                                    <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                    <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
+                                                                        
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
+                                                                            </div>
+                                                                            <input name="addressCompleteLat"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                        </div>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
+                                                                            </div>
+                                                                            <input name="addressCompleteLng"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                        </div>
+        
+                                                                    </div>
+                                                                    
+                                                                    <div class="d-block text-center card-footer">
+                                                                        <button class="btn-wide btn btn-success" type="submit">Ediar Sucursal</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="main-card mb-3 card">
+                                                            <div class="card-body">
+                                                                <div class="card-title">Ubicacion por GPS - Google Maps</div>
+                                                                <div id="mapcompany${i}" class="paginaPrinc map mapcompany"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class=" col-md-12 col-lg-12">
+                                                        <div id="usuarios_box${i}">
+
+                                                            ${formuserbranch}
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class=" col-md-10 col-lg-12">
+                                                        <div class="main-card mb-3 card">
+                                                            <div class="d-block text-center card-footer">
+                                                                <button class="btn-wide btn btn-primary" type="button" onclick="brancher.adduser(${i}, '${branch._id}')">Agregar Usuario</button>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                        </div>
+
+                                    
+                                    </div>
+                                    
+
+                                </div>
+                            
+
+                        </td>
+                    </tr>
+                    `;
+                    
+                    brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
+                }
+                document.getElementById(`errorcreateuser${index}`).innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close" data-dismiss="alert" ><span aria-hidden="true">×</span></button>
+                        Usuario Creado con exito!
+                    </div>
+                `;
+                //$('html, body').animate({scrollTop: 0}, 600);
+            },errbranch=>{
+                console.log("errbranch")
+                console.log(errbranch)
+                console.log(errbranch.responseJSON.msg)
+                document.getElementById(`errorcreateuser${index}`).innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+                        ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
+                    </div>
+                `;
+                //$('html, body').animate({scrollTop: 0}, 600);
+            })
+
+
+
+    return false;
+}
 function selectBranch(idbranch){
     brancherRouter.branchs()
     .then(branchs=>{

@@ -1,0 +1,19 @@
+<form class="needs-validation-create-user"  action="#" method="post"  id="formbranch${idbranch}${index}">
+                        <div class="card-header ">
+                            <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+                        </div>
+                        <div class="card-body ">
+                                <h5 class="card-title">Datos del Usuario ${tamuserbox}</h5>
+                                <input hidden name="idbranch" value="${idbranch}">
+                                <input hidden name="index" value="${index}">
+                                <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" required></div>
+                                <div class="position-relative form-group"><label for="username" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" required></div>
+                                <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" required></div>
+                        </div>
+                        
+                        <div class="d-block text-center card-footer">
+                            <div role="group" class="btn-group" data-toggle="buttons">
+                                <button type="submit" class="btn btn-primary">Crear</button>
+                            </div>
+                        </div>
+                    </form>
