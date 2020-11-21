@@ -1,7 +1,7 @@
 $( document ).ready(function() {
     var citiesData;
     const send_resp = false, gif_card = false;
-    body_ratings ={};
+    body_ratings ={}, inf_gif={};
     /** data de la empresa perfil */
     if($.cookie("userData") && $.cookie("business") && !(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
@@ -165,65 +165,74 @@ function fnBtnId(cont)
             </div>
         </div>
         <div class="modal-footer dropup">
-            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturarCheck(this)">Enviar</button>
-            <div class="dropdown">
-                <button type="button" data-toggle="dropdown" class="btn btn-primary text-uppercase dropdown-toggle" aria-expanded="false" id="add_gif" onclick="capturarCheck(this)" data-target="#list_gif">Seleccionar Gifcard</button>
-                <div class="dropdown-menu modal-dialog" role="document" id"list_gif">
-                <div class="card-body">
-                    <h5 class="card-title">Gifcards</h5>
-                    <div id="exampleAccordion" data-children=".item">
-                        <div class="item">
-                            <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" class="m-0 p-0 btn btn-link">Item 1
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample" class="collapse show">
-                                <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing      elit. 
-                                </p>
+            <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturarCheck(this)">Enviar</button>`
+        // crear div para escoger gif
+        modal_resp += 
+            `<button type="button" class="btn btn-primary text-uppercase" data-toggle="collapse" id="add_gif" href="#collapseExample123" onclick="capturarCheck(this)">Seleccionar Gifcard</button>
+        </div>
+        <div class="card-body">
+            <div class="row collapse" id="collapseExample123">
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3">
+                        <div class="row">
+                            <div class="col">
+                                <p ><b id="gift_amount">10,000$</b></p>
                             </div>
                         </div>
-                        <div class="item">
-                            <button type="button" aria-expanded="false" aria-controls="exampleAccordion2" data-toggle="collapse show" class="m-0 p-0 btn btn-link">Item 2
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample2" class="collapse">
-                                <p class="mb-3">Donec at ipsum dignissim, rutrum turpis scelerisque, tristique lectus. Pellentesque habitant.
-                                </p>
-                            </div>
+                        
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
                         </div>
-                        <div class="item">
-                            <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" class="m-0 p-0 btn btn-link">Item 3
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample" class="collapse show">
-                                <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing      elit. 
-                                </p>
-                            </div>
+                        
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
                         </div>
-                        <div class="item">
-                            <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" class="m-0 p-0 btn btn-link">Item 4
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample" class="collapse show">
-                                <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing      elit. 
-                                </p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" class="m-0 p-0 btn btn-link">Item 5
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample" class="collapse show">
-                                <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing      elit. 
-                                </p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <button type="button" aria-expanded="true" aria-controls="exampleAccordion1" data-toggle="collapse" class="m-0 p-0 btn btn-link">Item 6
-                            </button>
-                            <div data-parent="#exampleAccordion" id="collapseExample" class="collapse show">
-                                <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing      elit. 
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    </div> 
                 </div>
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3 ">
+                        <div class="row">
+                            <div class="col">
+                                <p ><b id="gift_amount">10,000$</b></p>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                        </div>
+                        
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
+                        </div>
+                    </div> 
                 </div>
-            </div>
+                <div class="col-sm-6 col-md-6 col-lg-6"> 
+                    <div class="main-card mb-3 card ion-color-barter3 ">
+                        <div class="row">
+                            <div class="col">
+                                <p ><b id="gift_amount">10,000$</b></p>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                        </div>
+                        
+                        <div class="card-body">
+                            <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
+                            <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
+                            <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
+                            <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
         </div>
     </div>`;
     // crear el objeto con datos iniciales
@@ -255,6 +264,15 @@ function capturarCheck(id_btn)
 
 function loadGifCard()
 {
+    inf_gif =
+    {
+        amount_gif: "",
+        id_gif: "",
+        descripcion_gif: "",
+        fk_empresa_gif: "",
+        nombre_gif: "",
+        fecha_vence_gif: ""
+    }
     companier.getgiftsA()
     .then((response)=> 
     {
@@ -262,7 +280,11 @@ function loadGifCard()
         const info_gif = response;
         info_gif.forEach(element => 
         {
-            console.log("element info_gif: ", element);
+            console.log("element info_gif: ", element._id);
+            inf_gif.amount_gif =  element.amount;
+            inf_gif.amount_gif =  element.amount;
+            inf_gif.amount_gif =  element.amount;
+            inf_gif.amount_gif =  element.amount;
         });
     },
     (err) =>{console.log("error solicitud.followers "+err)});
