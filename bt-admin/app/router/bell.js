@@ -10,7 +10,6 @@
       };
       this.globalContext = {};
     }
-
     Bell.prototype.setsegmentuser = function(body) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/segmentuser',
@@ -20,14 +19,23 @@
         data : JSON.stringify(body)
       })
     }; 
-    Bell.prototype.deletesegmentuser = function(idsegemnt) {
+    Bell.prototype.putsegmentuser = function(body) {
+      return $.ajax({
+        url : 'https://barter-token.herokuapp.com/api/segmentuser',
+        type: 'PUT',
+        headers: {"Authorization":  $.cookie("TOKEN")},
+        contentType: "application/json; charset=utf-8" ,
+        data : JSON.stringify(body)
+      })
+    }; 
+    /* Bell.prototype.deletesegmentuser = function(idsegemnt) {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/segmentuser/'+idsegemnt,
         type: 'DELETE',
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8" 
       })
-    }; 
+    };  */
     Bell.prototype.getsegmentuser = function() {
       return $.ajax({
         url : 'https://barter-token.herokuapp.com/api/segmentuser',
