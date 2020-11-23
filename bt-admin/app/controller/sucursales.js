@@ -622,8 +622,6 @@ $( document ).ready(function() {
                         pswuser: form.elements["pswuser"].value,
                         iduser: form.elements["_2802iduser"].value
                     }
-                    console.log(body)
-                    console.log("editar")
                     brancherRouter.putbranchputuser(body)
                     .then(branchs=>{
                         for (let i = 0; i < branchs.length; i++) {

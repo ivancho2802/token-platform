@@ -1,12 +1,12 @@
 $( document ).ready(function() {
     if(!(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
-        
-    /* new Help().loadbrnachs(); */
+    
     campanier.createOrGetSegment('Fieles')
     campanier.createOrGetSegment('Recurrentes')
     campanier.createOrGetSegment('Potenciales')
     campanier.createOrGetSegment('Rentables')
+    /* new Help().loadbrnachs(); */
 
     var bellData=[], balancesmsemailData
     document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
@@ -159,8 +159,6 @@ $( document ).ready(function() {
           </div>`;
       });
     });
-    // obtener lista de usuarios
-    getSegmentsUser();
     // fk_plantilla 
     getBells()
     // obtener clientes de este usuario
@@ -242,9 +240,10 @@ function getBells(){
         bellData = response; 
         if(bellData.length)
         document.getElementById("campanaslist").innerHTML = campanier.gerTableBells(bellData);
-
         // obtener saldos
         getBalance()
+        // obtener lista de usuarios
+        getSegmentsUser();
     }, 
     (err) =>{console.log("error solicitud.followers "+err)});
 }
@@ -255,8 +254,8 @@ function getSegmentsUser(){
     //consulta de segmentos de usuarios o lista de usuarios
     bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
     .then((response)=> {
-        // console.log("segments")
-        // console.log(response)
+         console.log("segments")
+         console.log(response)
         //cities
         companier.cities()
         .then((citiesData2)=> {
@@ -312,6 +311,7 @@ function saveListUser(){
                 companier.cities()
                 .then((citiesData2)=> {
 
+                    if(document.getElementsByClassName("segmentsUserData2"))
                     for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
                         document.getElementsByClassName("segmentsUserData2")[i].innerHTML = campanier.getTableUsersActSegmentSelect2(response, citiesData2, i)
                     }
@@ -448,10 +448,15 @@ function showEdit(i ){
     // userlistnew
     var els = document.getElementsByName('segmentlistnew2'+i);
     var els2 = document.getElementsByName("segmentlistold2"+i);
-    for (var i=0;i<els.length;i++){ 
-      if (els2[i] && els[i].value == els2[i].value) {
-        els[i].checked=true;
-      }
+    for (var i=0;i<els.length;i++){
+        const element1 = els[i];
+        for (let j = 0; j < els2.length; j++) {
+            const element2 = els2[j];
+            var a = element1.value
+            var b = element2 ? element2.value: '';
+            if(a == b)
+                els[i].checked=true;
+        }
     }
 }
 // enviar bell por defecto
@@ -1484,7 +1489,7 @@ function loadTemplate(id, index) {
                                               </div> 
 
                                               <div class="position-relative row form-check">
-                                                  <div class="col-sm-10 offset-sm-2">
+                                                  <div class="col-sm-12 col-md-12 col-lg-12">
                                                       <input name="bellid${i}" id="bellid${i}" value="${bellsData[i]._id}" style="display:none">
                                                       <button class="mb-2 mr-2 btn btn-primary btn-lg btn-block"  id="editcampanas${i}" onclick="editBell(${i})" type="submit">Actualizar Campañas</button>
                                                   </div>
@@ -2061,8 +2066,8 @@ function loadTemplate(id, index) {
         .then((response)=> {
             document.getElementById("buttontest"+index).disabled = true;
 
-            console.log(response)  
-            document.getElementById("smstest"+index).innerHTML = `
+            console.log(response)
+            document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-success fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Campaña testeada con exito! 
@@ -2072,7 +2077,7 @@ function loadTemplate(id, index) {
             var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': JSON.stringify(err)
             console.log(err)
             console.log("error test  bell "+err)
-            document.getElementById("smstest"+index).innerHTML += `
+            document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-warning fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Error en la solicitud!! ${errResult}
@@ -2083,7 +2088,7 @@ function loadTemplate(id, index) {
         .then((response)=> {
             console.log(response)  
             getSegmentsUser()
-            document.getElementById("errorcampana").innerHTML = `
+            document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-success fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Campaña testeada con exito! 
@@ -2093,7 +2098,7 @@ function loadTemplate(id, index) {
             var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
             console.log(err)
             console.log("error test  bell "+err)
-            document.getElementById("errorcampana").innerHTML += `
+            document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-warning fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Error en la solicitud!! ${errResult}
@@ -2115,7 +2120,7 @@ function loadTemplate(id, index) {
                     const element = response1[index];
                     if(response1[index].name && response1[index].name.search(name)!==-1){
                         idsegmenttodelete = response1[index]._id
-                    } 
+                    }
                 }
                 var arraymaygasto = [];
 
@@ -2127,16 +2132,16 @@ function loadTemplate(id, index) {
                     formararray.push(element.iduser)
                 }
                 
-                bellier.deletesegmentuser(idsegmenttodelete)
-                .then((responsedelete)=> {
-                    const bodyseg = { name: 'Clientes '+name, fk_user: formararray};
-                    bellier.setsegmentuser(bodyseg)
+                /* bellier.deletesegmentuser(idsegmenttodelete)
+                .then((responsedelete)=> { */
+                    const bodyseg = { _id: idsegmenttodelete, name: 'Clientes '+name, fk_user: formararray};
+                    bellier.putsegmentuser(bodyseg)
                     .then((response2)=> {
                         companier.cities()
                         .then((citiesData2)=> {
+                            if(document.getElementsByClassName("segmentsUserData2"))
                             for (var i = 0; i < document.getElementsByClassName("segmentsUserData2").length; i++) {
                                 document.getElementsByClassName("segmentsUserData2")[i].innerHTML = campanier.getTableUsersActSegmentSelect2(response2, citiesData2, i)
-                                //sendgrind/designs
                             }
                             document.getElementsByClassName("page-title-subheading")[0].innerHtml = `
                             <div class="alert alert-success fade show" role="alert">Segmento actualizados con exito!</div>
@@ -2150,7 +2155,7 @@ function loadTemplate(id, index) {
                         `;
                         return 
                     })
-                })
+                /* }) */
             })
         })
     }
