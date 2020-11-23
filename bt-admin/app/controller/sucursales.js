@@ -36,10 +36,11 @@ var geocoder = new google.maps.Geocoder;
                             <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
                                 <div class="card-body">
                                     <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                    <input hidden name="_id" value="${branch._id}">
                                     <input hidden name="_2802iduser" value="${fk_user_branch._id}">
                                     <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
                                     <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="" required></div>
                                 </div>
                                         
                                 <div class="d-block text-center card-footer">
@@ -462,10 +463,11 @@ $( document ).ready(function() {
                                     <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
                                         <div class="card-body">
                                             <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                            <input hidden name="_id" value="${branch._id}">
                                             <input hidden name="_2802iduser" value="${fk_user_branch._id}">
                                             <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
                                             <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="" required></div>
                                         </div>
                                         
                                         <div class="d-block text-center card-footer">
@@ -580,11 +582,11 @@ $( document ).ready(function() {
                     },errbranch=>{
                         console.log("errbranch")
                         console.log(errbranch)
-                        console.log(errbranch.responseJSON.msg)
+                        console.log(errbranch.responseJSON ? errbranch.responseJSON.msg: '')
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                                ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
+                                ¡Error al crear sucursal! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
                             </div>
                         `;
                         $('html, body').animate({scrollTop: 0}, 600);
@@ -604,16 +606,15 @@ $( document ).ready(function() {
             // Loop over them and prevent submission
             var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    form.classList.add('was-validated');
                     if (form.checkValidity() === false) {
                         console.log("INVALIDO multi")
                         event.preventDefault();
                         event.stopPropagation();
                         return
                     }
-                    console.log("form.elements")
-                    console.log(form.elements["_2802iduser"])
+                    event.preventDefault();
+                    event.stopPropagation();
+                    form.classList.add('was-validated');
                     let body = {
                         _id: form.elements["_id"].value,
                         nameuser: form.elements["nameuser"].value,
@@ -621,7 +622,7 @@ $( document ).ready(function() {
                         pswuser: form.elements["pswuser"].value,
                         iduser: form.elements["_2802iduser"].value
                     }
-                    //console.log(body)
+                    console.log(body)
                     console.log("editar")
                     brancherRouter.putbranchputuser(body)
                     .then(branchs=>{
@@ -643,10 +644,11 @@ $( document ).ready(function() {
                                     <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
                                         <div class="card-body">
                                             <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                            <input hidden name="_id" value="${branch._id}">
                                             <input hidden name="_2802iduser" value="${fk_user_branch._id}">
                                             <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
                                             <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="" required></div>
                                         </div>
 
                                         <div class="d-block text-center card-footer">
@@ -754,18 +756,18 @@ $( document ).ready(function() {
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert" ><span aria-hidden="true">×</span></button>
-                                ¡Sucursal Creada con exito!
+                                ¡Usuario de Sucursal actualizado con exito!
                             </div>
                         `;
                         $('html, body').animate({scrollTop: 0}, 600);
                     },errbranch=>{
                         console.log("errbranch")
                         console.log(errbranch)
-                        console.log(errbranch.responseJSON.msg)
+                        console.log(errbranch.responseJSON ? errbranch.responseJSON.msg: '')
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                                ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
+                                ¡Error en la operacion! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
                             </div>
                         `;
                         $('html, body').animate({scrollTop: 0}, 600);
@@ -838,10 +840,11 @@ $( document ).ready(function() {
                                     <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
                                         <div class="card-body">
                                             <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                            <input hidden name="_id" value="${branch._id}">
                                             <input hidden name="_2802iduser" value="${fk_user_branch._id}">
                                             <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
                                             <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                            <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="" required></div>
                                         </div>
                                         
                                         <div class="d-block text-center card-footer">
@@ -957,11 +960,11 @@ $( document ).ready(function() {
                     },errbranch=>{
                         console.log("errbranch")
                         console.log(errbranch)
-                        console.log(errbranch.responseJSON.msg)
+                        console.log(errbranch.responseJSON ? errbranch.responseJSON.msg: '')
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                                ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
+                                ¡Error al crear sucursal! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
                             </div>
                         `;
                         $('html, body').animate({scrollTop: 0}, 600);
@@ -992,7 +995,6 @@ function tokenSubmitFunction(event, form, index2) {
                 _id: form.elements["idbranch"].value
             }
             //console.log(body)
-            console.log("agregar user")
             brancherRouter.putbranchsetuser(body)
             .then(branchs=>{
                 for (let i = 0; i < branchs.length; i++) {
@@ -1013,10 +1015,11 @@ function tokenSubmitFunction(event, form, index2) {
                             <div class="main-card mb-3 card alert  alert-dismissible fade show" id="carduser${fk_user_branch._id}" role="alert">
                                 <div class="card-body">
                                     <h5 class="card-title">Datos del Usuario ${j+1}</h5>
+                                    <input hidden name="_id" value="${branch._id}">
                                     <input hidden name="_2802iduser" value="${fk_user_branch._id}">
                                     <div class="position-relative form-group"><label for="nameuser" class="">Nombre</label><input name="nameuser" placeholder="Nombre Completo" type="text" class="form-control" value="${fk_user_branch.name}" required></div>
                                     <div class="position-relative form-group"><label for="nameuser" class="">Username</label><input name="username" placeholder="Username" type="text" class="form-control" value="${fk_user_branch.username}" required></div>
-                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="${fk_user_branch.password}" required></div>
+                                    <div class="position-relative form-group"><label for="pswuser" class="">Contraseña</label><input name="pswuser" type="password" class="form-control" value="" required></div>
                                 </div>
 
                                 <div class="d-block text-center card-footer">
@@ -1131,11 +1134,11 @@ function tokenSubmitFunction(event, form, index2) {
             },errbranch=>{
                 console.log("errbranch")
                 console.log(errbranch)
-                console.log(errbranch.responseJSON.msg)
+                console.log(errbranch.responseJSON ? errbranch.responseJSON.msg: '')
                 document.getElementById(`errorcreateuser${index}`).innerHTML = `
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                        ¡Error al crear sucursal! ${errbranch.responseJSON.msg}
+                        ¡Error al crear sucursal! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
                     </div>
                 `;
                 //$('html, body').animate({scrollTop: 0}, 600);
