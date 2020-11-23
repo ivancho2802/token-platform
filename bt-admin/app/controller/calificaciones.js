@@ -236,23 +236,25 @@ function capturarCheck(id_btn)
             console.log("listo para enviar data.", send_resp);
             fetch("https://barter-token.herokuapp.com/api/calificationsA",{
                 method: "POST",
-                // headers:  {
-                //     "Content-Type:": 'application/json',
-                //     "dasddsasdvdvs": 'david'
-                // },
-                // body: JSON.stringify({
-                //     idcalify:           send_resp.idcalify,
-                //     idgiftcard:         send_resp.idgiftcard,
-                //     msgcalificationb:   send_resp.msgcalificationb, 
-                //     sendEmail:          send_resp.sendEmail,
-                //     sendSms:            send_resp.sendSms, 
-                //     tradename:          send_resp.tradename
-                // })
+                headers:  
+                {
+                    'Content-Type': 'application/json',
+                    "Authorization":  $.cookie("TOKEN"),
+                },
+                body: JSON.stringify( 
+                {
+                    "idcalify":           send_resp.idcalify,
+                    "idgiftcard":         send_resp.idgiftcard,
+                   "msgcalificationb":    send_resp.msgcalificationb, 
+                    "sendEmail":          send_resp.sendEmail,
+                    "sendSms":            send_resp.sendSms, 
+                    "tradename":          send_resp.tradename
+                }),
             })
             .then((resp) => {
                 console.log(resp);
             })
-            // .catch(error => console.error('Error:', error))
+            .catch(error => console.error('Error:', error))
         }
     }
     return true;
