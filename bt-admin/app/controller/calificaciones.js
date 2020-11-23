@@ -1,7 +1,17 @@
+
 $( document ).ready(function() {
     var citiesData;
     const send_resp = false, gif_card = false;
-    body_ratings ={}, inf_gif={};
+    body_ratings ={};
+    sen_data =
+    {
+        amount_gif: "",
+        id_gif: "",
+        descripcion_gif: "",
+        fk_empresa_gif: "",
+        nombre_gif: "",
+        fecha_vence_gif: ""
+    };
     /** data de la empresa perfil */
     if($.cookie("userData") && $.cookie("business") && !(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
@@ -162,16 +172,17 @@ function fnBtnId(cont)
                         <input type="checkbox" aria-label="Checkbox for following text input" id="check_email"><span class="pl-3">EMAIL &nbsp;</span>
                     </div>
                 </div>
+                <div class="input-group-prepend" id="add_gif"></div>
             </div>
         </div>
         <div class="modal-footer dropup">
             <button type="button" class="btn btn-success text-uppercase" data-dismiss="modal" id="enviar" onclick="capturarCheck(this)">Enviar</button>`
         // crear div para escoger gif
         modal_resp += 
-            `<button type="button" class="btn btn-primary text-uppercase" data-toggle="collapse" id="add_gif" href="#collapseExample123" onclick="capturarCheck(this)">Seleccionar Gifcard</button>
+            `<button type="button" class="btn btn-primary text-uppercase" data-toggle="collapse" id="add_gif" href="#collapse123" onclick="capturarCheck(this)">Seleccionar Gifcard</button>
         </div>
         <div class="card-body">
-            <div class="row collapse" id="collapseExample123">
+            <div class="row collapse" id="collapse123">
                 ${"creacion de la gifcard de manera dimanica"}
                 <div class="col-sm-6 col-md-6 col-lg-6"> 
                     <div class="main-card mb-3 card ion-color-barter3">
@@ -220,48 +231,46 @@ function capturarCheck(id_btn)
     else
     {
         const send_resp = sendResp();
+        if(send_resp.idcalify !=="")
+        {
+            console.log("listo para enviar data.", send_resp);
+            fetch("https://barter-token.herokuapp.com/api/calificationsA",{
+                method: "POST",
+                // headers:  {
+                //     "Content-Type:": 'application/json',
+                //     "dasddsasdvdvs": 'david'
+                // },
+                // body: JSON.stringify({
+                //     idcalify:           send_resp.idcalify,
+                //     idgiftcard:         send_resp.idgiftcard,
+                //     msgcalificationb:   send_resp.msgcalificationb, 
+                //     sendEmail:          send_resp.sendEmail,
+                //     sendSms:            send_resp.sendSms, 
+                //     tradename:          send_resp.tradename
+                // })
+            })
+            .then((resp) => {
+                console.log(resp);
+            })
+            // .catch(error => console.error('Error:', error))
+        }
     }
+    return true;
 }
 
 function loadGifCard()
 {
-    inf_gif =
-    {
-        amount_gif: "",
-        id_gif: "",
-        descripcion_gif: "",
-        fk_empresa_gif: "",
-        nombre_gif: "",
-        fecha_vence_gif: ""
-    }
     let img_gifcard = ``;
-    // <div class="col-sm-6 col-md-6 col-lg-6"> 
-    //     <div class="main-card mb-3 card ion-color-barter3">
-    //         <div class="row">
-    //             <div class="col">
-    //                 <p ><b id="gift_amount">10,000$</b></p>
-    //             </div>
-    //         </div>
-            
-    //         <div class="card-body">
-    //             <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
-    //         </div>
-            
-    //         <div class="card-body">
-    //             <p class="padding" id="gift_business_nombre">{{gift.business.nombre}}</p>
-    //             <p class="padding" id="gift_fk_empresa_name">{{gift.fk_empresa.name}}</p>
-    //             <p class="padding" id="gift_fecha_final">Vence: {{gift.fecha_final|date}}</p>
-    //             <p><small class="padding"><a href="https://token-platform.herokuapp.com/">Ir a Token App</a></small></p>
-    //         </div>
-    //     </div> 
-    // </div>`;
+    let ids = [];
     companier.getgiftsA()
     .then((response)=> 
     {
         const f = new Date();
+        let cont =1
         response.forEach(element => 
         {
             const f_gif = new Date(element.fecha_final);
+            let amount = format(element.amount);
             if(f_gif.getTime() > f.getTime() && (element.status === true))
             {
                 img_gifcard += `
@@ -270,7 +279,7 @@ function loadGifCard()
                         <div class="row">
                             <div class="col">
                                 <p >
-                                    <b id="gift_amount">${element.amount}</b>
+                                    $<b id="gift_amount">${amount}</b>
                                 </p>
                             </div>
                         </div>
@@ -278,25 +287,36 @@ function loadGifCard()
                             <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
                         </div>
                         <div class="card-body">
-                            <p class="padding" id="gift_business_nombre">${element.nombre } ${ element.descripcion}</p>
+                            <p class="" id="gift_business_nombre">${JSON.parse($.cookie("business")).nombre}</p>
+                            <div class="descripcion" id="id_${cont}">${element.nombre } ${ element.descripcion}
+                            </div>
+                            <p class="">vence: ${moment(f_gif).format("MMM D, YYYY")}</p>
+                            seleccionar <a class="text-warning stretched-link" href="#" id="${element._id}">aqui</a>
                         </div>
                     </div>
                 </div>`;
+                cont += 1; 
             }
-            // inf_gif.amount_gif =  element.amount;
-            // inf_gif.amount_gif =  element.amount;
-            // inf_gif.amount_gif =  element.amount;
         });
 
         // captura del contenedor para insertar las tarjetas gif creadas dinamicamente.
-        document.getElementById("collapseExample123").innerHTML = img_gifcard;
+        document.getElementById("collapse123").innerHTML = img_gifcard;
+        const btngif = document.getElementsByClassName("text-warning");
+        let btnEvent;
+        // capturar el id de cada ancla creada dinamicamente
+        for(index =0; index < btngif.length; index++)
+        {
+            btnEvent = document.getElementById(btngif[index].id);
+            ids.push(btngif[index].id);
+            btnEvent.addEventListener("click", capturarIdGif);
+        }
     },
     (err) =>{console.log("error solicitud.followers "+err)});
-    return true;
+    return ids;
 
 }
 
-function sendResp(idgiftcard = "")
+function sendResp()
 {
     // obtener idcalificacion
     let valor_calificacion = document.getElementById("valor_calificacion");
@@ -304,34 +324,30 @@ function sendResp(idgiftcard = "")
     // obtener tradname 
     body_ratings.tradename = JSON.parse($.cookie("business")).nombre;
     // obtener comentario de respuesta
-    body_ratings.msgcalificationb = document.getElementById('textare_comment').value;
+    body_ratings.msgcalificationb = document.getElementById('textare_comment').value.trim() !== "" ? document.getElementById('textare_comment').value.trim() : "Disculpe las molestia.";
     //obtener idgiftcard 
-    body_ratings.idgiftcard = idgiftcard;
-    // obtener checkbox 
+    gitcargada = document.getElementsByClassName("diferencial");
+    body_ratings.idgiftcard = gitcargada[0] ? gitcargada[0].id : "";
+    // obtener envio de msm por Email y msm.
     let checkbox_msm = document.getElementById("check_msm");
     let checkbox_email = document.getElementById("check_email");
-    if(checkbox_msm.checked === true)
-    {
-        body_ratings.sendSms = true;
-    }
 
-    if(checkbox_email.checked === true)
-    {
-        body_ratings.sendEmail = true;
-    }
+    body_ratings.sendSms    = checkbox_msm.checked ? true : false; 
+    body_ratings.sendEmail  = checkbox_email.checked ? true : false; 
     return body_ratings;
 }
- // body_ratings =
-        // {
-        //     idcalify: "",
-        //     tradename: "",
-        //     msgcalificationb: "",
-        //     idgiftcard: "",
-        //     sendSms: false,
-        //     sendEmail: false,
-        // }
 
-// const btn_add_gif = document.getElementById("add_gif") => ();
+function capturarIdGif(e)
+{
+    close_modal = document.getElementById("collapse123");
+    close_modal.classList.remove("show");
+    add_gif = document.getElementById(add_gif);
+    html_add = `<div class="card ml-3 pt-1 pr-2 pl-2 text-uppercase ion-color-barter3 diferencial" id="${e.target.id}">gifcad cargada.`;
+    document.getElementById("add_gif").innerHTML = html_add;
+}
+
+
+
 
 
 

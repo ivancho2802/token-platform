@@ -39,3 +39,10 @@ textarea
 {
     resize: none;
 }
+
+.descripcion
+{
+    height: 65px;
+    max-height: 65px;
+    overflow: hidden;
+}
