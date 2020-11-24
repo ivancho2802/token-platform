@@ -2,7 +2,16 @@
 $( document ).ready(function() {
     var citiesData;
     const send_resp = false, gif_card = false;
-    body_ratings ={};
+    body_ratings =
+    {
+        idcalify: "",
+        tradename: "",
+        id_brach: "",
+        msgcalificationb: "",
+        idgiftcard: "",
+        sendSms: false,
+        sendEmail: false,
+    };
     sen_data =
     {
         amount_gif: "",
@@ -31,6 +40,20 @@ $( document ).ready(function() {
       $this.addClass('active');
     });
 })
+
+const lis_sucursales = document.getElementById("lis_sucursales");
+// console.log("lis_sucursales: ", lis_sucursales);
+lis_sucursales.addEventListener("click", e => {
+    const select_branchoffice = document.querySelector(".select_branchoffice");
+    // console.log("select_branchoffice: ", select_branchoffice);
+    const hiden_sucursales = document.getElementById("lis_sucursales");
+    hiden_sucursales.classList.remove("show");
+    const sucursal = document.querySelector("#branchs li a div").textContent;
+    // console.log("sucursal: ", sucursal);
+    select_branchoffice.textContent = sucursal;
+});
+
+
 companier.getqualification()
 .then((response)=> 
 {
@@ -207,17 +230,9 @@ function fnBtnId(cont)
             </div> 
         </div>
     </div>`;
-    // crear el objeto con datos iniciales
-    body_ratings =
-    {
-        idcalify: "",
-        tradename: "",
-        msgcalificationb: "",
-        idgiftcard: "",
-        sendSms: false,
-        sendEmail: false,
-    }
-     // captura del div con el id para la modal e insercion de respuesta
+    // llamar al objeto con datos iniciales para crear la resp
+    // validar_data();
+    // captura del div con el id para la modal e insercion de respuesta
     document.getElementById("replyContent").innerHTML = modal_resp;
 }
 
@@ -248,16 +263,44 @@ function capturarCheck(id_btn)
                    "msgcalificationb":    send_resp.msgcalificationb, 
                     "sendEmail":          send_resp.sendEmail,
                     "sendSms":            send_resp.sendSms, 
-                    "tradename":          send_resp.tradename
+                    "tradename":          send_resp.tradename,
+                    "idbranch" :          null,
                 }),
             })
-            .then((resp) => {
-                console.log(resp);
+            .then(resp => {
+                // console.log("respuesta: ", resp);
+                if(resp.status !== 200)
+                {
+                    // if(error)
+                    const divreply = document.getElementsByClassName("app-container");
+                    // console.log("reply: ", reply);
+                    const replyContent = document.getElementById("replyContent");
+                    // console.log("mensaje de alerta.", replyContent);
+                    divreply.style.display = "block";
+                    divreply.classList.add("show");
+                    let alert_resp = `
+                        <div class="alert alert-danger" role="alert" id="alerta_error">
+                            ${resp.statusText}. 
+                            <a href="http://localhost/token-plataforma/bt-admin/campanas.html" class="alert-link">Campañas</a> 
+                        </div>`;
+                    divreply.innerHTML = alert_resp;
+                    setTimeout(function()
+                    {   
+                        divreply.style.display = "none";
+                        divreply.classList.remove("show");
+                        alert_resp = ``;
+                    }, 13000);
+                }
+                // pruebas de mensajes de respuesta
+                enviarAlert(resp.statusText);
             })
-            .catch(error => console.error('Error:', error))
+            .catch(error => {
+                // console.error(error);
+                enviarAlert(error);
+            });
         }
     }
-    return true;
+    // return true;
 }
 
 function loadGifCard()
@@ -329,7 +372,7 @@ function sendResp()
     body_ratings.msgcalificationb = document.getElementById('textare_comment').value.trim() !== "" ? document.getElementById('textare_comment').value.trim() : "Disculpe las molestia.";
     //obtener idgiftcard 
     gitcargada = document.getElementsByClassName("diferencial");
-    body_ratings.idgiftcard = gitcargada[0] ? gitcargada[0].id : "";
+    body_ratings.idgiftcard = gitcargada[0] ? gitcargada[0].id : null;
     // obtener envio de msm por Email y msm.
     let checkbox_msm = document.getElementById("check_msm");
     let checkbox_email = document.getElementById("check_email");
@@ -344,8 +387,55 @@ function capturarIdGif(e)
     close_modal = document.getElementById("collapse123");
     close_modal.classList.remove("show");
     add_gif = document.getElementById(add_gif);
-    html_add = `<div class="card ml-3 pt-1 pr-2 pl-2 text-uppercase ion-color-barter3 diferencial" id="${e.target.id}">gifcad cargada.`;
+    html_add = `
+    <div class="alert alert-warning alert-dismissible fade show text-uppercase ion-color-barter3 diferencial" role="alert" id="${e.target.id}">
+        <strong>$ 10000 </strong> gifcad cargada.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>`;
     document.getElementById("add_gif").innerHTML = html_add;
+}
+
+function enviarAlert(msm = false)
+{
+    console.log("msm: ",msm);
+    clase_alert = msm === "ok" ? "alert-success" : "alert-danger";
+    // console.log("clase_alert", clase_alert);
+    const alerta_error = document.getElementById("alerta_error");
+
+    let alert_resp = `
+        <div class="alert mb-3 ${clase_alert} alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Respuesta enviada!</strong> correctamente.                  
+        </div>`;
+        alerta_error.innerHTML = alert_resp;
+}
+
+function selectBranch(id_branch)
+{
+    
+    if(id_branch)
+    {
+        let seach = companier.getqualification(id_branch);
+        console.log("seach: ", seach);
+    }
+}
+
+function validar_data(validador, ...param)
+{
+    // body_ratings =
+    // {
+    //     idcalify: "",
+    //     tradename: "",
+    //     id_brach: "",
+    //     msgcalificationb: "",
+    //     idgiftcard: "",
+    //     sendSms: false,
+    //     sendEmail: false,
+    // }
+
+    return body_ratings;
 }
 
 

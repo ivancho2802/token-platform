@@ -35,14 +35,20 @@
     justify-content: flex-start;
 }
 
-textarea 
-{
-    resize: none;
-}
-
 .descripcion
 {
     height: 65px;
     max-height: 65px;
     overflow: hidden;
+}
+
+textarea 
+{
+    resize: none;
+}
+
+#alerta_error
+{
+    /* margin-top: 92vh; */
+    width: 50%;
 }
