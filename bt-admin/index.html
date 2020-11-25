@@ -34,11 +34,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <script type="text/javascript" src="./app/router/company.js"></script>
+    <script type="text/javascript" src="./app/router/bell.js"></script>
     <script type="text/javascript" src="./app/controller/helper.js"></script>
+    <script type="text/javascript" src="./app/controller/campanas.js"></script>
     <script type="text/javascript" src="./app/controller/index.js"></script>
 </head>
 
 <body>
+    
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="modalTokens" aria-labelledby="myLargeModalLabel"  aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" id="modalTokensContent">
+            
+        </div>
+    </div>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
@@ -806,21 +814,32 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-xl-4">
-                                        <form>
-                                            <script src='https://checkout.epayco.co/checkout.js'
-                                                data-epayco-key='a5f59b88a7f37d382efe3daa643f7136' class='epayco-button'
-                                                data-epayco-amount='100000' data-epayco-tax='0'
-                                                data-epayco-tax-base='100000' data-epayco-name='Cuneta Token App'
-                                                data-epayco-description='Cuneta Token App' data-epayco-currency='cop'
-                                                data-epayco-country='CO' data-epayco-test='true'
-                                                data-epayco-external='false' data-epayco-response=''
-                                                data-epayco-confirmation=''
-                                                data-epayco-button='https://369969691f476073508a-60bf0867add971908d4f26a64519c2aa.ssl.cf5.rackcdn.com/btns/btn6.png'>
-                                                </script>
-                                        </form>
-                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-xl-6">
+                                            <div class="card mb-3 widget-content bg-arielle-smile">
+                                                <div class="widget-content-wrapper">
+                                                    <div class="widget-content-left">
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalTokens" onclick="dashboarder.showReloadInbox()">Recargar MSM o Emails</button>
+                                                    </div>
 
+                                                    <div class="widget-content-right">
+                                                        <form>
+                                                            <script src='https://checkout.epayco.co/checkout.js'
+                                                                data-epayco-key='a5f59b88a7f37d382efe3daa643f7136' class='epayco-button'
+                                                                data-epayco-amount='100000' data-epayco-tax='0'
+                                                                data-epayco-tax-base='100000' data-epayco-name='Cuneta Token App'
+                                                                data-epayco-description='Cuneta Token App' data-epayco-currency='cop'
+                                                                data-epayco-country='CO' data-epayco-test='true'
+                                                                data-epayco-external='false' data-epayco-response=''
+                                                                data-epayco-confirmation=''
+                                                                data-epayco-button='https://369969691f476073508a-60bf0867add971908d4f26a64519c2aa.ssl.cf5.rackcdn.com/btns/btn6.png'>
+                                                                </script>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
