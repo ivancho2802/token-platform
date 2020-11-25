@@ -42,6 +42,14 @@
     overflow: hidden;
 }
 
+.diferencial
+{
+    width: 14rem;
+    height: 38px;
+    padding: 0.5rem;
+    margin: 0;
+}
+
 textarea 
 {
     resize: none;

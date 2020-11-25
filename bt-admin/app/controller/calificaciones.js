@@ -39,6 +39,10 @@ $( document ).ready(function() {
       $ul.find('a').removeClass('active');
       $this.addClass('active');
     });
+
+    // asignar evento click a el filtro de fechas
+    capturarClick();
+    // citiesData = array_keys();
 })
 
 const lis_sucursales = document.getElementById("lis_sucursales");
@@ -59,13 +63,13 @@ companier.getqualification()
 {
     if(response.data)
     {
-        let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
         let Data = response.data;
+        let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
         let card_body_html = ``; 
         let card_element = document.getElementById('contenedor');
         let cont = 1;
-        let colorstar= "#fed22b";
-        
+        const colorstar= "#fed22b";
+        // let resp = createCardQualification(Data, dissatisfied, moderately_compliant, according, total_msm);
         Data.forEach(element => {
             total_msm +=1;
             switch(element.number)
@@ -82,19 +86,33 @@ companier.getqualification()
                     according += 1;
                     break;
             }
+            
+            card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
 
-            card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}"><img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='user_avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+            if(element.fk_user.image === "")
+            {
+                card_body_html += `
+                                    <i class="fa fa-user" aria-hidden="true" title="Copy to use user" style="width: 33px"></i>
+                                    <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) 
+                                    </span>
+                                </span>`;
+            }
+            else
+            {
+                card_body_html += `<img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+            }
+
 
             if(element.comentary == undefined || element.comentary === "")
             { 
                 card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
-                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
                     responder
                 </button>`;
             }else
             {
                 card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
-                <button type="button" class="btn btn-primary btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
                     responder
                 </button>`;
             }
@@ -154,7 +172,7 @@ companier.getqualification()
     }
     else
     {
-        return "No se encontro información.";
+        return "No se encontro datos.";
     }
 },
 (err) =>{console.log("error solicitud.followers "+err)});
@@ -187,7 +205,7 @@ function fnBtnId(cont)
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input" id="check_msm"><span class="pl-3">&nbsp; MSM &nbsp;&nbsp;</span>
+                        <input type="checkbox" aria-label="Checkbox for following text input" id="check_msm"><span class="pl-3">&nbsp; SMS &nbsp;&nbsp;</span>
                     </div>
                 </div>
                 <div class="input-group-prepend">
@@ -195,7 +213,7 @@ function fnBtnId(cont)
                         <input type="checkbox" aria-label="Checkbox for following text input" id="check_email"><span class="pl-3">EMAIL &nbsp;</span>
                     </div>
                 </div>
-                <div class="input-group-prepend" id="add_gif"></div>
+                <div class="input-group-prepend add_gif" id="add_gif"></div>
             </div>
         </div>
         <div class="modal-footer dropup">
@@ -208,7 +226,7 @@ function fnBtnId(cont)
             <div class="row collapse" id="collapse123">
                 ${"creacion de la gifcard de manera dimanica"}
                 <div class="col-sm-6 col-md-6 col-lg-6"> 
-                    <div class="main-card mb-3 card ion-color-barter3">
+                    <div class="main-card mb-3 card ion-color-barter3 add_gif">
                         <div class="row">
                             <div class="col">
                                 <p ><b id="gift_amount">10,000$</b></p>
@@ -248,7 +266,7 @@ function capturarCheck(id_btn)
         const send_resp = sendResp();
         if(send_resp.idcalify !=="")
         {
-            console.log("listo para enviar data.", send_resp);
+            if(send_resp.id_brach === "") send_resp.id_brach = null;
             fetch("https://barter-token.herokuapp.com/api/calificationsA",{
                 method: "POST",
                 headers:  
@@ -264,18 +282,14 @@ function capturarCheck(id_btn)
                     "sendEmail":          send_resp.sendEmail,
                     "sendSms":            send_resp.sendSms, 
                     "tradename":          send_resp.tradename,
-                    "idbranch" :          null,
+                    "idbranch" :          send_resp.id_brach
                 }),
             })
             .then(resp => {
-                // console.log("respuesta: ", resp);
                 if(resp.status !== 200)
                 {
-                    // if(error)
                     const divreply = document.getElementsByClassName("app-container");
-                    // console.log("reply: ", reply);
                     const replyContent = document.getElementById("replyContent");
-                    // console.log("mensaje de alerta.", replyContent);
                     divreply.style.display = "block";
                     divreply.classList.add("show");
                     let alert_resp = `
@@ -293,10 +307,18 @@ function capturarCheck(id_btn)
                 }
                 // pruebas de mensajes de respuesta
                 enviarAlert(resp.statusText);
+                $('#alerta_error').fadeIn();     
+                setTimeout(function() {
+                    $("#alerta_error").fadeOut();           
+                },3000);
+                updateGrades(resp);
             })
             .catch(error => {
-                // console.error(error);
                 enviarAlert(error);
+                $('#alerta_error').fadeIn();     
+                setTimeout(function() {
+                    $("#alerta_error").fadeOut();           
+                },3000);
             });
         }
     }
@@ -305,7 +327,7 @@ function capturarCheck(id_btn)
 
 function loadGifCard()
 {
-    let img_gifcard = ``;
+    let img_gifcard = ``, array_amount = [], id;
     let ids = [];
     companier.getgiftsA()
     .then((response)=> 
@@ -315,7 +337,9 @@ function loadGifCard()
         response.forEach(element => 
         {
             const f_gif = new Date(element.fecha_final);
-            let amount = format(element.amount);
+            amount = format(element.amount);
+            array_amount.push(amount);
+            id = element._id;
             if(f_gif.getTime() > f.getTime() && (element.status === true))
             {
                 img_gifcard += `
@@ -324,7 +348,7 @@ function loadGifCard()
                         <div class="row">
                             <div class="col">
                                 <p >
-                                    $<b id="gift_amount">${amount}</b>
+                                    $<b class="gift_amount">${amount}</b>
                                 </p>
                             </div>
                         </div>
@@ -349,7 +373,7 @@ function loadGifCard()
         const btngif = document.getElementsByClassName("text-warning");
         let btnEvent;
         // capturar el id de cada ancla creada dinamicamente
-        for(index =0; index < btngif.length; index++)
+        for(index = 0; index < btngif.length; index++)
         {
             btnEvent = document.getElementById(btngif[index].id);
             ids.push(btngif[index].id);
@@ -399,15 +423,14 @@ function capturarIdGif(e)
 
 function enviarAlert(msm = false)
 {
-    console.log("msm: ",msm);
-    clase_alert = msm === "ok" ? "alert-success" : "alert-danger";
-    // console.log("clase_alert", clase_alert);
+    clase_alert = (msm === "OK") ? "alert-success" : "alert-danger";
+    mensajecalif = (msm === "OK") ? "<strong>Respuesta enviada!</strong> correctamente." : "<strong>Ops! algo salio mal... </strong>la respuesta no pudo ser enviada.";
     const alerta_error = document.getElementById("alerta_error");
 
     let alert_resp = `
         <div class="alert mb-3 ${clase_alert} alert-dismissable">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Respuesta enviada!</strong> correctamente.                  
+            ${mensajecalif}                  
         </div>`;
         alerta_error.innerHTML = alert_resp;
 }
@@ -417,25 +440,165 @@ function selectBranch(id_branch)
     
     if(id_branch)
     {
-        let seach = companier.getqualification(id_branch);
-        console.log("seach: ", seach);
+        let container = validar_data("id_brach", id_branch);
+        if(container.id_branch !== "")
+        {
+            companier.getqualification(container.id_branch)
+                .then((response)=> 
+                {
+                    if(response.data)
+                    {
+                        let Data = response.data;
+                        let dissatisfied = 0, moderately_compliant = 0, according = 0, total_msm = 0;
+                        let card_body_html = ``; 
+                        let card_element = document.getElementById('contenedor');
+                        let cont = 1;
+                        let stop = 2
+                        const colorstar= "#fed22b";
+
+                        Data.forEach(element => {
+                            total_msm +=1;
+                            // este segmento se debe eliminar antes de subir ya que son pruebas del renderizado de la nueva data
+
+                            if(element.number <= stop)
+                            {
+                                element.fk_user.name = "sinedin_";
+                            }
+                            if(element.number == 4)
+                            {
+                                element.number = 2;
+                            }
+                            
+                            // este segmento se debe eliminar antes de subir ya que son pruebas del renderizado de la nueva data
+                            switch(element.number)
+                            {
+                                case 1: 
+                                case 2: 
+                                    dissatisfied += 1;
+                                    break;
+                                case 3: 
+                                    moderately_compliant += 1;
+                                    break;
+                                case 4:
+                                case 5:
+                                    according += 1;
+                                    break;
+                            }
+
+                            card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
+                            // <img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='user_avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+
+                            if(element.fk_user.image === "")
+                            {
+                                card_body_html += `
+                                                    <i class="fa fa-user" aria-hidden="true" title="Copy to use user" style="width: 33px"></i>
+                                                    <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) 
+                                                    </span>
+                                                </span>`;
+                            }
+                            else
+                            {
+                                card_body_html += `<img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+                            }
+
+                            if(element.comentary == undefined || element.comentary === "")
+                            { 
+                                card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
+                                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                                    responder
+                                </button>`;
+                            }else
+                            {
+                                card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
+                                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                                    responder
+                                </button>`;
+                            }
+                            // crear estrellas como calificacion.
+                            card_body_html += `<span class="float-right" id="stars_${cont}">`;
+                            for (let index = 0; index <= 4; index++) 
+                            {
+                                if(index < element.number)
+                                {
+                                    card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="${colorstar}" xmlns="http://www.w3.org/2000/svg"> <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>`;
+                                }
+                                else
+                                {
+                                    card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                    </svg>`;
+                                }
+                            }
+                            card_body_html += `<p class="d-none" id="valor_calificacion">${element._id}</p></span></div> </div>`;
+                            cont +=1;
+                        });
+                        card_element.innerHTML = card_body_html; 
+                        
+                        /* data dinamicamente obtenida para grafica calificaciones en forma circular chart.js  */
+                        // eliminacion de el primer canvas
+                        var $parent = $('#myChart').parent();
+                        $('#myChart').remove();
+                        $parent.append('<canvas id="myChart" width="1" height="1" class="canvas_calificaciones"></canvas>');
+                        // fin de la eliminacion de el primer canvas.
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['Inconforme', 'Medianamente Conforme', 'Conforme'],
+                                datasets: [{
+                                    label: '# of Votes',
+                                    data: [dissatisfied, moderately_compliant, according],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(165, 255, 20, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        return "No se encontro datos.";
+                    }
+                },
+                (err) =>{console.log("error solicitud.followers "+err)
+            });
+        }
+
     }
 }
 
 function validar_data(validador, ...param)
 {
-    // body_ratings =
-    // {
-    //     idcalify: "",
-    //     tradename: "",
-    //     id_brach: "",
-    //     msgcalificationb: "",
-    //     idgiftcard: "",
-    //     sendSms: false,
-    //     sendEmail: false,
-    // }
-
+    body_ratings.id_brach = validador ? param[0] : "";
     return body_ratings;
+}
+
+function capturarClick()
+{
+    const filtro_fecha = document.getElementById("calif_filtro");
+    filtro_fecha.addEventListener("click", (e)=>{
+        const click_menor = e.path[1];
+        click_menor.fill = "#16aaff";
+        e.path.forEach(element => {
+        })
+    });
 }
 
 
