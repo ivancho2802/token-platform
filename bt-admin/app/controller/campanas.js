@@ -6,13 +6,16 @@ $( document ).ready(function() {
     campanier.createOrGetSegment('Recurrentes')
     campanier.createOrGetSegment('Potenciales')
     campanier.createOrGetSegment('Rentables')
+    if(document.getElementsByName("typebell").length>0)
+        campanier.getBellTypes()
     /* new Help().loadbrnachs(); */
 
     var bellData=[], balancesmsemailData
     document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
     document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
     document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
-    if(document.getElementById("datetime_campana"))document.getElementById("datetime_campana").value = new Date();
+    var datecurrent = moment().locale('en');
+    if(document.getElementById("datetime_campana"))document.getElementById("datetime_campana").value = datecurrent.format('yyyy-MM-DDTHH:mm');
     if(document.getElementById("fk_business"))document.getElementById("fk_business").value = JSON.parse($.cookie("userData"))._id;
     /**
     *   init data de contenido de la campaña
@@ -28,6 +31,7 @@ $( document ).ready(function() {
     if(document.getElementById("message-noty-title-create"))document.getElementById("message-noty-title-create").value = 'Test de notificacion de Token!';
     if(document.getElementById("message-noty-text-create"))document.getElementById("message-noty-text-create").value = 'Token test de campañas';
     if(document.getElementById("message-noty-icon-create"))document.getElementById("message-noty-icon-create").value = './assets/imgs/logo_token.svg';
+
     // crear bell createbell
     (function() {
         'use strict';
@@ -47,6 +51,7 @@ $( document ).ready(function() {
         }, false);
     })(); 
     if(document.getElementById("formbell"))document.getElementById("formbell").addEventListener('submit', function (event) {  
+      var form = document.getElementById("formbell")
       var valid = false
       var listasbell = [];
       var els = document.getElementsByName('segmentlistnew');
@@ -103,12 +108,16 @@ $( document ).ready(function() {
           text:document.getElementById("message-noty-text-create").value,
           icon:document.getElementById("message-noty-icon-create").value
       }   
-
+      var datecurrent = moment().locale('en');
+      datecurrent.format('yyyy-MM-DDTHH:mm');
+      console.log("datecurrent")
+      console.log(datecurrent.format('yyyy-MM-DDTHH:mm'))
       var body = {
           name: document.getElementById("name").value,
           date: document.getElementById("launch").checked ? document.getElementById("datetime_campana").value: "",
-          datecurrentdate: new Date,
+          datecurrentdate: datecurrent.format('yyyy-MM-DDTHH:mm'),
           sms: document.getElementById("sms").checked,
+          typebell:form.elements["typebell"].value,
           email: document.getElementById("email").checked,
           notipush: document.getElementById("notipush").checked,
           defaultvalue: document.getElementById("defaultvalue").checked,
@@ -124,7 +133,6 @@ $( document ).ready(function() {
       }
       console.log("body")
       console.log(body)
-
       bellier.setbell(body)//JSON.parse($.cookie("userData"))._id
       .then((response)=> {
           console.log(response)
@@ -244,6 +252,7 @@ function getBells(){
         getBalance()
         // obtener lista de usuarios
         getSegmentsUser();
+        campanier.getBellTypes()
     }, 
     (err) =>{console.log("error solicitud.followers "+err)});
 }
@@ -274,12 +283,7 @@ function getSegmentsUser(){
             }
 
             document.getElementById("segmentsUserData").innerHTML = campanier.getTableUsersActSegmentSelect(response, citiesData2)
-        })
-        // console.log("bells")
-        // console.log(response)
-        // bellData = response; 
-        // if(bellData.length)
-        // document.getElementById("campanaslist").innerHTML = campanier.gerTableBells(bellData);
+        }) 
     }, 
     (err) =>{console.log("error solicitud.followers "+err)});
 }
@@ -305,7 +309,12 @@ function saveListUser(){
         if(resss.isTrusted){
             bellier.setsegmentuser({ name, fk_user: choices})//JSON.parse($.cookie("userData"))._id
             .then((response)=> {
-                document.getElementById("errorsavelista").innerHTML = 'Lista Guardada!';
+                document.getElementById("errorsavelista").innerHTML = `
+                <div class="alert alert-success fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+                    Lista Guardada!
+                </div>
+                `;
                 companier.cities()
                 .then((citiesData2)=> {
 
@@ -317,9 +326,15 @@ function saveListUser(){
                 })
             }, 
             (err) =>{
+                var msgerror = err.responseJSON ? err.responseJSON.msg: 'Error';
                 console.log("error solicitud.followers "+err)
-                document.getElementById("errorsavelista").innerHTML = 'Error en la solicitud!'+ ` ${err.responseJSON.msg}`;
-                toastInfo('Error en la solicitud!', ` ${err.responseJSON.msg}`);
+                document.getElementById("errorsavelista").innerHTML = `
+                <div class="alert alert-success fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+                    Error en la solicitud!' ${msgerror}
+                </div>
+                `;
+                toastInfo('Error en la solicitud!', ` ${msgerror}`);
             });
         }
       });
@@ -335,7 +350,7 @@ function editBell (index){
     if(document.getElementById("formbelleditar"+index))
     document.getElementById("formbelleditar"+index).addEventListener('submit', function (event) { 
 
-
+        var form = document.getElementById("formbelleditar"+index)
         var valid = false
 
         var listasbell = [];
@@ -377,16 +392,22 @@ function editBell (index){
         var form_data = $(this).serializeArray(); //Encode form elements for submission
         event.preventDefault(); //prevent default action 
         console.log(document.getElementById("launch"+index).checked)
+        
+        var datecurrent = moment().locale('en');
+        datecurrent.format('yyyy-MM-DDTHH:mm');
+        console.log("datecurrent")
+        console.log(datecurrent.format('yyyy-MM-DDTHH:mm'))
         var body = {
             idbell: document.getElementById("bellid"+index).value,
             name: document.getElementById("name"+index).value,
             date: document.getElementById("datetime_campana"+index).value,
-            datecurrentdate: new Date(),
+            datecurrentdate: datecurrent.format('yyyy-MM-DDTHH:mm'),
             sms: document.getElementById("sms"+index).checked,
             email: document.getElementById("email"+index).checked,
             notipush: document.getElementById("notipush"+index).checked,
             defaultvalue: document.getElementById("defaultvalue"+index).checked,
             terminos: document.getElementById("terminos"+index).checked,
+            typebell: form.elements["typebell"].value,
             fk_bell_user_list: listasbell,
             tokenPush: 'localStorage.getItem("tokenPush")',
             platform: 'web',
@@ -398,7 +419,6 @@ function editBell (index){
         }
         console.log("body")
         console.log(body)
-        
         // actualizar cuenta de campaña
         campanier.seReloadBell(unFormat(document.getElementById(`saldoEstimadoedit${index}`).innerHTML), document.getElementById(`numSmsBelledit${index}`).value, document.getElementById(`numEmailBelledit${index}`).value , index) 
 
@@ -426,6 +446,7 @@ function editBell (index){
                     <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                     Excelente Campaña actualizada con exito! 
                 </div>`;
+                campanier.getBellTypes()
             }
         }, 
         (err) =>{
@@ -474,6 +495,7 @@ function setBellDefault(idbell, index){
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Excelente Campaña creada con exito! 
             </div>`;
+            campanier.getBellTypes()
         }
     }, 
     (err) =>{
@@ -574,7 +596,7 @@ function testbellbyreq(teltestcreate, emailtestcreate, idbell, index){
 function deleteSegment(idsegemento, index, index2){
     console.log("errorcampanasegmentdeletebuton"+index+index2) 
 
-    modalDialogConfirmSegment('editlistuser') 
+    campanier.modalDialogConfirmSegment('editlistuser') 
 
     document.getElementById("editFromModal").addEventListener("click", function(resss){  
 
@@ -1044,7 +1066,7 @@ function loadTemplate(id, index) {
                                                                   </div>
                                                                   <div class="d-block text-center card-footer">
                                                                       <!-- <button class="mr-2 btn-icon btn-icon-only btn btn-outline-danger"><i class="pe-7s-trash btn-icon-wrapper"> </i></button> -->
-                                                                      <button class="btn-wide btn btn-success" onclick="saveListUser()">Guardar lista</button>
+                                                                      <button class="btn-wide btn btn-success"  data-toggle="modal" data-target="#modalTokens"  onclick="saveListUser()" modal>Guardar lista</button>
                                                                   </div>
                                                               </div>
 
@@ -1364,7 +1386,19 @@ function loadTemplate(id, index) {
                                                       </div>
                                                       <input type="hidden" id="datetime_campana_backup${i}">
                                                   </div>
+                                                </div>
                                               </div>
+                                              
+                                              <div class="form-row">
+                                                    <div class="col-md-6 mb-6">
+                                                        <label for="typebell">Tipo de Campaña</label>
+                                                        <select name="typebell" class="form-control" value="${bellsData[i].typebell}">
+                                                            <option value="">Seleccione</option>
+                                                        </select>
+                                                        <div class="valid-feedback">
+                                                            Bien!
+                                                        </div>
+                                                    </div> 
                                               </div>
 
                                               <div class="form-row">
@@ -1561,7 +1595,7 @@ function loadTemplate(id, index) {
                     <div class="nav">
                         <div id="errorcampanasegmentdeletebuton${i}" class="btn-shadow mr-3 btn">
                         </div>
-                        <button class="btn-pill btn-wide btn btn-outline-danger btn-sm"  onclick="deleteSegment('${usersSegmentData[i]._id}', ${i}, '')"  data-toggle="modal" data-target="#modalTokens">
+                        <button class="btn-pill btn-wide btn btn-outline-danger btn-sm"  onclick="deleteSegment('${usersSegmentData[i]._id}', ${i}, '')"  data-toggle="modal" data-target="#modalTokens" ${usersSegmentData[i].protectec==true ? 'disabled':''}>
                           <i class="pe-7s-trash text-danger"></i>
                           Eliminar 
                         </button>
@@ -1654,7 +1688,7 @@ function loadTemplate(id, index) {
                     <div class="nav">
                         <div id="errorcampanasegmentdeletebuton${i}${index}" class="btn-shadow mr-3 btn">
                         </div>
-                        <button class="btn-pill btn-wide btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#modalTokens" onclick="deleteSegment('${usersSegmentData[i]._id}', ${i}, ${index})">
+                        <button class="btn-pill btn-wide btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#modalTokens" onclick="deleteSegment('${usersSegmentData[i]._id}', ${i}, ${index})"  ${usersSegmentData[i].protectec==true ? 'disabled':''}>
                           <i class="pe-7s-trash text-danger"></i>
                           Eliminar 
                         </button>
@@ -1770,16 +1804,16 @@ function loadTemplate(id, index) {
       searchedadmayor = document.getElementById('searchedadmayor').value ? document.getElementById('searchedadmayor').value: 0,
       usersDataSeached = {}, fk_user_asocd_sechaded =[]
 
-      campanier.clients(JSON.parse($.cookie("userData"))._id)
+      companier.clients(JSON.parse($.cookie("userData"))._id)
       .then((usersData)=> {
           //cities
-          campanier.cities()
+          companier.cities()
           .then((citiesData2)=> {
             console.log(usersData)
             console.log(citiesData2)
 
             if((searchedadmenor==0 && searchedadmayor==0)){
-              document.getElementById("userActivos").innerHTML = getTableUsersActSelect(usersData, citiesData2, true)
+              document.getElementById("userActivos").innerHTML = campanier.getTableUsersActSelect(usersData, citiesData2, true)
               return
             }
 
@@ -1799,7 +1833,7 @@ function loadTemplate(id, index) {
               status: usersData.status,
               update_date: usersData.update_date
             }
-            document.getElementById("userActivos").innerHTML = getTableUsersActSelect(usersDataSeached, citiesData2, true) 
+            document.getElementById("userActivos").innerHTML = campanier.getTableUsersActSelect(usersDataSeached, citiesData2, true) 
           }, 
           (err) =>{console.log("error solicitud.balancesmsemail "+err)});
       }, 
@@ -1809,16 +1843,16 @@ function loadTemplate(id, index) {
     Campana.prototype.searchgenerocreate = function  (genero){
       var generol, fk_user_asocd_sechaded =[]
 
-      campanier.clients(JSON.parse($.cookie("userData"))._id)
+      companier.clients(JSON.parse($.cookie("userData"))._id)
       .then((usersData)=> {
           //cities
-          campanier.cities()
+          companier.cities()
           .then((citiesData2)=> {
             console.log(usersData)
             console.log(citiesData2)
 
             if((genero=='')){
-              document.getElementById("userActivos").innerHTML = getTableUsersActSelect(usersData, citiesData2, true)
+              document.getElementById("userActivos").innerHTML = campanier.getTableUsersActSelect(usersData, citiesData2, true)
               return
             }
 
@@ -1840,7 +1874,7 @@ function loadTemplate(id, index) {
               status: usersData.status,
               update_date: usersData.update_date
             }
-            document.getElementById("userActivos").innerHTML = getTableUsersActSelect(usersDataSeached, citiesData2, true) 
+            document.getElementById("userActivos").innerHTML = campanier.getTableUsersActSelect(usersDataSeached, citiesData2, true) 
           }, 
           (err) =>{console.log("error solicitud.balancesmsemail "+err)});
       }, 
@@ -1907,10 +1941,10 @@ function loadTemplate(id, index) {
       searchedadmayor = document.getElementById('searchedadmayoredit'+index).value ? document.getElementById('searchedadmayoredit'+index).value: 0,
       usersDataSeached = {}, fk_user_asocd_sechaded =[]
 
-      campanier.clients(JSON.parse($.cookie("userData"))._id)
+      companier.clients(JSON.parse($.cookie("userData"))._id)
       .then((usersData)=> {
           //cities
-          campanier.cities()
+          companier.cities()
           .then((citiesData2)=> {
             console.log(usersData)
             console.log(citiesData2)
@@ -1918,7 +1952,7 @@ function loadTemplate(id, index) {
             if((searchedadmenor==0 && searchedadmayor==0)){
                 for (let i = 0; i < document.getElementsByClassName("userActivos2").length; i++) {
                     const tble = document.getElementsByClassName("userActivos2")[i];
-                    tble.innerHTML = getTableUsersActSelect(usersData, citiesData2, true)
+                    tble.innerHTML = campanier.getTableUsersActSelect(usersData, citiesData2, true)
                 }
                 return
             }
@@ -1941,7 +1975,7 @@ function loadTemplate(id, index) {
             }
             for (let i = 0; i < document.getElementsByClassName("userActivos2").length; i++) {
                 const tble = document.getElementsByClassName("userActivos2")[i];
-                tble.innerHTML = getTableUsersActSelect(usersDataSeached, citiesData2, true) 
+                tble.innerHTML = campanier.getTableUsersActSelect(usersDataSeached, citiesData2, true) 
             }
           }, 
           (err) =>{console.log("error solicitud.balancesmsemail "+err)});
@@ -1952,10 +1986,10 @@ function loadTemplate(id, index) {
     Campana.prototype.searchgeneroedit = function  (genero){
       var generol, fk_user_asocd_sechaded =[]
 
-      campanier.clients()
+      companier.clients()
       .then((usersData)=> {
           //cities
-          campanier.cities()
+          companier.cities()
           .then((citiesData2)=> {
             console.log(usersData)
             console.log(citiesData2)
@@ -1963,7 +1997,7 @@ function loadTemplate(id, index) {
             if((genero=='')){ 
                 for (let i = 0; i < document.getElementsByClassName("userActivos2").length; i++) {
                     const tble = document.getElementsByClassName("userActivos2")[i];
-                    tble.innerHTML = getTableUsersActSelect(usersData, citiesData2, true)
+                    tble.innerHTML = campanier.getTableUsersActSelect(usersData, citiesData2, true)
                 }
                 return
             }
@@ -1988,7 +2022,7 @@ function loadTemplate(id, index) {
             }
             for (let i = 0; i < document.getElementsByClassName("userActivos2").length; i++) {
                 const tble = document.getElementsByClassName("userActivos2")[i];
-                tble.innerHTML = getTableUsersActSelect(usersDataSeached, citiesData2, true) 
+                tble.innerHTML = campanier.getTableUsersActSelect(usersDataSeached, citiesData2, true) 
             }
           }, 
           (err) =>{console.log("error solicitud.balancesmsemail "+err)});
@@ -2041,7 +2075,7 @@ function loadTemplate(id, index) {
             console.log(response)
             document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-success fade show" role="alert">
-                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
                 Campaña testeada con exito! 
             </div>`;
         }, 
@@ -2051,7 +2085,7 @@ function loadTemplate(id, index) {
             console.log("error test  bell "+err)
             document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-warning fade show" role="alert">
-                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
                 Error en la solicitud!! ${errResult}
             </div>`;
         });
@@ -2118,7 +2152,7 @@ function loadTemplate(id, index) {
                 
                 /* bellier.deletesegmentuser(idsegmenttodelete)
                 .then((responsedelete)=> { */
-                    const bodyseg = { _id: idsegmenttodelete, name: 'Clientes '+name, fk_user: formararray};
+                    const bodyseg = { _id: idsegmenttodelete, name: 'Clientes '+name, fk_user: formararray, protectec:true};
                     bellier.putsegmentuser(bodyseg)
                     .then((response2)=> {
                         companier.cities()
@@ -2273,7 +2307,30 @@ function loadTemplate(id, index) {
             }
         });
     }
-
+    /**
+     * buscar tipos de campaña
+     */
+    Campana.prototype.getBellTypes = function (){
+        return bellier.findBellTypes()
+        .then((belltypes)=> {
+            var eleselectbrach = document.getElementsByName("typebell") ? document.getElementsByName("typebell"): [];
+            for (let j = 0; j < eleselectbrach.length; j++) {
+                const elementB = eleselectbrach[j];
+                    elementB.innerHTML = `
+                    <option value="">Seleccione</option>
+                `;
+                for (let i = 0; i < belltypes.length; i++) {
+                    const element = belltypes[i];
+                    elementB.innerHTML += `
+                        <option value="${element.name}">${element.name}</option>
+                    `;
+                }
+            }
+        },errbelltypes=>{
+            console.log("errbelltypes")
+            console.error(errbelltypes)
+        }) 
+    }
     return Campana;
   })();
 
