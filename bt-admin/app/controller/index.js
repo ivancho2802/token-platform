@@ -1,6 +1,139 @@
+(function() {
+    var Dashboarder, dashboarder,
+      __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+      Dashboarder = (function() {
+        function Dashboarder() {
+            this.data = {
+            values: {},
+            contexts: []
+            };
+            this.globalContext = {};
+        }
+        Dashboarder.prototype.showReloadInbox = function() {
+            var body = '', header="";
+            header +=`
+                <button type="button" class="btn-shadow mr-3 btn btn-success" data-toggle="tooltip" data-placement="top" title="Mensajes de texto disponibles para las campañas">
+                    <i class="fa fa-phone text-white "></i>
+                    Mensajes:
+                    <span id="numSms"> 0</span> 
+                </button>  
 
-    //console.log(JSON.parse($.cookie("business")))
-    $( document ).ready(function() {
+                <button type="button" class="btn-shadow mr-3 btn btn-danger" data-toggle="tooltip" data-placement="top" title="Correos disponibles para las campañas">
+                    <span class="text-white">
+                        <i class="fa pe-7s-mail text-white "></i>
+                        Emails: 
+                        <span id="numEmail"> 0</span>
+                    </span>
+                </button>  
+
+                <button type="button" class="btn-shadow mr-3 btn btn-alternate" >
+                    <!-- data-toggle="modal" data-target="#modalTokens" onclick="formRecargaEmailsSms()" -->
+                    <span class="text-white">
+                        <i class="fa pe-7s-refresh-2 text-white "></i>
+                        Saldo para Recargar Sms y Emails: 
+                        <span id="saldoTotal"> 0</span>
+                    </span>
+                </button> 
+            `;
+            body +=` 
+            <div class="modal-body">
+                    <div class="tab-pane tabs-animation fade show active" id="smscreate" role="smscreate"> 
+                            <div class="form-grid">
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-6">
+                                        <label for="numSmsBellCreate">
+                                            <div class="font-icon-wrapper font-icon-lg"><i class="fa fa-phone icon-gradient bg-night-fade"> </i></div>
+                                                Numero de Mensajes de Texto SMS
+                                        </label>
+                                        <input name="numSmsBellCreate" id="numSmsBellCreate" onkeyup="campanier.calcSaldoRestante()" placeholder="Numero de Mensajes de Texto SMS" type="number" min="0" class="form-control" required>
+                                        <div class="valid-feedback">
+                                            Bien!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Por favor ponga un numero correcto.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-6">
+                                        <label for="numEmailBellCreate">  
+                                            <div class="font-icon-wrapper font-icon-lg"><i class="fa pe-7s-mail icon-gradient bg-night-fade"> </i></div>
+                                                Numero de Correos
+                                        </label>
+                                        <input name="numEmailBellCreate" id="numEmailBellCreate" onkeyup="campanier.calcSaldoRestante()" placeholder="Numero de Correos" type="number" min="0" class="form-control" required>
+                                        <div class="valid-feedback">
+                                            Bien!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Por favor ponga un numero correcto.
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="pvemail" id="pvemail">
+                                    <input type="hidden" name="pvsms" id="pvsms">
+                                    <div class="card-footer text-center"> 
+                                            <label class="btn-shadow mr-3 btn btn-success" id="saldoTotalRestanteBotoncreate">
+                                                <span class="text-white">
+                                                    <i class="fa pe-7s-refresh-2 text-white "></i>
+                                                    Saldo Restante: 
+                                                    <span id="saldoTotalRestante"> 0</span>
+                                                </span>
+                                            </label>  
+                                            <label class="btn-shadow mr-3 btn btn-success" >
+                                                <span class="text-white">
+                                                    <i class="fa pe-7s-refresh-2 text-white "></i>
+                                                    Saldo Estimado: 
+                                                    <span id="saldoEstimado"> 0</span>
+                                                </span>
+                                            </label>  
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+            </div>
+            `;
+            document.getElementById("modalTokensContent").innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${header}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="modalalert"></div>
+                    ${body}
+                </div>
+                <div class="modal-footer">
+                    <div id="errorcampana"></div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="dashboarder.seReloadBell()">Recargar</button>
+                </div>
+            </div>
+            `;
+            
+            companier.balancesmsemail(JSON.parse($.cookie("userData"))._id)
+            .then((balancesmsemailData)=> {
+                document.getElementById("numSms").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numSms: 0;
+                document.getElementById("numEmail").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numEmail: 0;
+                document.getElementById("saldoTotal").innerHTML = acumElementOfArrayObject(balancesmsemailData.billpayed, 'saldopay', true);
+                document.getElementById("saldoTotalRestante").innerHTML = acumElementOfArrayObject(balancesmsemailData.billpayed, 'saldopay', true);
+                document.getElementById("pvsms").value = balancesmsemailData.pvsms ?balancesmsemailData.pvsms:1 ;
+                document.getElementById("pvemail").value = balancesmsemailData.pvemail ? balancesmsemailData.pvemail:1;
+                var nodenumSms = document.getElementsByClassName('numSms');
+            }, 
+            (err) =>{console.log("error solicitud.balancesmsemail "+err)})
+        };
+
+        Dashboarder.prototype.seReloadBell = function (){
+            campanier.seReloadBell(unFormat(document.getElementById("saldoEstimado").innerHTML), document.getElementById("numSmsBellCreate").value, document.getElementById("numEmailBellCreate").value)
+        }
+        return Dashboarder;
+    })();
+    dashboarder = new Dashboarder();
+    (typeof module !== "undefined" && module !== null ? module.exports = dashboarder : void 0) || (this.dashboarder = dashboarder);
+}).call(this);
+
+//console.log(JSON.parse($.cookie("business")))
+$( document ).ready(function() {
         /**
         *   data de la empresa perfil
         */

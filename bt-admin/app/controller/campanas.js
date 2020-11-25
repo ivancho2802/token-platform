@@ -12,22 +12,22 @@ $( document ).ready(function() {
     document.getElementById("nameBussine").innerHTML = JSON.parse($.cookie("business")).nombre;
     document.getElementById("nameBussineRazon").innerHTML = JSON.parse($.cookie("business")).razon;
     document.getElementById("avatar").src = JSON.parse($.cookie("userData")).image;
-    document.getElementById("datetime_campana").value = new Date();
-    document.getElementById("fk_business").value = JSON.parse($.cookie("userData"))._id;
+    if(document.getElementById("datetime_campana"))document.getElementById("datetime_campana").value = new Date();
+    if(document.getElementById("fk_business"))document.getElementById("fk_business").value = JSON.parse($.cookie("userData"))._id;
     /**
     *   init data de contenido de la campaña
     */
     // SMS
-    document.getElementById("fk_sms_content_create").value = JSON.parse($.cookie("business")).nombre+ ': ';
+    if(document.getElementById("fk_sms_content_create"))document.getElementById("fk_sms_content_create").value = JSON.parse($.cookie("business")).nombre+ ': ';
     // EMAIL
-    document.getElementById("message-email-subject-create").value = 'Sending with SendGrid test '+JSON.parse($.cookie("business")).nombre;
-    document.getElementById("message-email-text-create").value = 'Test de bartertechnology desarrollo ';
-    document.getElementById("message-email-html-create").value = '<strong>and easy to do anywhere, even with Node.js</strong>';
+    if(document.getElementById("message-email-subject-create"))document.getElementById("message-email-subject-create").value = 'Sending with SendGrid test '+JSON.parse($.cookie("business")).nombre;
+    if(document.getElementById("message-email-text-create"))document.getElementById("message-email-text-create").value = 'Test de bartertechnology desarrollo ';
+    if(document.getElementById("message-email-html-create"))document.getElementById("message-email-html-create").value = '<strong>and easy to do anywhere, even with Node.js</strong>';
     //NOTIFICACION
-    document.getElementById("message-noty-data-create").value = JSON.stringify({ href: 'tokens'});
-    document.getElementById("message-noty-title-create").value = 'Test de notificacion de Token!';
-    document.getElementById("message-noty-text-create").value = 'Token test de campañas';
-    document.getElementById("message-noty-icon-create").value = './assets/imgs/logo_token.svg';
+    if(document.getElementById("message-noty-data-create"))document.getElementById("message-noty-data-create").value = JSON.stringify({ href: 'tokens'});
+    if(document.getElementById("message-noty-title-create"))document.getElementById("message-noty-title-create").value = 'Test de notificacion de Token!';
+    if(document.getElementById("message-noty-text-create"))document.getElementById("message-noty-text-create").value = 'Token test de campañas';
+    if(document.getElementById("message-noty-icon-create"))document.getElementById("message-noty-icon-create").value = './assets/imgs/logo_token.svg';
     // crear bell createbell
     (function() {
         'use strict';
@@ -46,7 +46,7 @@ $( document ).ready(function() {
             });
         }, false);
     })(); 
-    document.getElementById("formbell").addEventListener('submit', function (event) {  
+    if(document.getElementById("formbell"))document.getElementById("formbell").addEventListener('submit', function (event) {  
       var valid = false
       var listasbell = [];
       var els = document.getElementsByName('segmentlistnew');
@@ -130,7 +130,7 @@ $( document ).ready(function() {
           console.log(response)
           if(response){ 
               // actualizar cuenta de campaña
-              seReloadBell(unFormat(document.getElementById("saldoEstimado").innerHTML), document.getElementById("numSmsBellCreate").value, document.getElementById("numEmailBellCreate").value ) 
+              campanier.seReloadBell(unFormat(document.getElementById("saldoEstimado").innerHTML), document.getElementById("numSmsBellCreate").value, document.getElementById("numEmailBellCreate").value ) 
               // testeo de la campaña alcance
               if(document.getElementById("teltestcreate").value && document.getElementById("emailtestcreate").value){
                 testbellbyreq(document.getElementById("teltestcreate").value, document.getElementById("emailtestcreate").value, response.respbellcurrent._id, null)
@@ -160,11 +160,11 @@ $( document ).ready(function() {
       });
     });
     // fk_plantilla 
-    getBells()
+    if(document.getElementById("formbell"))getBells()
     // obtener clientes de este usuario
-    getClients()
+    if(document.getElementById("formbell"))getClients()
     // load menu unlayer
-    loadMenuTemplate(null)
+    if(document.getElementById("formbell"))loadMenuTemplate(null)
 })
 var forms = document.getElementsByClassName('needs-validation');
 // Loop over them and prevent submission
@@ -254,8 +254,6 @@ function getSegmentsUser(){
     //consulta de segmentos de usuarios o lista de usuarios
     bellier.getsegmentuser()//JSON.parse($.cookie("userData"))._id
     .then((response)=> {
-         console.log("segments")
-         console.log(response)
         //cities
         companier.cities()
         .then((citiesData2)=> {
@@ -400,13 +398,17 @@ function editBell (index){
         }
         console.log("body")
         console.log(body)
+        
+        // actualizar cuenta de campaña
+        campanier.seReloadBell(unFormat(document.getElementById(`saldoEstimadoedit${index}`).innerHTML), document.getElementById(`numSmsBelledit${index}`).value, document.getElementById(`numEmailBelledit${index}`).value , index) 
+
         bellier.putbell(body)//JSON.parse($.cookie("userData"))._id
         .then((response)=> {
             document.getElementById("editcampanas"+index).disabled = true;
 
             console.log(response)
             console.log(response[index])
-            if(response.length){
+            if(response.length){                // testeo de la campaña alcance
                 getSegmentsUser();
                 if (document.getElementById("launch"+index).checked) {
                   campanier.programbellbyreq(body, response[index]._id, index)
@@ -505,36 +507,6 @@ function getClients(idbranch){
         (err) =>{console.log("error solicitud.balancesmsemail "+err)});
     }, 
     (err) =>{console.log("error solicitud.followers "+err)});
-}
-function seReloadBell(recarga, numsms, numemail){
-    let bodyreloadbell = {
-        recarga: recarga,
-        numSms: numsms,
-        numEmail: numemail
-    }
-    bellier.seReloadBell(bodyreloadbell)
-    .then((response)=> {
-        document.getElementById("numSms").innerHTML = response.numSms
-        document.getElementById("numEmail").innerHTML = response.numEmail
-        document.getElementById("saldoTotal").innerHTML = format(response.saldoTotal)
-        document.getElementById("saldoTotalRestante").innerHTML = format(response.saldoTotal)
-
-        document.getElementById("errorcampana").innerHTML += `
-            <div class="alert alert-success fade show" role="alert">
-                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                Recarga hecha con exito! 
-            </div>`;
-    }, 
-    (err) =>{
-        var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
-        console.log(err)
-        console.log("error test  bell "+err)
-        document.getElementById("errorcampana").innerHTML = `
-        <div class="alert alert-warning fade show" role="alert">
-            <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-            Error en la solicitud!! ${errResult}
-        </div>`;
-    });
 }
 // funcion para testear campaña
 function testbellbyreq(teltestcreate, emailtestcreate, idbell, index){
@@ -1290,7 +1262,7 @@ function loadTemplate(id, index) {
                                                                             <span class="text-white">
                                                                                 <i class="fa pe-7s-refresh-2 text-white "></i>
                                                                                 Saldo Restante: 
-                                                                                <span id="saldoTotalRestante"> 0</span>
+                                                                                <span id="saldoTotalRestante${i}"> 0</span>
                                                                             </span>
                                                                         </label>  
                                                                         <label class="btn-shadow mr-3 btn btn-success" >
@@ -2026,7 +1998,7 @@ function loadTemplate(id, index) {
     // funcion que calcula el saldo restante en alcance
     Campana.prototype.calcSaldoRestanteedit = function (index){
 
-      var numsms=0, numeemail=0, saldorestante=0, pvemail=1, pvsms=1, saldototal=unFormat(document.getElementById("saldoTotal"+index).innerHTML), saldoestimado=0;
+      var numsms=0, numeemail=0, saldorestante=0, pvemail=1, pvsms=1, saldototal=unFormat(document.getElementsByClassName("saldoTotal")[index].innerHTML), saldoestimado=0;
       numsms = document.getElementById("numSmsBelledit"+index).value ? document.getElementById("numSmsBelledit"+index).value : 0;
       numeemail = document.getElementById("numEmailBelledit"+index).value ? document.getElementById("numEmailBelledit"+index).value : 0;
       saldoestimado = ((pvemail*numeemail) + (pvsms*numsms))
@@ -2088,16 +2060,28 @@ function loadTemplate(id, index) {
         .then((response)=> {
             console.log(response)  
             getSegmentsUser()
+            document.getElementById("errorcampanabuton"+index).innerHTML += `
+            <div class="alert alert-success fade show" role="alert">
+                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                Campaña programada con exito! 
+            </div>`;
+
             document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-success fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                Campaña testeada con exito! 
+                Campaña programada con exito! 
             </div>`;
         }, 
         (err) =>{
             var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
             console.log(err)
             console.log("error test  bell "+err)
+            
+            document.getElementById("errorcampanabuton"+index).innerHTML += `
+            <div class="alert alert-warning fade show" role="alert">
+                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                Error en la solicitud!! ${errResult}
+            </div>`;
             document.getElementById("errorcampana"+index).innerHTML += `
             <div class="alert alert-warning fade show" role="alert">
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -2162,7 +2146,7 @@ function loadTemplate(id, index) {
     /**
     *  para generar arrays
     */
-   Campana.prototype.generateArrayMayGasto = (response, tipo)=>{
+    Campana.prototype.generateArrayMayGasto = (response, tipo)=>{
         var cuponeclienetscanData
         cuponeclienetscanData = response;
 
@@ -2241,6 +2225,53 @@ function loadTemplate(id, index) {
         return arrayusermayorgasto  
         //numPuntosObtenidos
         //numUserClients
+    }
+    /**
+     * funcion para recargar saldo
+     */
+    Campana.prototype.seReloadBell = function (recarga, numsms, numemail, index){
+        let bodyreloadbell = {
+            recarga: recarga,
+            numSms: numsms,
+            numEmail: numemail
+        }
+        bellier.seReloadBell(bodyreloadbell)
+        .then((response)=> {
+            document.getElementById("numSms").innerHTML = response.numSms
+            document.getElementById("numEmail").innerHTML = response.numEmail
+            document.getElementById("saldoTotal").innerHTML = format(response.saldoTotal)
+            document.getElementById("saldoTotalRestante").innerHTML = format(response.saldoTotal)
+
+            document.getElementById("errorcampana").innerHTML += `
+                <div class="alert alert-success fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Recarga hecha con exito! 
+                </div>`;
+            if(index){
+                document.getElementById("errorcampanabuton"+index).innerHTML += `
+                <div class="alert alert-success fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Recarga hecha con exito! 
+                </div>`;
+            }
+        }, 
+        (err) =>{
+            var errResult = err ? err.responseJSON ? err.responseJSON.msg: '': ''
+            console.log(err)
+            console.log("error test  bell "+err)
+            document.getElementById("errorcampana").innerHTML += `
+            <div class="alert alert-warning fade show" role="alert">
+                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                Error en la solicitud!! ${errResult}
+            </div>`;
+            if(index){
+                document.getElementById("errorcampanabuton"+index).innerHTML += `
+                <div class="alert alert-warning fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Error en la solicitud!! ${errResult}
+                </div>`;
+            }
+        });
     }
 
     return Campana;
