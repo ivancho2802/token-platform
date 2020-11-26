@@ -17,6 +17,7 @@ var geocoder = new google.maps.Geocoder;
         Brancher.prototype.branchsclient = function() {
             brancherRouter.branchs()
             .then(branchs=>{
+                document.getElementById("clientbranchs").innerHTML = ``;
                 for (let i = 0; i < branchs.length; i++) {
                     const branch = branchs[i];
                     var usersbranch = `<td class="text-center">`;
@@ -54,7 +55,7 @@ var geocoder = new google.maps.Geocoder;
                         `;
                     }
                     usersbranch += `</td>`;
-                    document.getElementById("clientbranchs").innerHTML = `
+                    document.getElementById("clientbranchs").innerHTML += `
                     <tr>
                         <td class="text-center">${branch.nombre}</td>
                         <td class="text-center">${branch.address}</td>
