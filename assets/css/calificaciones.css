@@ -50,6 +50,11 @@
     margin: 0;
 }
 
+.text-white
+{
+    display: inline-block;
+}
+
 textarea 
 {
     resize: none;

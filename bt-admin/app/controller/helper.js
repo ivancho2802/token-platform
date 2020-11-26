@@ -14,8 +14,8 @@ class Help {
         eltr= '<td><div class="text-muted opacity-6">No hay Sucursales</div></td>';
       }else{
         acumeltr =`
-              <li class="nav-item">
-                <a href="#" class="nav-link disabled">
+              <li class="nav-item default">
+                <a href="#" class="nav-link">
                     <i class="nav-link-icon lnr-file-empty"></i>
                     <span>
                         Sucursales
