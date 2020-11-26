@@ -446,6 +446,11 @@ function editBell (index){
                     <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                     Excelente Campaña actualizada con exito! 
                 </div>`;
+                document.getElementById("msgcampanaedit"+index).innerHTML = `
+                <div class="alert alert-success fade show" role="alert">
+                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    Excelente Campaña actualizada con exito! 
+                </div>`;
                 campanier.getBellTypes()
             }
         }, 
@@ -462,6 +467,12 @@ function editBell (index){
                 <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                 Error en la solicitud!! ${err.responseJSON.msg}
             </div>`;
+            document.getElementById("msgcampanaedit"+index).innerHTML = `
+            <div class="alert alert-warning fade show" role="alert">
+                <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                Error en la solicitud!! ${err.responseJSON.msg}
+            </div>`;
+            campanier.getBellTypes()
         });
 
     })
@@ -905,7 +916,7 @@ function loadTemplate(id, index) {
                           <div class="tab-pane active" id="tab-eg1-0" role="tabpanel">
                             <p> Esta campaña puede  ${sendMensajes(bellsData[i].sms)} ${sendEmails(bellsData[i].email)} ${sendNotify(bellsData[i].notipush)}.</p>
                           </div>
-                          ${validprogram(bellsData[i].date, bellsData[i].status)}
+                          <div id="msgcampanaedit${i}">${validprogram(bellsData[i].date, bellsData[i].status)}</div>
                       </div>
 
                       <div class="collapse" id="editar${i}">
