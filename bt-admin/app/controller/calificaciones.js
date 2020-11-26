@@ -1,6 +1,6 @@
 
 $( document ).ready(function() {
-    var citiesData;
+    let citiesData;
     const send_resp = false, gif_card = false;
     body_ratings =
     {
@@ -34,10 +34,10 @@ $( document ).ready(function() {
 
     //animacion tabs de statics
     $('.tabsstatics').on('click', 'a', function() {
-      var $this = $(this),
+        var $this = $(this),
         $ul = $this.parents('ul');
-      $ul.find('a').removeClass('active');
-      $this.addClass('active');
+        $ul.find('a').removeClass('active');
+        $this.addClass('active');
     });
 
     // asignar evento click a el filtro de fechas
@@ -45,15 +45,19 @@ $( document ).ready(function() {
     // citiesData = array_keys();
 })
 
+// interacion con el boton sucursales
 const lis_sucursales = document.getElementById("lis_sucursales");
 // console.log("lis_sucursales: ", lis_sucursales);
 lis_sucursales.addEventListener("click", e => {
     const select_branchoffice = document.querySelector(".select_branchoffice");
-    // console.log("select_branchoffice: ", select_branchoffice);
+    console.log("select_branchoffice: ", select_branchoffice);
     const hiden_sucursales = document.getElementById("lis_sucursales");
+    console.log("hiden_sucursales: ", hiden_sucursales);
+
     hiden_sucursales.classList.remove("show");
     const sucursal = document.querySelector("#branchs li a div").textContent;
-    // console.log("sucursal: ", sucursal);
+    console.log("sucursal: ", sucursal);
+
     select_branchoffice.textContent = sucursal;
 });
 
