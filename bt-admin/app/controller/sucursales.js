@@ -86,13 +86,13 @@ var geocoder = new google.maps.Geocoder;
                                                                             <div class="input-group-prepend">
                                                                                 <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
                                                                             </div>
-                                                                            <input name="addressCompleteLat" id="addressCompleteLat" type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                            <input name="addressCompleteLat" id="addressCompleteLat${i}" type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
                                                                         </div>
                                                                         <div class="input-group">
                                                                             <div class="input-group-prepend">
                                                                                 <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
                                                                             </div>
-                                                                            <input name="addressCompleteLng" id="addressCompleteLng" type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                            <input name="addressCompleteLng" id="addressCompleteLng${i}" type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
                                                                         </div>
         
                                                                     </div>
@@ -183,11 +183,8 @@ var geocoder = new google.maps.Geocoder;
                             "draggable": true
                         });
                         google.maps.event.addListener(marker,'drag',function(event) {
-                            console.log(event.latLng.lat());
-                            console.log(event.latLng.lng());
-                            
-                            console.log("position change")
-                            console.log(event.latLng)
+                            //console.log("position change")
+                            //console.log(event.latLng)
                             currentPosition = {lat: event.latLng.lat(), lng: event.latLng.lng()}
                             document.getElementById("addressCompleteLat").value=currentPosition.lat
                             document.getElementById("addressCompleteLng").value=currentPosition.lng
@@ -206,11 +203,8 @@ var geocoder = new google.maps.Geocoder;
                     "draggable": true
                     });
                     google.maps.event.addListener(marker,'drag',function(event) {
-                        console.log(event.latLng.lat());
-                        console.log(event.latLng.lng());
-                        
-                        console.log("position change")
-                        console.log(event.latLng)
+                        //console.log("position change")
+                        //console.log(event.latLng)
                         currentPosition = {lat: event.latLng.lat(), lng: event.latLng.lng()}
                         document.getElementById("addressCompleteLat").value=currentPosition.lat
                         document.getElementById("addressCompleteLng").value=currentPosition.lng
@@ -253,14 +247,11 @@ var geocoder = new google.maps.Geocoder;
                             "draggable": true
                         });
                         google.maps.event.addListener(marker,'drag',function(event) {
-                            console.log(event.latLng.lat());
-                            console.log(event.latLng.lng());
-                            
-                            console.log("position change")
-                            console.log(event.latLng)
+                            //console.log("position change")
+                            //console.log(event.latLng)
                             currentPositionEdit = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-                            document.getElementById("addressCompleteLat").value=currentPositionEdit.lat
-                            document.getElementById("addressCompleteLng").value=currentPositionEdit.lng
+                            document.getElementById("addressCompleteLat"+index).value=currentPositionEdit.lat
+                            document.getElementById("addressCompleteLng"+index).value=currentPositionEdit.lng
                         });
                     } else {
                         alert('Geocode was not successful for the following reason: ' + status);
@@ -276,15 +267,11 @@ var geocoder = new google.maps.Geocoder;
                     "draggable": true
                     });
                     google.maps.event.addListener(marker,'drag',function(event) {
-                        console.log(event.latLng.lat());
-                        console.log(event.latLng.lng());
-                        
-                        console.log("position change")
-                        console.log(event.latLng)
+                        //console.log("position change")
+                        //console.log(event.latLng)
                         currentPositionEdit = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-                        
-                        document.getElementById("addressCompleteLat").value=currentPositionEdit.lat
-                        document.getElementById("addressCompleteLng").value=currentPositionEdit.lng
+                        document.getElementById("addressCompleteLat"+index).value=currentPositionEdit.lat
+                        document.getElementById("addressCompleteLng"+index).value=currentPositionEdit.lng
                     });
                 }
             } 
@@ -513,13 +500,13 @@ $( document ).ready(function() {
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLat"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                                    <input name="addressCompleteLat" id="addressCompleteLat${i}"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
                                                                                 </div>
                                                                                 <div class="input-group">
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLng"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                                    <input name="addressCompleteLng" id="addressCompleteLng${i}"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
                                                                                 </div>
                 
                                                                             </div>
@@ -692,13 +679,13 @@ $( document ).ready(function() {
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLat"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                                    <input name="addressCompleteLat" id="addressCompleteLat${i}"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
                                                                                 </div>
                                                                                 <div class="input-group">
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLng"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                                    <input name="addressCompleteLng" id="addressCompleteLng${i}"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
                                                                                 </div>
                 
                                                                             </div>
@@ -888,13 +875,13 @@ $( document ).ready(function() {
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLat" id="addressCompleteLat" type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                                    <input name="addressCompleteLat" id="addressCompleteLat${i}" type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
                                                                                 </div>
                                                                                 <div class="input-group">
                                                                                     <div class="input-group-prepend">
                                                                                         <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
                                                                                     </div>
-                                                                                    <input name="addressCompleteLng" id="addressCompleteLng" type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                                    <input name="addressCompleteLng" id="addressCompleteLng${i}" type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
                                                                                 </div>
                 
                                                                             </div>
@@ -1063,13 +1050,13 @@ function tokenSubmitFunction(event, form, index2) {
                                                                             <div class="input-group-prepend">
                                                                                 <span class="input-group-text" id="inputGroupFileAddon01">Latitud</span>
                                                                             </div>
-                                                                            <input name="addressCompleteLat"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
+                                                                            <input name="addressCompleteLat" id="addressCompleteLat${i}"  type="number" step="any" value="${JSON.parse(branch.addressComplete).lat}" class="form-control" aria-describedby="inputGroupFileAddon01" required> 
                                                                         </div>
                                                                         <div class="input-group">
                                                                             <div class="input-group-prepend">
                                                                                 <span class="input-group-text" id="inputGroupFileAddon01">Longitud</span>
                                                                             </div>
-                                                                            <input name="addressCompleteLng"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
+                                                                            <input name="addressCompleteLng" id="addressCompleteLng${i}"   type="number" step="any" value="${JSON.parse(branch.addressComplete).lng}" class="form-control" required> 
                                                                         </div>
         
                                                                     </div>
