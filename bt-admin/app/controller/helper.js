@@ -13,6 +13,15 @@ class Help {
       if(!branchsArray || !branchsArray.length ){
         eltr= '<td><div class="text-muted opacity-6">No hay Sucursales</div></td>';
       }else{
+        acumeltr =`
+              <li class="nav-item">
+                <a href="#" class="nav-link disabled">
+                    <i class="nav-link-icon lnr-file-empty"></i>
+                    <span>
+                        Sucursales
+                    </span>
+                </a>
+              </li>`
         for (var i = 0; i < branchsArray.length; i++) {
           //if(branchsArray[i].status)
           acumeltr += `
