@@ -1,4 +1,4 @@
-let calificacionestotalsucursales = [];
+let calificacionestotalsucursales = [], saveidcalif = [];
 $( document ).ready(function() 
 {
     let citiesData;
@@ -78,68 +78,31 @@ companier.getqualification()
     if(response.data)
     {
         calificacionestotalsucursales = response.data;
-        console.log("calificacionestotalsucursales: ", calificacionestotalsucursales);
+        let elementostrue = todotrue(response.data); //funcion para cambiar los elementos a estado true y tener con que probar
+        // console.log("calificacionestotalsucursales: ", calificacionestotalsucursales);
         camvasGrafi(response.data);
-        total_califi = CustomerRatingsNoResponse(response.data);
+        total_califi = CustomerRatingsNoResponse(elementostrue);
         // mostrar y pintar la cantidad de calificaciones sin responder Customer_Ratings_No_Response
         showGradesWithoutAnswering(total_califi.length);
         let Data = total_califi; 
-        card_body_html = ``;
-        let card_element = document.getElementById('contenedor');
-        let cont = 1;
-        const colorstar= "#fed22b";
-
-        Data.forEach(element => {
-            
-            card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
-
-            if(element.fk_user.image === "")
-            {
-                card_body_html += `
-                                    <i class="fa fa-user" aria-hidden="true" title="Copy to use user" style="width: 33px"></i>
-                                    <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) 
-                                    </span>
-                                </span>`;
-            }
-            else
-            {
-                card_body_html += `<img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
-            }
-
-
-            if(element.comentary == undefined || element.comentary === "")
-            { 
-                card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
-                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
-                    responder
-                </button>`;
-            }else
-            {
-                card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
-                <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
-                    responder
-                </button>`;
-            }
-            // crear estrellas como calificacion.
-            card_body_html += `<span class="float-right" id="stars_${cont}">`;
-            for (let index = 0; index <= 4; index++) 
-            {
-                if(index < element.number)
-                {
-                    card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="${colorstar}" xmlns="http://www.w3.org/2000/svg"> <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>`;
-                }
-                else
-                {
-                    card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                    </svg>`;
-                }
-            }
-            card_body_html += `<p class="d-none" id="valor_calificacion">${element._id}</p></span></div> </div>`;
-            cont +=1;
-        });
-        card_element.innerHTML = card_body_html;
-        
+        let resp = chatShow(Data);
+        // resp = false;pruebas de fallo pintado de los mensajes de calificacionestotalsucursales.
+        if(resp)
+        {
+            enviarAlert("Total de mensajes y calificaciones.", "alert-success");
+            $('#alerta_error').fadeIn();     
+            setTimeout(function() {
+                $("#alerta_error").fadeOut();           
+            },3000);
+        }
+        else
+        {
+            enviarAlert("!Oop, algo salio mal con las calificacione.", "alert-danger");
+            $('#alerta_error').fadeIn();     
+            setTimeout(function() {
+                $("#alerta_error").fadeOut();           
+            },3000);
+        }  
     }
     else
     {
@@ -219,8 +182,6 @@ function fnBtnId(cont)
             </div> 
         </div>
     </div>`;
-    // llamar al objeto con datos iniciales para crear la resp
-    // validar_data();
     // captura del div con el id para la modal e insercion de respuesta
     document.getElementById("replyContent").innerHTML = modal_resp;
 }
@@ -238,7 +199,7 @@ function capturarCheck(id_btn)
         // send_resp.idcalify = ""; pruebas de fallo con alerta.
         if(send_resp.idcalify !=="")
         {
-            // console.log("send_resp.idcalify: ", send_resp.idcalify);
+            console.log("send_resp.idcalify: ", send_resp.idcalify);
             if(send_resp.id_brach === "") send_resp.id_brach = null;
             fetch("https://barter-token.herokuapp.com/api/calificationsA",{
                 method: "POST",
@@ -263,11 +224,41 @@ function capturarCheck(id_btn)
             )
             .then(data => 
             {
-                // console.log("data: ", data);
-                total_califi = CustomerRatingsNoResponse(data.calificationscliente);
-                console.log("total_califi: ", total_califi);
+                newData = todotrue(data.calificationscliente)
+                console.log("send_resp: ", send_resp.idcalify);
+                arrayidcalif = saveidcalify(send_resp.idcalify);
+                console.log("data: ", data.calificationscliente);
+                console.log("arrayidcalif: ", arrayidcalif);
+                newData.forEach(e => {
+                    cont = 0;
+                    e._id === arrayidcalif[cont] ? e.status = false : ""; 
+                    cont++;
+                });
+                // total_califi = CustomerRatingsNoResponse(data.calificationscliente);
+                console.log("newData: ", newData);
+                // console.log("total_califi despues del if: ", total_califi);
+                total_califi = CustomerRatingsNoResponse(newData);
+                // status_true = total_califi.filter(califications => califications.status === true );
                 showGradesWithoutAnswering(total_califi.length);
-                chatShow(total_califi);
+                resp = chatShow(total_califi);
+                if(resp)
+                {
+                    enviarAlert("Total de mensajes y calificaciones.", "alert-success");
+                    $('#alerta_error').fadeIn();     
+                    setTimeout(function() {
+                        $("#alerta_error").fadeOut();           
+                    },3000);
+                }
+                else
+                {
+                    enviarAlert("!Oop, algo salio mal con las calificacione.", "alert-danger");
+                    $('#alerta_error').fadeIn();     
+                    setTimeout(function() {
+                        $("#alerta_error").fadeOut();           
+                    },3000);
+                    return false;
+                }
+                return true;
             });
             // .catch(error => {
             //     console.log("error: ",error);
@@ -283,7 +274,7 @@ function capturarCheck(id_btn)
         setTimeout(function() {
             $("#alerta_error").fadeOut();           
         },3000);
-        
+        return false;
     }
     // return true;
 }
@@ -447,7 +438,6 @@ function selectBranch(id_branch)
                         }
 
                         card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
-                        // <img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='user_avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
 
                         if(element.fk_user.image === "")
                         {
@@ -575,6 +565,17 @@ function CustomerRatingsNoResponse(calificationscliente)
     return status_true;
 }
 
+function todotrue(calificacionestotalsucursales)
+{
+    let newareglo = calificacionestotalsucursales;
+    newareglo.forEach( ele => {
+        ele.status === false ? ele.status = true : ele.status;
+    })
+    
+    // calificacionestotalsucursales.filter(califications => califications.status === false );
+    return newareglo;
+}
+
 function showGradesWithoutAnswering(total_califi)
 {
     if(Number.isInteger(total_califi))
@@ -651,9 +652,17 @@ function chatShow(info)
     cont = 1;
     colorstar= "#fed22b";
     card_element = document.getElementById('contenedor');
-    console.log("function chatShow info: ", info.length);
+    card_body_html = ``;
+    // console.log("card_element: ", card_element);
+    // console.log("type de card",typeof card_element)
+    if(card_element !== "")
+    {
+        card_element.innerHTML = ``;
+    }
+    // console.log("card_element despues: ", card_element);
+    // console.log("function chatShow info: ", info.length);
     info.forEach(element => { 
-        console.log("element: ", element);
+        // console.log("element: ", element);
         card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
 
         if(element.fk_user.image === "")
@@ -704,6 +713,14 @@ function chatShow(info)
     card_element.innerHTML = card_body_html;
     return true;
 }
+
+function saveidcalify(datasave)
+{
+    saveidcalif.push(datasave);
+    return saveidcalif;
+}
+
+
 
 
 
