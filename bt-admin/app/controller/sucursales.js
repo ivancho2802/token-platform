@@ -18,10 +18,13 @@ var geocoder = new google.maps.Geocoder;
             brancherRouter.branchs()
             .then(branchs=>{
                 document.getElementById("clientbranchs").innerHTML = ``;
+                var addressComplete = {}
                 for (let i = 0; i < branchs.length; i++) {
                     const branch = branchs[i];
                     var usersbranch = `<td class="text-center">`;
                     var formuserbranch = ``;
+
+                    addressComplete = JSON.parse(branch.addressComplete)
 
                     if(branch.fk_user_branch)
                     for (let j = 0; j < branch.fk_user_branch.length; j++) {
@@ -62,7 +65,7 @@ var geocoder = new google.maps.Geocoder;
                         <td class="text-center">${branch.addressComplete}</td>
                         ${usersbranch}
                         <td class="text-center">
-                            <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                            <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary" onclick=\'brancher.initMapsMakerCustomEditBranch(${branch.addressComplete}, "", ${i})\'>Editar Sucursal.</button>
                         </td>
                     </tr>
                     <tr>
@@ -80,7 +83,7 @@ var geocoder = new google.maps.Geocoder;
                                                                     <input name="_id" type="hidden" value="${branch._id}">
                                                                     <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch"  placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
                                                                     <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch"class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                    <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                    <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" id="address${i}" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustomEditBranch(null, null, ${i})" class="form-control"></div>
                                                                     <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
                                                                         
                                                                         <div class="input-group">
@@ -145,7 +148,6 @@ var geocoder = new google.maps.Geocoder;
                     </tr>
                     `;
                     
-                    brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
                 }
             })
         };
@@ -214,7 +216,7 @@ var geocoder = new google.maps.Geocoder;
             } 
         }
         Brancher.prototype.initMapsMakerCustomEditBranch = function (LatLng, imgcompany, index) {
-            let map, currentPositionEdit
+            let map, currentPositionEdit;
             
             //const iconBase ="https://developers.google.com/maps/documentation/javascript/examples/full/images/";
             var address = "";
@@ -237,7 +239,7 @@ var geocoder = new google.maps.Geocoder;
                 }
             ];
             if(!LatLng){
-                address = document.getElementById('address').value;
+                address = document.getElementById('address'+index).value;
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == 'OK') {
                         map.setCenter(results[0].geometry.location);
@@ -433,10 +435,16 @@ $( document ).ready(function() {
                     console.log("editar")
                     brancherRouter.putbranch(body)
                     .then(branchs=>{
+                        document.getElementById("clientbranchs").innerHTML = ``;
+                        var addressComplete = {};
                         for (let i = 0; i < branchs.length; i++) {
                             const branch = branchs[i];
                             var usersbranch = `<td class="text-center">`;
                             var formuserbranch = ``;
+
+                            addressComplete = JSON.parse(branch.addressComplete)
+                            console.log("addressComplete")
+                            console.log(addressComplete)
 
                             for (let j = 0; j < branch.fk_user_branch.length; j++) {
                                 const fk_user_branch = branch.fk_user_branch[j];
@@ -469,14 +477,14 @@ $( document ).ready(function() {
                                 `;
                             }
                             usersbranch += `</td>`;
-                            document.getElementById("clientbranchs").innerHTML = `
+                            document.getElementById("clientbranchs").innerHTML += `
                             <tr>
                                 <td class="text-center">${branch.nombre}</td>
                                 <td class="text-center">${branch.address}</td>
                                 <td class="text-center">${branch.addressComplete}</td>
                                 ${usersbranch}
                                 <td class="text-center">
-                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary" onclick=\'brancher.initMapsMakerCustomEditBranch(${branch.addressComplete}, "", ${i})\'>Editar Sucursal.</button>
                                 </td>
                             </tr>
                             <tr>
@@ -492,9 +500,10 @@ $( document ).ready(function() {
                                                                     
                                                                         <form class="needs-validation-put" novalidate  action="#" method="post"  id="formbranch${branch._id}">
                                                                             <h5 class="card-title">Datos de la Sucursal</h5>
+                                                                            <input name="_id" type="hidden" value="${branch._id}">
                                                                             <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
                                                                             <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" id="address${i}" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustomEditBranch(null, null, ${i})" class="form-control"></div>
                                                                             <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
                                                                                 
                                                                                 <div class="input-group">
@@ -557,8 +566,7 @@ $( document ).ready(function() {
                                 </td>
                             </tr>
                             `;
-                            
-                            brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
+                             
                         }
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -612,10 +620,16 @@ $( document ).ready(function() {
                     }
                     brancherRouter.putbranchputuser(body)
                     .then(branchs=>{
+                        document.getElementById("clientbranchs").innerHTML = ''
+                        var addressComplete = {}
                         for (let i = 0; i < branchs.length; i++) {
                             const branch = branchs[i];
                             var usersbranch = `<td class="text-center">`;
                             var formuserbranch = ``;
+
+                            addressComplete = JSON.parse(branch.addressComplete)
+                            console.log("addressComplete")
+                            console.log(addressComplete)
 
                             for (let j = 0; j < branch.fk_user_branch.length; j++) {
                                 const fk_user_branch = branch.fk_user_branch[j];
@@ -648,14 +662,14 @@ $( document ).ready(function() {
                                 `;
                             }
                             usersbranch += `</td>`;
-                            document.getElementById("clientbranchs").innerHTML = `
+                            document.getElementById("clientbranchs").innerHTML += `
                             <tr>
                                 <td class="text-center">${branch.nombre}</td>
                                 <td class="text-center">${branch.address}</td>
                                 <td class="text-center">${branch.addressComplete}</td>
                                 ${usersbranch}
                                 <td class="text-center">
-                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary" onclick=\'brancher.initMapsMakerCustomEditBranch(${branch.addressComplete}, "", ${i})\'>Editar Sucursal.</button>
                                 </td>
                             </tr>
                             <tr>
@@ -671,9 +685,10 @@ $( document ).ready(function() {
                                                                     
                                                                         <form class="needs-validation-put" novalidate  action="#" method="post"  id="formbranch${branch._id}">
                                                                             <h5 class="card-title">Datos de la Sucursal</h5>
+                                                                            <input name="_id" type="hidden" value="${branch._id}">
                                                                             <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
                                                                             <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" id="address${i}" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustomEditBranch(null, null, ${i})" class="form-control"></div>
                                                                             <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
                                                                                 
                                                                                 <div class="input-group">
@@ -736,8 +751,7 @@ $( document ).ready(function() {
                                 </td>
                             </tr>
                             `;
-                            
-                            brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
+                             
                         }
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -808,10 +822,16 @@ $( document ).ready(function() {
 
                     brancherRouter.setbranch(body)
                     .then(branchs=>{
+                        document.getElementById("clientbranchs").innerHTML = ''
+                        var addressComplete = {}
                         for (let i = 0; i < branchs.length; i++) {
                             const branch = branchs[i];
                             var usersbranch = `<td class="text-center">`;
                             var formuserbranch = ``;
+
+                            addressComplete = JSON.parse(branch.addressComplete)
+                            console.log("addressComplete")
+                            console.log(addressComplete)
 
                             for (let j = 0; j < branch.fk_user_branch.length; j++) {
                                 const fk_user_branch = branch.fk_user_branch[j];
@@ -844,14 +864,14 @@ $( document ).ready(function() {
                                 `;
                             }
                             usersbranch += `</td>`;
-                            document.getElementById("clientbranchs").innerHTML = `
+                            document.getElementById("clientbranchs").innerHTML += `
                             <tr>
                                 <td class="text-center">${branch.nombre}</td>
                                 <td class="text-center">${branch.address}</td>
                                 <td class="text-center">${branch.addressComplete}</td>
                                 ${usersbranch}
                                 <td class="text-center">
-                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                                    <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary" onclick=\'brancher.initMapsMakerCustomEditBranch(${branch.addressComplete}, "", ${i})\'>Editar Sucursal.</button>
                                 </td>
                             </tr>
                             <tr>
@@ -869,7 +889,7 @@ $( document ).ready(function() {
                                                                             <input name="_id" type="hidden" value="${branch._id}">
                                                                             <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
                                                                             <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                            <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" id="address${i}" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustomEditBranch(null, null, ${i})" class="form-control"></div>
                                                                             <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
                                                                                 
                                                                                 <div class="input-group">
@@ -933,8 +953,7 @@ $( document ).ready(function() {
                                 </td>
                             </tr>
                             `;
-                            
-                            brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
+                             
                         }
                         document.getElementById("alert-container").innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -983,10 +1002,16 @@ function tokenSubmitFunction(event, form, index2) {
             //console.log(body)
             brancherRouter.putbranchsetuser(body)
             .then(branchs=>{
+                document.getElementById("clientbranchs").innerHTML = ''
+                var addressComplete = {}
                 for (let i = 0; i < branchs.length; i++) {
                     const branch = branchs[i];
                     var usersbranch = `<td class="text-center">`;
                     var formuserbranch = ``;
+
+                    addressComplete = JSON.parse(branch.addressComplete)
+                    console.log("addressComplete")
+                    console.log(addressComplete)
 
                     for (let j = 0; j < branch.fk_user_branch.length; j++) {
                         const fk_user_branch = branch.fk_user_branch[j];
@@ -1026,7 +1051,7 @@ function tokenSubmitFunction(event, form, index2) {
                         <td class="text-center">${branch.addressComplete}</td>
                         ${usersbranch}
                         <td class="text-center">
-                            <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary">Editar Sucursal.</button>
+                            <button type="button"  data-toggle="collapse" href="#collapsebranch${branch._id}" class="btn btn-primary" onclick=\'brancher.initMapsMakerCustomEditBranch(${branch.addressComplete}, "", ${i})\'>Editar Sucursal.</button>
                         </td>
                     </tr>
                     <tr>
@@ -1042,9 +1067,10 @@ function tokenSubmitFunction(event, form, index2) {
                                                             
                                                                 <form class="needs-validation-put" novalidate  action="#" method="post"  id="formbranch${branch._id}">
                                                                     <h5 class="card-title">Datos de la Sucursal</h5>
+                                                                    <input name="_id" type="hidden" value="${branch._id}">
                                                                     <div class="position-relative form-group"><label for="namebranch" class="">Nombre</label><input name="namebranch" placeholder="Nombre de la Sucursal" type="text" class="form-control" required value="${branch.nombre}"></div>
                                                                     <div class="position-relative form-group"><label for="descripbranch" class="">Descripcion</label><textarea name="descripbranch" class="form-control"> ${branch.description?branch.description:''}</textarea></div>
-                                                                    <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustom()" class="form-control"></div>
+                                                                    <div class="position-relative form-group"><label for="address" class="">Direccion - Ciudad</label><input name="address" id="address${i}" type="textbox" value="${branch.address}" onkeyup="brancher.initMapsMakerCustomEditBranch(null, null, ${i})" class="form-control"></div>
                                                                     <div class="position-relative form-group"><label for="addressCompleteLat" class="">Direccion - GPS Google Maps</label>
                                                                         
                                                                         <div class="input-group">
@@ -1107,10 +1133,9 @@ function tokenSubmitFunction(event, form, index2) {
                         </td>
                     </tr>
                     `;
-                    
-                    brancher.initMapsMakerCustomEditBranch(JSON.parse(branch.addressComplete), "", i)
+                     
                 }
-                document.getElementById(`errorcreateuser${index}`).innerHTML = `
+                document.getElementById("alert-container").innerHTML = `
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <button type="button" class="close" aria-label="Close" data-dismiss="alert" ><span aria-hidden="true">×</span></button>
                         Usuario Creado con exito!
@@ -1121,10 +1146,10 @@ function tokenSubmitFunction(event, form, index2) {
                 console.log("errbranch")
                 console.log(errbranch)
                 console.log(errbranch.responseJSON ? errbranch.responseJSON.msg: '')
-                document.getElementById(`errorcreateuser${index}`).innerHTML = `
+                document.getElementById("alert-container").innerHTML = `
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <button type="button" class="close" aria-label="Close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
-                        ¡Error al crear sucursal! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
+                        ¡Error al crear usuario en la sucursal! ${errbranch.responseJSON ? errbranch.responseJSON.msg: ''}
                     </div>
                 `;
                 //$('html, body').animate({scrollTop: 0}, 600);
