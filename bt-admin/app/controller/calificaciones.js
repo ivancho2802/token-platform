@@ -1,5 +1,6 @@
-
-$( document ).ready(function() {
+let calificacionestotalsucursales = [];
+$( document ).ready(function() 
+{
     let citiesData;
     const send_resp = false, gif_card = false, id_branch = null;
     body_ratings =
@@ -71,24 +72,23 @@ $( document ).ready(function() {
     // citiesData = array_keys();
 })
 
-
-
-
 companier.getqualification()
 .then((response)=> 
 {
     if(response.data)
     {
+        calificacionestotalsucursales = response.data;
+        console.log("calificacionestotalsucursales: ", calificacionestotalsucursales);
         camvasGrafi(response.data);
-        total_califi = calificationsClientesTrue(response.data);
-        // mostrar y pintar la cantidad de calificaciones sin responder
+        total_califi = CustomerRatingsNoResponse(response.data);
+        // mostrar y pintar la cantidad de calificaciones sin responder Customer_Ratings_No_Response
         showGradesWithoutAnswering(total_califi.length);
         let Data = total_califi; 
         card_body_html = ``;
         let card_element = document.getElementById('contenedor');
         let cont = 1;
         const colorstar= "#fed22b";
-        // let resp = createCardQualification(Data, dissatisfied, moderately_compliant, according, total_msm);
+
         Data.forEach(element => {
             
             card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
@@ -235,6 +235,7 @@ function capturarCheck(id_btn)
     else
     {
         const send_resp = sendResp();
+        // send_resp.idcalify = ""; pruebas de fallo con alerta.
         if(send_resp.idcalify !=="")
         {
             // console.log("send_resp.idcalify: ", send_resp.idcalify);
@@ -263,9 +264,10 @@ function capturarCheck(id_btn)
             .then(data => 
             {
                 // console.log("data: ", data);
-                total_califi = calificationsClientesTrue(data.calificationscliente);
-                // console.log("total_califi: ", total_califi);
+                total_califi = CustomerRatingsNoResponse(data.calificationscliente);
+                console.log("total_califi: ", total_califi);
                 showGradesWithoutAnswering(total_califi.length);
+                chatShow(total_califi);
             });
             // .catch(error => {
             //     console.log("error: ",error);
@@ -276,6 +278,12 @@ function capturarCheck(id_btn)
             //     },3000);
             // });
         }
+        enviarAlert("Datos invalidos para la respuesta.", "alert-warning");
+        $('#alerta_error').fadeIn();     
+        setTimeout(function() {
+            $("#alerta_error").fadeOut();           
+        },3000);
+        
     }
     // return true;
 }
@@ -397,7 +405,7 @@ function selectBranch(id_branch)
         companier.getqualification(id_branch)
             .then((response)=> 
             {
-                total_califi = calificationsClientesTrue(response.data);
+                total_califi = CustomerRatingsNoResponse(response.data);
                 showGradesWithoutAnswering(total_califi.length);
                 let card_element = document.getElementById('contenedor');
                 if(response.data.length !== 0 && response.data.length !== undefined)
@@ -560,11 +568,11 @@ function capturarClick()
     });
 }
 
-function calificationsClientesTrue(calificationscliente)
+function CustomerRatingsNoResponse(calificationscliente)
 {
     let status_true = [];
     status_true = calificationscliente.filter(califications => califications.status === true );
-    return status_true
+    return status_true;
 }
 
 function showGradesWithoutAnswering(total_califi)
@@ -638,6 +646,64 @@ function camvasGrafi(data)
     enviarAlert("No se encontro informacion grafica.", "alert-warning");
 }
 
+function chatShow(info)
+{
+    cont = 1;
+    colorstar= "#fed22b";
+    card_element = document.getElementById('contenedor');
+    console.log("function chatShow info: ", info.length);
+    info.forEach(element => { 
+        console.log("element: ", element);
+        card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
+
+        if(element.fk_user.image === "")
+        {
+            card_body_html += `
+                                <i class="fa fa-user" aria-hidden="true" title="Copy to use user" style="width: 33px"></i>
+                                <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) 
+                                </span>
+                            </span>`;
+        }
+        else
+        {
+            card_body_html += `<img width='33' class='rounded-circle' id='avatar_${cont}' src='${element.fk_user.image}' alt='avatar' />  <span class="px-3 pt-1" id="name">${element.fk_user.name} ${element.fk_user.lastname} (${element.fk_user.username}) </span></span>`;
+        }
+
+
+        if(element.comentary == undefined || element.comentary === "")
+        { 
+            card_body_html += `<p class='card-text comentario' id="comment_${cont}"> calificación sin comentario. </p> <div class="calificacion">
+            <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                responder
+            </button>`;
+        }else
+        {
+            card_body_html += `<p class='card-text' id="comment_${cont}"> ${element.comentary} </p> <div class="calificacion"> 
+            <button type="button" class="btn btn-info btn-sm text-uppercase" data-toggle="modal" data-target="#reply" id="btn_${cont}" onclick="fnBtnId(this)">
+                responder
+            </button>`;
+        }
+        // crear estrellas como calificacion.
+        card_body_html += `<span class="float-right" id="stars_${cont}">`;
+        for (let index = 0; index <= 4; index++) 
+        {
+            if(index < element.number)
+            {
+                card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="${colorstar}" xmlns="http://www.w3.org/2000/svg"> <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/> </svg>`;
+            }
+            else
+            {
+                card_body_html += `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>`;
+            }
+        }
+        card_body_html += `<p class="d-none" id="valor_calificacion">${element._id}</p></span></div> </div>`;
+        cont +=1;
+    });
+    card_element.innerHTML = card_body_html;
+    return true;
+}
 
 
 
