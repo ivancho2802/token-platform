@@ -286,7 +286,6 @@ function loadGifCard()
     companier.getgiftsA()
     .then((response)=> 
     {
-        console.log("response: ", response);
         const f_hoy = new Date();
         let cont = 1;
         dataGifcard =
@@ -297,6 +296,7 @@ function loadGifCard()
             "descripcion": [],
             "nameCupon": [],
             "vence": [],
+            "id_gif": []
         }
 
         response.forEach(element => 
@@ -304,7 +304,7 @@ function loadGifCard()
             const f_gif = new Date(element.fecha_final);
             amount = format(element.amount);
             array_amount.push(amount);
-            id = element._id;
+            // id = element._id;
             if(f_gif.getTime() > f_hoy.getTime() && (element.status === true))
             {
                 img_gifcard += `
@@ -324,8 +324,9 @@ function loadGifCard()
                             <p class="" id="gift_business_nombre">${JSON.parse($.cookie("business")).nombre}</p>
                             <div class="descripcion" id="id_${cont}">${element.nombre } ${ element.descripcion}
                             </div>
-                            <p class="">vence: ${moment(f_gif).format("MMM D, YYYY")}</p>
-                            seleccionar <a class="text-warning stretched-link" href="#" id="${element._id}">aqui</a>
+                            <p class="selectGifCard">vence: ${moment(f_gif).format("MMM D, YYYY")}
+                                seleccionar 
+                            <a class="text-warning stretched-link" href="#" id="${element._id}">aqui</a></p>
                         </div>
                     </div>
                 </div>`;
@@ -335,12 +336,10 @@ function loadGifCard()
                 dataGifcard.nameCupon.push(element.nombre);
                 dataGifcard.vence.push(moment(f_gif).format("MMM D, YYYY"));
                 dataGifcard.id_elem.push(cont);
+                dataGifcard.id_gif.push(element._id);
                 cont += 1; 
             }
         });
-
-        let enviarobjec = sendObjectGifcard(dataGifcard);
-        // console.log("dataGifcard: ", dataGifcard);
         document.getElementById("collapse123").innerHTML = img_gifcard;
         const btngif = document.getElementsByClassName("text-warning");
         let btnEvent;
@@ -348,7 +347,9 @@ function loadGifCard()
         for(index = 0; index < btngif.length; index++)
         {
             btnEvent = document.getElementById(btngif[index].id);
+
             ids.push(btngif[index].id);
+
             btnEvent.addEventListener("click", capturarIdGif);
         }
     },
@@ -378,14 +379,26 @@ function sendResp()
     return body_ratings;
 }
 
-function capturarIdGif(e)
+function capturarIdGif(elemento_click)
 {
+    let validador, conteo = 0;
+
+    dataGifcard.id_gif.forEach(e => {
+
+        if(e === elemento_click.path[0].id)
+        {
+            validador = dataGifcard.id_elem[conteo];
+            console.log("entro.")
+        } 
+        ++conteo;
+    });
+    console.log("validador: ", validador);
     close_modal = document.getElementById("collapse123");
     close_modal.classList.remove("show");
     add_gif = document.getElementById(add_gif);
     html_add = `
-    <div class="alert alert-warning alert-dismissible fade show text-uppercase ion-color-barter3 diferencial" role="alert" id="${e.target.id}">
-        <strong>$ 10000 </strong> gifcad cargada.
+    <div class="alert alert-warning alert-dismissible fade show text-uppercase ion-color-barter3 diferencial" role="alert" id="${elemento_click.path[0].id}">
+        <strong>$ ${dataGifcard.amount[validador-1]} </strong> gifcad cargada.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -410,7 +423,6 @@ function selectBranch(id_branch)
     if(id_branch && id_branch !== null && id_branch !== "")
     {
         body_ratings.id_brach = id_branch;
-        // let container = validar_data("id_brach", id_branch); no va ya
         companier.getqualification(id_branch)
             .then((response)=> 
             {
