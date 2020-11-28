@@ -527,6 +527,14 @@
                     <div class="app-page-title">
                         <div class="page-title-wrapper"> 
                             <div class="page-title-actions">
+                                <button class="mr-2 btn btn-secondary dropdown btn-msm-clal">
+                                    SMS
+                                    <span class="badge badge-pill badge-light"  id="numSms"> 0</span>
+                                </button>
+                                <button class="mr-2 btn btn-secondary dropdown btn-msm-clal">
+                                    E-MAIL
+                                    <span class="badge badge-pill badge-light" id="numEmail"> 0</span>
+                                </button>
                                 <div class="d-inline-block dropdown">
                                     <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info select_branchoffice">
                                         <span class="btn-icon-wrapper pr-2 opacity-7">
@@ -558,7 +566,7 @@
                             </div>   
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row justify-content-center">
                         <div class="col-ms-10 col-md-12 col-lg-12" id="body_calificaciones">
                             <div class="mb-1 card">
                                 <div class="card-body">
@@ -567,8 +575,9 @@
                                             <div class="card m-1">
                                                 <div>
                                                     <div class="card-header">
-                                                        <span class="mr-2">Calificaciones</span> 
-                                                        <div class="btn btn-secondary" id="calif_filtro">
+                                                        <span class="mr-2">calificaciones sin responder: </span>
+                                                        <span id="follower"> 0 </span> 
+                                                        <div class="btn btn-secondary ml-5" id="calif_filtro">
                                                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" id="menor" data-toggle="tooltip" data-placement="top" title="menor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                                 <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                                             </svg>
@@ -583,7 +592,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xl-6">
+                                        <div class="col-md-6 col-xl-6 align-self-center text-center">
                                             <div class="card m-1">
                                                 <div class="doughnut p-1">
                                                     <canvas id="myChart" width="1" height="1" class="canvas_calificaciones"></canvas>

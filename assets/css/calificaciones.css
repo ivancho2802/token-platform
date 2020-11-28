@@ -50,6 +50,16 @@
     margin: 0;
 }
 
+.text-white
+{
+    display: inline-block;
+}
+
+.btn-msm-clal
+{
+    height: 32px;
+}
+
 textarea 
 {
     resize: none;
