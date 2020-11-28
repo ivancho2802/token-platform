@@ -1,8 +1,6 @@
 let calificacionestotalsucursales = [], saveidcalif = [];
 $( document ).ready(function() 
 {
-    let citiesData;
-    const send_resp = false, gif_card = false, id_branch = null;
     body_ratings =
     {
         idcalify: "",
@@ -22,6 +20,7 @@ $( document ).ready(function()
         nombre_gif: "",
         fecha_vence_gif: ""
     };
+
     /** data de la empresa perfil */
     if($.cookie("userData") && $.cookie("business") && !(JSON.parse($.cookie("userData")) || JSON.parse($.cookie("business"))))
         return;
@@ -60,16 +59,15 @@ $( document ).ready(function()
         select_branchoffice.textContent = sucursal;
     });
 
-    // pendiente validar logica evento al selecionar sucursal por defecto
-    // const default_sucursal = document.querySelector("#lis_sucursales #branchs .default a");
-    // default_sucursal.addEventListener("click", element => {
-    //     console.log("click en sucursales: " ,element);
-    //     const sucursal = document.querySelector("#branchs li a div").textContent;
-    //     select_branchoffice.textContent = sucursal;
-    // }) 
+    companier.balancesmsemail(JSON.parse($.cookie("userData"))._id)
+        .then((balancesmsemailData)=> {
+            document.getElementById("numSms").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numSms: 0;
+            document.getElementById("numEmail").innerHTML = balancesmsemailData.billpaybell ? balancesmsemailData.billpaybell.numEmail: 0;
+    }, 
+        (err) =>{console.log("error solicitud.balancesmsemail "+err)})
+ 
     // asignar evento click a el filtro de fechas
     capturarClick();
-    // citiesData = array_keys();
 })
 
 companier.getqualification()
@@ -79,14 +77,13 @@ companier.getqualification()
     {
         calificacionestotalsucursales = response.data;
         let elementostrue = todotrue(response.data); //funcion para cambiar los elementos a estado true y tener con que probar
-        // console.log("calificacionestotalsucursales: ", calificacionestotalsucursales);
         camvasGrafi(response.data);
         total_califi = CustomerRatingsNoResponse(elementostrue);
-        // mostrar y pintar la cantidad de calificaciones sin responder Customer_Ratings_No_Response
+
         showGradesWithoutAnswering(total_califi.length);
         let Data = total_califi; 
         let resp = chatShow(Data);
-        // resp = false;pruebas de fallo pintado de los mensajes de calificacionestotalsucursales.
+
         if(resp)
         {
             enviarAlert("Total de mensajes y calificaciones.", "alert-success");
@@ -94,6 +91,7 @@ companier.getqualification()
             setTimeout(function() {
                 $("#alerta_error").fadeOut();           
             },3000);
+            return true;
         }
         else
         {
@@ -102,6 +100,7 @@ companier.getqualification()
             setTimeout(function() {
                 $("#alerta_error").fadeOut();           
             },3000);
+            return false;
         }  
     }
     else
@@ -115,10 +114,11 @@ function fnBtnId(cont)
 {
     let id = cont.id, num;
     num = id.slice(4);
-    //  crear la captura del span con la cantidad de estrellas para este msm
+
     let card_header = document.getElementById(`card_heder_${num}`);
     let star_calificacion = document.getElementById(`stars_${num}`);
     let mensaje = document.getElementById(`comment_${num}`);
+
     // crear modal con data del cliente dinamicamente
     modal_resp = 
     `<div class="modal-content">
@@ -281,20 +281,31 @@ function capturarCheck(id_btn)
 
 function loadGifCard()
 {
-    let img_gifcard = ``, array_amount = [], id;
+    let img_gifcard = ``, array_amount = [];
     let ids = [];
     companier.getgiftsA()
     .then((response)=> 
     {
-        const f = new Date();
-        let cont =1
+        const f_hoy = new Date();
+        let cont = 1;
+        dataGifcard =
+        {
+            "amount": [],
+            "nameClient": [],
+            "id_elem": [],
+            "descripcion": [],
+            "nameCupon": [],
+            "vence": [],
+            "id_gif": []
+        }
+
         response.forEach(element => 
         {
             const f_gif = new Date(element.fecha_final);
             amount = format(element.amount);
             array_amount.push(amount);
-            id = element._id;
-            if(f_gif.getTime() > f.getTime() && (element.status === true))
+            // id = element._id;
+            if(f_gif.getTime() > f_hoy.getTime() && (element.status === true))
             {
                 img_gifcard += `
                 <div class="col-sm-6 col-md-6 col-lg-6"> 
@@ -313,16 +324,22 @@ function loadGifCard()
                             <p class="" id="gift_business_nombre">${JSON.parse($.cookie("business")).nombre}</p>
                             <div class="descripcion" id="id_${cont}">${element.nombre } ${ element.descripcion}
                             </div>
-                            <p class="">vence: ${moment(f_gif).format("MMM D, YYYY")}</p>
-                            seleccionar <a class="text-warning stretched-link" href="#" id="${element._id}">aqui</a>
+                            <p class="selectGifCard">vence: ${moment(f_gif).format("MMM D, YYYY")}
+                                seleccionar 
+                            <a class="text-warning stretched-link" href="#" id="${element._id}">aqui</a></p>
                         </div>
                     </div>
                 </div>`;
+                dataGifcard.amount.push(amount);
+                dataGifcard.nameClient.push(JSON.parse($.cookie("business")).nombre);
+                dataGifcard.descripcion.push(element.descripcion);
+                dataGifcard.nameCupon.push(element.nombre);
+                dataGifcard.vence.push(moment(f_gif).format("MMM D, YYYY"));
+                dataGifcard.id_elem.push(cont);
+                dataGifcard.id_gif.push(element._id);
                 cont += 1; 
             }
         });
-
-        // captura del contenedor para insertar las tarjetas gif creadas dinamicamente.
         document.getElementById("collapse123").innerHTML = img_gifcard;
         const btngif = document.getElementsByClassName("text-warning");
         let btnEvent;
@@ -330,7 +347,9 @@ function loadGifCard()
         for(index = 0; index < btngif.length; index++)
         {
             btnEvent = document.getElementById(btngif[index].id);
+
             ids.push(btngif[index].id);
+
             btnEvent.addEventListener("click", capturarIdGif);
         }
     },
@@ -360,14 +379,26 @@ function sendResp()
     return body_ratings;
 }
 
-function capturarIdGif(e)
+function capturarIdGif(elemento_click)
 {
+    let validador, conteo = 0;
+
+    dataGifcard.id_gif.forEach(e => {
+
+        if(e === elemento_click.path[0].id)
+        {
+            validador = dataGifcard.id_elem[conteo];
+            console.log("entro.")
+        } 
+        ++conteo;
+    });
+    console.log("validador: ", validador);
     close_modal = document.getElementById("collapse123");
     close_modal.classList.remove("show");
     add_gif = document.getElementById(add_gif);
     html_add = `
-    <div class="alert alert-warning alert-dismissible fade show text-uppercase ion-color-barter3 diferencial" role="alert" id="${e.target.id}">
-        <strong>$ 10000 </strong> gifcad cargada.
+    <div class="alert alert-warning alert-dismissible fade show text-uppercase ion-color-barter3 diferencial" role="alert" id="${elemento_click.path[0].id}">
+        <strong>$ ${dataGifcard.amount[validador-1]} </strong> gifcad cargada.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -392,7 +423,6 @@ function selectBranch(id_branch)
     if(id_branch && id_branch !== null && id_branch !== "")
     {
         body_ratings.id_brach = id_branch;
-        // let container = validar_data("id_brach", id_branch); no va ya
         companier.getqualification(id_branch)
             .then((response)=> 
             {
@@ -541,12 +571,6 @@ function selectBranch(id_branch)
     }
 }
 
-// function validar_data(validador, ...param)
-// {
-//     body_ratings.id_brach = validador ? param[0] : "";
-//     return body_ratings;
-// }
-
 function capturarClick()
 {
     const filtro_fecha = document.getElementById("calif_filtro");
@@ -653,14 +677,10 @@ function chatShow(info)
     colorstar= "#fed22b";
     card_element = document.getElementById('contenedor');
     card_body_html = ``;
-    // console.log("card_element: ", card_element);
-    // console.log("type de card",typeof card_element)
     if(card_element !== "")
     {
         card_element.innerHTML = ``;
     }
-    // console.log("card_element despues: ", card_element);
-    // console.log("function chatShow info: ", info.length);
     info.forEach(element => { 
         // console.log("element: ", element);
         card_body_html += `<div class='card-body' id='card_${cont}' > <span class='img_user' id="card_heder_${cont}">`
