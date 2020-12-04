@@ -1,0 +1,47 @@
+div.token1{
+    /* background-color:#ccc;
+    mask: url(./images/silueta_disaen2.svg);
+    -webkit-mask-image: url(./images/silueta_disaen2.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    padding: 1rem; */
+
+    -webkit-mask-box-image: url(./images/silueta_disaen2.svg);
+    mask: url(./images/silueta_disaen2.svg);
+    position: relative;
+    background-color: #ccc;
+    padding: 1rem;
+    margin: 2px;
+}
+.maskborder{
+    position: relative;
+    background-color: red;
+    -webkit-mask-box-image: url(./images/silueta_disaen2.svg);
+    mask: url(./images/silueta_disaen2.svg);
+}
+
+#silhouette img {
+    -webkit-filter: contrast(0) sepia(100%) hue-rotate(190deg) saturate(2000%) brightness(100%);
+    filter: contrast(0) sepia(100%) hue-rotate(190deg) saturate(2000%) brightness(100%);
+    opacity: 1;
+}
+
+.input-group-prepend .input-group-text::before  {
+    width: 18px;
+    content: "";
+    display: block;
+    height: 1px;
+}
+
+input[type="color"] {
+	-webkit-appearance: none;
+	border: none;
+	width: 32px;
+	height: 22px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
+}

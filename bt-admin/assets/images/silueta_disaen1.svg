@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 867.61 336.33">
+	<title>silueta1</title>
+	<defs>
+		<style>.cls-1{fill:none;stroke-miterlimit:10;stroke-width:7px;stroke:url(#Degradado_sin_nombre_5);}</style>
+		<linearGradient id="Degradado_sin_nombre_5" x1="0" y1="168.19" x2="871.11" y2="168.19" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#b27f2a"/><stop offset="0.06" stop-color="#b7862e"/><stop offset="0.14" stop-color="#c49939"/><stop offset="0.24" stop-color="#dab84c"/><stop offset="0.33" stop-color="#f4dd62"/><stop offset="0.52" stop-color="#f4e38b"/><stop offset="0.66" stop-color="#f4dd62"/><stop offset="1" stop-color="#b27f2a"/></linearGradient>
+	</defs>
+	<path class="cls-1" d="M840.53,172.76a27.55,27.55,0,0,1,27.55-27.55V33.87A34.23,34.23,0,0,0,833.85-.37H34.71A34.24,34.24,0,0,0,.47,33.87V145.21A27.54,27.54,0,0,1,28,172.76,27.55,27.55,0,0,1,.47,200.31V301.73A34.24,34.24,0,0,0,34.71,336H833.85a34.23,34.23,0,0,0,34.23-34.24V200.31A27.56,27.56,0,0,1,840.53,172.76Z" 
+	transform="translate(-0.47 0.37)" 
+	style="fill:#ed1c24"/>
+</svg>
