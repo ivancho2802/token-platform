@@ -14,7 +14,7 @@ $("#singing").submit(function(event){
 	console.log(body)
 	
 	$.ajax({
-		url : 'https://barter-token.herokuapp.com/api/sigin',
+		url : 'http://api.tokenplataforma.com:3001/api/sigin',
 		type: request_method,
 		data : JSON.stringify(body),
    		contentType: "application/json; charset=utf-8" 

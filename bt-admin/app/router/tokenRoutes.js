@@ -12,7 +12,7 @@
       }
       TokenRouter.prototype.tokendisaens = function() {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/tokendisaen',
+          url : 'http://api.tokenplataforma.com:3001/api/tokendisaen',
           type: 'GET',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8"

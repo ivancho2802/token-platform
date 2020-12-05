@@ -13,7 +13,7 @@
   
       BranchRouter.prototype.branchs = function() {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchs',
+          url : 'http://api.tokenplataforma.com:3001/api/branchs',
           type: 'GET',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8"
@@ -23,7 +23,7 @@
 
       BranchRouter.prototype.setbranch = function(body) {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchs',
+          url : 'http://api.tokenplataforma.com:3001/api/branchs',
           type: 'POST',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8",
@@ -33,7 +33,7 @@
 
       BranchRouter.prototype.putbranch = function(body) {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchs',
+          url : 'http://api.tokenplataforma.com:3001/api/branchs',
           type: 'PUT',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8",
@@ -43,7 +43,7 @@
 
       BranchRouter.prototype.putbranchputuser = function(body) {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchsuser',
+          url : 'http://api.tokenplataforma.com:3001/api/branchsuser',
           type: 'PUT',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8",
@@ -53,7 +53,7 @@
       
       BranchRouter.prototype.putbranchsetuser = function(body) {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchsuser',
+          url : 'http://api.tokenplataforma.com:3001/api/branchsuser',
           type: 'POST',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8",
@@ -63,7 +63,7 @@
 
       BranchRouter.prototype.deletebranchuser = function(body) {
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/branchsuserdel',
+          url : 'http://api.tokenplataforma.com:3001/api/branchsuserdel',
           type: 'POST',
           headers: {"Authorization":  $.cookie("TOKEN")},
           contentType: "application/json; charset=utf-8",

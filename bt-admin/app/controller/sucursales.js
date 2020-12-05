@@ -165,7 +165,7 @@ var geocoder = new google.maps.Geocoder;
                     icon: imgcompany,
                 },
                 info: {
-                    icon: "https://barter-token.herokuapp.com/api/assets/markertoken.png",
+                    icon: "http://api.tokenplataforma.com:3001/api/assets/markertoken.png",
                 },
             };
             const features = [
@@ -229,7 +229,7 @@ var geocoder = new google.maps.Geocoder;
                     icon: imgcompany,
                 },
                 info: {
-                    icon: "https://barter-token.herokuapp.com/api/assets/markertoken.png",
+                    icon: "http://api.tokenplataforma.com:3001/api/assets/markertoken.png",
                 },
             };
             const features = [

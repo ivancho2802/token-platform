@@ -253,7 +253,7 @@ function getTableUsersBellClose (users, userobjData, cities){
 
     User.prototype.setsegmentuser = function(body) {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/segmentuser',
+        url : 'http://api.tokenplataforma.com:3001/api/segmentuser',
         type: 'POST',
         headers: {"Authorization":  $.cookie("TOKEN")},
         contentType: "application/json; charset=utf-8" ,

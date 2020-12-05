@@ -168,7 +168,7 @@ function fnBtnId(cont)
                         </div>
                         
                         <div class="card-body">
-                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                            <img width="100%" src="http://api.tokenplataforma.com:3001/favicon.ico" alt="Card image cap" class="card-img-top ">
                         </div>
                         
                         <div class="card-body">
@@ -201,7 +201,7 @@ function capturarCheck(id_btn)
         {
             console.log("send_resp.idcalify: ", send_resp.idcalify);
             if(send_resp.id_brach === "") send_resp.id_brach = null;
-            fetch("https://barter-token.herokuapp.com/api/calificationsA",{
+            fetch("http://api.tokenplataforma.com:3001/api/calificationsA",{
                 method: "POST",
                 headers:  
                 {
@@ -318,7 +318,7 @@ function loadGifCard()
                             </div>
                         </div>
                         <div class="card-body">
-                            <img width="100%" src="https://barter-token.herokuapp.com/favicon.ico" alt="Card image cap" class="card-img-top ">
+                            <img width="100%" src="http://api.tokenplataforma.com:3001/favicon.ico" alt="Card image cap" class="card-img-top ">
                         </div>
                         <div class="card-body">
                             <p class="" id="gift_business_nombre">${JSON.parse($.cookie("business")).nombre}</p>

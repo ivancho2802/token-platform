@@ -13,7 +13,7 @@
 
     Company.prototype.getjsondisaen = function() {
   		return $.ajax({
-  			url : 'https://barter-token.herokuapp.com/api/unlayerjsondisaen',
+  			url : 'http://api.tokenplataforma.com:3001/api/unlayerjsondisaen',
   			type: 'GET',
         contentType: "application/json; charset=utf-8",
         headers: {"Authorization":  $.cookie("TOKEN")}
@@ -24,7 +24,7 @@
   			return false
 
   		return $.ajax({
-  			url : 'https://barter-token.herokuapp.com/api/seguidoresclients',
+  			url : 'http://api.tokenplataforma.com:3001/api/seguidoresclients',
   			type: 'GET',
   			// data : JSON.stringify(body),
   	   		contentType: "application/json; charset=utf-8",
@@ -36,7 +36,7 @@
         return false
 
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/balanceTotalNsmsNemail',
+        url : 'http://api.tokenplataforma.com:3001/api/balanceTotalNsmsNemail',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -45,7 +45,7 @@
     }; 
     Company.prototype.cities = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/findCities/CO',
+        url : 'http://api.tokenplataforma.com:3001/api/findCities/CO',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -54,7 +54,7 @@
     }; 
     Company.prototype.cuponeclienetscan = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/cuponclientescan',
+        url : 'http://api.tokenplataforma.com:3001/api/cuponclientescan',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -65,7 +65,7 @@
       //console.log(idbranch)
       /* if(idbranch){
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clients/'+idbranch,
+          url : 'http://api.tokenplataforma.com:3001/api/clients/'+idbranch,
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
@@ -73,7 +73,7 @@
         }) 
       }else{ */
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clients',
+          url : 'http://api.tokenplataforma.com:3001/api/clients',
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
@@ -84,7 +84,7 @@
     Company.prototype.clientsforbell = function(idbranch) {
       /* if(idbranch){ */
         /* return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clientsforbell'+idbranch,
+          url : 'http://api.tokenplataforma.com:3001/api/clientsforbell'+idbranch,
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
@@ -92,7 +92,7 @@
         })  */
       /* }else{ */
         return $.ajax({
-          url : 'https://barter-token.herokuapp.com/api/clientsforbell',
+          url : 'http://api.tokenplataforma.com:3001/api/clientsforbell',
           type: 'GET',
           // data : JSON.stringify(body),
              contentType: "application/json; charset=utf-8",
@@ -103,7 +103,7 @@
     
     Company.prototype.branchs = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/branchs',
+        url : 'http://api.tokenplataforma.com:3001/api/branchs',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -112,7 +112,7 @@
     }; 
     Company.prototype.staticsHome = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/staticsHome',
+        url : 'http://api.tokenplataforma.com:3001/api/staticsHome',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -121,7 +121,7 @@
     };  
     Company.prototype.staticsbyAdress = function(idbranch) {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/staticsAdress/'+idbranch,
+        url : 'http://api.tokenplataforma.com:3001/api/staticsAdress/'+idbranch,
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -131,7 +131,7 @@
     // ver cupones
     Company.prototype.tokens = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/cuponesA',
+        url : 'http://api.tokenplataforma.com:3001/api/cuponesA',
         type: 'GET',
          contentType: "application/json; charset=utf-8",
          headers: {"Authorization":  $.cookie("TOKEN")}
@@ -139,7 +139,7 @@
     }; 
     Company.prototype.staticsByToken = function(idtoken) {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/staticsbytoken/'+idtoken,
+        url : 'http://api.tokenplataforma.com:3001/api/staticsbytoken/'+idtoken,
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -148,7 +148,7 @@
     };  
     Company.prototype.sendgrinddesigns = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/sendgrind/designs',
+        url : 'http://api.tokenplataforma.com:3001/api/sendgrind/designs',
         type: 'GET',
         // data : JSON.stringify(body),
            contentType: "application/json; charset=utf-8",
@@ -157,7 +157,7 @@
     };
     Company.prototype.getqualification = function(id_branch=null) {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/calificationsA/'+id_branch,
+        url : 'http://api.tokenplataforma.com:3001/api/calificationsA/'+id_branch,
         type: 'GET',
         // data : JSON.stringify(body),
         contentType: "application/json; charset=utf-8",
@@ -166,7 +166,7 @@
     };
     Company.prototype.getgiftsA = function() {
       return $.ajax({
-        url : 'https://barter-token.herokuapp.com/api/giftsA',
+        url : 'http://api.tokenplataforma.com:3001/api/giftsA',
         type: 'GET',
         contentType: "application/json; charset=utf-8",
         headers: {"Authorization":  $.cookie("TOKEN")}
