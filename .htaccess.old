@@ -1,0 +1,5 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^token-platform.herokuapp\.com$ [NC]
+RewriteRule ^(.*)$ https://tokenplataforma.com [R=301,L]
