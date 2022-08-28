@@ -1,10 +1,11 @@
 {
-    "name": "tokenPlatform",
     "authors": [
         {
             "name": "Ivan Diaz",
             "email": "ivancho2802@hotmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^7.4.0"
+    }
 }
