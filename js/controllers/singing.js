@@ -1,4 +1,4 @@
-const ipserver = "http://34.95.174.1"
+const ipserver = "http://34.95.174.1:80"
 //const ipserver = "http://api.tokenplataforma.com:3001"
 const ipserverapi = `${ipserver}/api`
 
