@@ -1,10 +1,15 @@
+const ipserver = "http://34.95.174.1"
+//const ipserver = "http://api.tokenplataforma.com:3001"
+const ipserverapi = `${ipserver}/api`
+
+
 $("#singing").submit(function(event){
 	event.preventDefault(); //prevent default action 
-	var post_url = $(this).attr("action"); //get form action url
-	var request_method = $(this).attr("method"); //get form GET/POST method
-	var form_data = $(this).serializeArray(); //Encode form elements for submission
+	//var post_url = $(this).attr("action"); //get form action url
+	let request_method = $(this).attr("method"); //get form GET/POST method
+	let form_data = $(this).serializeArray(); //Encode form elements for submission
 	
-	var body = {
+	let body = {
 		username: form_data[0].value,
 		password: form_data[1].value,
     	tokenPush: 'localStorage.getItem("tokenPush")',
@@ -14,7 +19,7 @@ $("#singing").submit(function(event){
 	console.log(body)
 	
 	$.ajax({
-		url : 'http://api.tokenplataforma.com:3001/api/sigin',
+		url : `${ipserverapi}/sigin`,
 		type: request_method,
 		data : JSON.stringify(body),
    		contentType: "application/json; charset=utf-8" 
